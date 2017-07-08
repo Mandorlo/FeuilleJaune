@@ -1,0 +1,73 @@
+<!--
+  Generated template for the AjouterPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Ajouter une entrée/sortie</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <h1 class="titre_ajout">Dépense</h1>
+  <form (ngSubmit)="enregistrer()">
+
+    <ion-item-group radio-group [(ngModel)]="data.type" id="list_type" name="type" (ionChange)="change_type()">
+      <ion-item-divider color="light">
+        Entrée / sortie
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Sortie</ion-label>
+        <ion-radio value="out"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Entrée</ion-label>
+        <ion-radio value="in"></ion-radio>
+      </ion-item>
+    </ion-item-group>
+
+    <ion-item-group>
+      <ion-item-divider color="light">
+        Détails
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Nom</ion-label>
+        <ion-input type="text" [(ngModel)]="data.name" name="nom"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Montant</ion-label>
+        <ion-input type="number" step="0.01" [(ngModel)]="data.montant" name="montant" placeholder="en euros"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label><ion-icon name="calendar"></ion-icon></ion-label>
+        <ion-input type="Date" [(ngModel)]="data.date" name="date"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Catégorie</ion-label>
+        <ion-select name="category" [(ngModel)]="data.category">
+          <ion-option *ngFor="let cat of categories" [value]="cat.id">{{cat.label}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Commentaire</ion-label>
+        <ion-textarea [(ngModel)]="data.comment" name="comment"></ion-textarea>
+      </ion-item>
+    </ion-item-group>
+
+    <button ion-button type="submit" block>Enregistrer</button>
+  </form>
+
+</ion-content>

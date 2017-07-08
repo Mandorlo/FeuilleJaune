@@ -1,0 +1,33 @@
+<!--
+  Generated template for the DetailsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>details</ion-title>
+    <ion-buttons end *ngIf="!isNew">
+      <button ion-button (click)="delete()">
+          <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label>Name</ion-label>
+      <ion-input text-right type="text" [(ngModel)]="transaction.name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Transaction</ion-label>
+      <ion-datetime displayFormat="MMMM D, YYYY" pickerFormat="MMMM D YYYY" [(ngModel)]="isoDate"></ion-datetime>
+    </ion-item>
+  </ion-list>
+  <button ion-button block (click)="save()">Save</button>
+</ion-content>

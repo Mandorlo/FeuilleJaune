@@ -24,3 +24,7 @@ $ ionic cordova run ios
 
 Substitute ios for android if not on a Mac.
 
+
+## What helped me writing this app
+
+For persistent storage with PouchDB + SQLite : https://gonehybrid.com/how-to-use-pouchdb-sqlite-for-local-storage-in-ionic-2/

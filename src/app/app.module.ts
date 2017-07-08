@@ -7,9 +7,15 @@ import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
+import { AjouterPage } from '../pages/ajouter/ajouter';
+import { BudgetPage } from '../pages/budget/budget';
+import { DetailsPage } from '../pages/details/details';
+
+import { TransactionService } from '../services/transaction.service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { DatePicker } from '@ionic-native/date-picker';
 
 @NgModule({
   declarations: [
@@ -17,7 +23,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    AjouterPage,
+    BudgetPage,
+    DetailsPage
   ],
   imports: [
     BrowserModule,
@@ -29,12 +38,17 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    AjouterPage,
+    BudgetPage,
+    DetailsPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    TransactionService,
+    DatePicker
   ]
 })
-export class AppModule {}
+export class AppModule { }
