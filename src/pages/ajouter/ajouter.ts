@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { DatePicker } from '@ionic-native/date-picker';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { TransactionService } from '../../services/transaction.service';
+
 import { ToastController } from 'ionic-angular';
 import moment from 'moment';
-//import { Storage } from '@ionic/storage';
 import $ from 'jquery';
 
 /**
@@ -19,14 +20,20 @@ import $ from 'jquery';
 })
 export class AjouterPage {
 
-  categories = [{ 'id': 'alimentation', 'label': 'Alimentation' }, { 'id': 'energie', 'label': 'Energie (électricité, gaz, ...)' }];
-  data_default = { 'name': '', 'type': 'out', 'montant': 0.0, 'date': moment().format('YYYY-MM-DD'), 'category': 'alimentation', 'comment': '' }
+  public categories = this.transactionService.categories;
+  public categories_in = this.transactionService.categories_in;
+
+  data_default = { 'name': '', 'type': 'out', 'moyen': 'banque', 'montant': 0.0, 'date': moment().format('YYYY-MM-DD'), 'category': this.categories_in[0], 'comment': '' }
   data = JSON.parse(JSON.stringify(this.data_default));
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public toastCtrl: ToastController,
+    private transactionService: TransactionService,
     private datePicker: DatePicker) {
+
+      // this.categories = this.transactionService.categories;
+      // this.categories_in = this.transactionService.categories_in;
   }
 
   ionViewDidLoad() {
@@ -35,8 +42,14 @@ export class AjouterPage {
 
   change_type() {
     let titre = $(".titre_ajout");
-    if (this.data.type === "out") titre.text("Nouvelle dépense");
-    else if (this.data.type === "in") titre.text("Nouveau revenu");
+    if (this.data.type === "out") {
+      titre.text("Nouvelle dépense");
+      this.data.category = this.categories[0];
+    }
+    else if (this.data.type === "in") {
+      titre.text("Nouveau revenu");
+      this.data.category = this.categories_in[0];
+    }
   }
 
   presentToast() {
@@ -47,7 +60,7 @@ export class AjouterPage {
     toast.present();
   }
 
-  showDatePicker() {
+  showDatePicker() { // TODO check if still usefull
     this.datePicker.show({
       date: new Date(),
       mode: 'date',
@@ -61,7 +74,8 @@ export class AjouterPage {
   enregistrer() {
     console.log(this.data);
     // on sauve dans la database
-
+    this.transactionService.add(this.data)
+      .catch(console.error.bind(console));
     // on remet à zéro
     this.data = JSON.parse(JSON.stringify(this.data_default));
     // on affiche un petit toast :)

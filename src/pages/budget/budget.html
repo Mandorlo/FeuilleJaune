@@ -14,10 +14,8 @@
 
 
 <ion-content padding>
-  <ion-list inset>
-    <ion-item *ngFor="let tr of transactions" (click)="showDetail(tr)">
-      <div item-left>{{ tr.name }}</div>
-      <div item-right>{{ birthday.Date | date:'yMMMMd' }}</div>
-    </ion-item>
+  <ion-list>
+    <budget-line *ngFor="let tr of transactions" [tr]="tr"></budget-line>
+    <!-- <budget-line [tr]="mytr"></budget-line> -->
   </ion-list>
 </ion-content>

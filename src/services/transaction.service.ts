@@ -1,15 +1,72 @@
 import { Injectable } from '@angular/core';
 import * as PouchDB from 'pouchdb';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
+import cordovaWebsqlPlugin from 'pouchdb-adapter-websql';
 
 @Injectable()
 export class TransactionService {
   private _db;
+  private _dbparam;
   private _transactions;
+  public categories = [{ 'id': 'alimentation', 'label': 'Alimentation', 'type': 'maison' },
+    { 'id': 'energie', 'label': 'Energie (électricité, gaz, ...)', 'type': 'maison' },
+    { 'id': 'eau', 'label': 'Eau', 'type': 'maison' },
+    { 'id': 'loyer', 'label': 'Loyers et charges', 'type': 'maison' },
+    { 'id': 'impot_maison', 'label': 'Impôts locaux et taxes d\'habitation', 'type': 'maison' },
+    { 'id': 'assurance_maison', 'label': 'Assurances maison', 'type': 'maison' },
+    { 'id': 'entretien_maison', 'label': 'Entretien maison', 'type': 'maison' },
+    { 'id': 'travaux', 'label': 'Equipement et travaux maison', 'type': 'maison' },
+    { 'id': 'divers_maison', 'label': 'Divers frais maison (à préciser)', 'type': 'maison' },
+    { 'id': 'habillement', 'label': 'Habillement', 'type': 'vie courante' },
+    { 'id': 'formation', 'label': 'Retraites, formation adulte', 'type': 'vie courante' },
+    { 'id': 'impot_personne', 'label': 'Impôts et taxes des personnes physiques', 'type': 'vie courante' },
+    { 'id': 'sante', 'label': 'Dépenses de santé', 'type': 'vie courante' },
+    { 'id': 'hygiene', 'label': 'Hygiène', 'type': 'vie courante' },
+    { 'id': 'livre', 'label': 'Livres, journaux', 'type': 'vie courante' },
+    { 'id': 'loisir', 'label': 'Loisirs, vacances, sport', 'type': 'vie courante' },
+    { 'id': 'photo', 'label': 'Photos, disques ,cassettes', 'type': 'vie courante' },
+    { 'id': 'cadeau', 'label': 'Cadeaux', 'type': 'vie courante' },
+    { 'id': 'enfant', 'label': 'Enfants (scolarité, extrascolaires...)', 'type': 'vie courante' },
+    { 'id': 'liturgie', 'label': 'Culte et liturgie', 'type': 'vie courante' },
+    { 'id': 'divers_vie', 'label': 'Divers vie courante (à préciser)', 'type': 'vie courante' },
+    { 'id': 'voiture', 'label': 'Investissement voiture', 'type': 'transport' },
+    { 'id': 'entretien_voiture', 'label': 'Entretien et réparations', 'type': 'transport' },
+    { 'id': 'carburant', 'label': 'Carburant', 'type': 'transport' },
+    { 'id': 'transport_commun', 'label': 'Transport en commun (train, bus, avion)', 'type': 'transport' },
+    { 'id': 'parking', 'label': 'Péage, parking, etc', 'type': 'transport' },
+    { 'id': 'amende', 'label': 'Amendes, contraventions', 'type': 'transport' },
+    { 'id': 'assurance_voiture', 'label': 'Assurances, vignette, carte-grise, divers (à préciser)', 'type': 'transport' },
+    { 'id': 'affranchissement', 'label': 'Affranchissements', 'type': 'secretariat' },
+    { 'id': 'telephone', 'label': 'Téléphone', 'type': 'secretariat' },
+    { 'id': 'divers_secretariat', 'label': 'Secrétariat (à préciser)', 'type': 'secretariat' },
+    { 'id': 'perte', 'label': 'Pertes, écarts de compte, agios bancaires', 'type': 'banque' },
+    { 'id': 'frais_banque', 'label': 'Frais bancaires', 'type': 'banque' }];
+  public categories_in = [{ 'id': 'salaire', 'label': 'Salaires, honoraires, pensions,retraites' },
+    { 'id': 'allocation', 'label': 'Allocations familiales, bourses…' },
+    { 'id': 'don', 'label': 'Dons...' },
+    { 'id': 'dime', 'label': 'Reversement des revenus, dons ou dîme' },
+    { 'id': 'autre', 'label': 'Autres revenus (à détailler)' },
+    { 'id': 'remboursement_sante', 'label': 'Remboursement frais médicaux' },
+    { 'id': 'remboursement_pro', 'label': 'Remboursement frais professionnels' },
+    { 'id': 'remboursement_autre', 'label': 'Autres remboursements (à préciser)' },
+    { 'id': 'avance', 'label': 'Avance demandée à la MM ou à la Cté' },
+    { 'id': 'epargne', 'label': 'Pour les fraternités de quartier : Epargne' },
+    { 'id': 'transfert', 'label': 'Transfert banque/caisse' }];
 
   initDB() {
-    PouchDB.plugin(cordovaSqlitePlugin);
-    this._db = new PouchDB('transactions.db', { adapter: 'cordova-sqlite' });
+    let myAdapter = "cordova-sqlite";
+    if (window && (<any>window).cordova) {
+      PouchDB.plugin(cordovaSqlitePlugin);
+      console.log("Loaded PouchDB SQLite adapter for Mobile Cordova")
+    }
+    else {
+      PouchDB.plugin(cordovaWebsqlPlugin);
+      myAdapter = "websql";
+      console.log("Loaded PouchDB WebSQL adapter for browser");
+    }
+    this._db = new PouchDB('transactions.db', { adapter: myAdapter });
+    this._dbparam = new PouchDB('param.db', {adapter: myAdapter});
+    // (<any>window).mydb = this._db;
   }
 
   add(transaction) {
@@ -33,7 +90,6 @@ export class TransactionService {
         this._transactions.splice(index, 1); // delete
       }
     } else {
-      change.doc.Date = new Date(change.doc.Date);
       if (transac && transac._id === change.id) {
         this._transactions[index] = change.doc; // update
       } else {
@@ -63,7 +119,7 @@ export class TransactionService {
 
           this._transactions = docs.rows.map(row => {
             // Dates are not automatically converted from a string.
-            row.doc.Date = new Date(row.doc.Date);
+            //row.doc.Date = new Date(row.doc.Date);
             return row.doc;
           });
 

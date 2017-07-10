@@ -1,0 +1,31 @@
+<!-- <ion-row>
+  <ion-col col-6><ion-badge item-start>{{line_num}}</ion-badge>&nbsp;{{label}}</ion-col>
+  <ion-col col-2><ion-input type="text" name="banque" [(ngModel)]="banque" (input)="banqueChange.emit(banque)"></ion-input></ion-col>
+  <ion-col col-2><ion-input type="text" name="caisse" [(ngModel)]="caisse" (input)="caisseChange.emit(caisse)"></ion-input></ion-col>
+  <ion-col col-2><ion-input type="text" name="observations" [(ngModel)]="observations" (input)="observationsChange.emit(observations)"></ion-input></ion-col>
+</ion-row> -->
+
+<!-- <ion-item class='fj_line'>
+  <ion-row>
+    <ion-col col-5>{{label}}</ion-col>
+    <ion-col col-2><input class='invisible montant' type="text" name="banque" [(ngModel)]="banque" (input)="banqueChange.emit(banque)"/></ion-col>
+    <ion-col col-2><input class='invisible montant' type="text" name="caisse" [(ngModel)]="caisse" (input)="caisseChange.emit(caisse)"/></ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col col-auto><input class='invisible' type="text" name="observations" [(ngModel)]="observations" (input)="observationsChange.emit(observations)" /></ion-col>
+  </ion-row>
+</ion-item> -->
+
+<ion-row>
+  <ion-col col-12>
+    <table>
+      <tbody>
+        <tr>
+          <td class='label'>{{label}}</td>
+          <td class='montant'><input class='invisible montant' type="text" name="banque" [(ngModel)]="banque" (input)="banqueChange.emit(parseDecimal(banque))"/></td>
+          <td class='montant'><input class='invisible montant' type="text" name="caisse" [(ngModel)]="caisse" (input)="caisseChange.emit(parseDecimal(caisse))"/></td>
+        </tr>
+      </tbody>
+    </table>
+  </ion-col>
+</ion-row>

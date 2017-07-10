@@ -2,6 +2,12 @@ import { Component, NgZone } from '@angular/core';
 import { IonicPage, ModalController, NavController, Platform, NavParams } from 'ionic-angular';
 import { TransactionService } from '../../services/transaction.service';
 import { DetailsPage } from '../details/details';
+import { BudgetLineComponent } from '../../components/budget-line/budget-line';
+import moment from 'moment';
+
+moment.locale('fr');
+
+// TODO : create an Angular 2 Pipe to order list by date for ex (see here : https://forum.ionicframework.com/t/order-a-list/55389)
 
 /**
  * Generated class for the BudgetPage page.
@@ -38,11 +44,6 @@ export class BudgetPage {
         .catch(console.error.bind(console));
     });
     console.log('ionViewDidLoad BudgetPage');
-  }
-
-  showDetail(transaction) {
-    let modal = this.modalCtrl.create(DetailsPage, { transaction: transaction });
-    modal.present();
   }
 
 }

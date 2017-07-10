@@ -1,0 +1,21 @@
+<!-- <ion-item-sliding>
+  <ion-item>
+    <div item-left (click)="showDetail(tr)">{{tr.name}} - {{tr.moyen}} - {{tr.montant}}</div>
+    <div item-right>{{tr.date}}</div>
+  </ion-item>
+
+  <ion-item-options side="right">
+    <button ion-button (click)="delete(tr)"><ion-icon name="trash"></ion-icon></button>
+  </ion-item-options>
+</ion-item-sliding> -->
+
+<ion-item-sliding>
+  <ion-item>
+    <div item-left (click)="showDetail(tr)"><b>{{tr.name}}</b></div>
+    <div item-right>{{tr.category}} - {{cool_date}}</div>
+  </ion-item>
+
+  <ion-item-options side="right">
+    <button ion-button (click)="delete(tr)"><ion-icon name="trash"></ion-icon></button>
+  </ion-item-options>
+</ion-item-sliding>
