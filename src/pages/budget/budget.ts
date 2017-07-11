@@ -2,7 +2,7 @@ import { Component, NgZone } from '@angular/core';
 import { IonicPage, ModalController, NavController, Platform, NavParams } from 'ionic-angular';
 import { TransactionService } from '../../services/transaction.service';
 import { DetailsPage } from '../details/details';
-import { BudgetLineComponent } from '../../components/budget-line/budget-line';
+// import { BudgetLineComponent } from '../../components/budget-line/budget-line'; // TODO remove ?
 import moment from 'moment';
 
 moment.locale('fr');

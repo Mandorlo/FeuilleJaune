@@ -32,9 +32,19 @@
         <ion-label>Entrée</ion-label>
         <ion-radio value="in"></ion-radio>
       </ion-item>
+
+      <ion-item>
+        <ion-label>Retrait d'argent (Banque vers Caisse)</ion-label>
+        <ion-radio value="retrait"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Depot d'argent (Caisse vers Banque)</ion-label>
+        <ion-radio value="depot"></ion-radio>
+      </ion-item>
     </ion-item-group>
 
-    <ion-item-group radio-group [(ngModel)]="data.moyen" id="list_type" name="type">
+    <ion-item-group *ngIf="data.type == 'in' || data.type == 'out'" radio-group [(ngModel)]="data.moyen" id="list_type" name="type">
       <ion-item-divider color="light">
         Banque / Caisse
       </ion-item-divider>
@@ -70,7 +80,7 @@
         <ion-input type="Date" [(ngModel)]="data.date" name="date"></ion-input>
       </ion-item>
 
-      <ion-item>
+      <ion-item *ngIf="data.type == 'out' || data.type == 'in'">
         <ion-label>Catégorie</ion-label>
         <ion-select *ngIf="data.type == 'out'" name="category" [(ngModel)]="data.category">
           <ion-option *ngFor="let cat of categories" [value]="cat.id">{{cat.label}}</ion-option>

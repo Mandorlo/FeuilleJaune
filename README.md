@@ -1,6 +1,6 @@
 # Feuille Jaune
 
-"Feuille Jaune" est une application pour aider les membres de la Communauté du Chemin Neuf à faire leurs feuille jaune chaque mois :)
+"Feuille Jaune" est une application pour aider les membres de la Communauté du Chemin Neuf à faire leur feuille jaune chaque mois :)
 
 ## What helped me writing this app
 

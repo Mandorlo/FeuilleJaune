@@ -23,7 +23,7 @@ export class AjouterPage {
   public categories = this.transactionService.categories;
   public categories_in = this.transactionService.categories_in;
 
-  data_default = { 'name': '', 'type': 'out', 'moyen': 'banque', 'montant': 0.0, 'date': moment().format('YYYY-MM-DD'), 'category': this.categories_in[0], 'comment': '' }
+  data_default = { 'name': '', 'type': 'out', 'moyen': 'banque', 'montant': 0.0, 'date': moment().format('YYYY-MM-DD'), 'category': '', 'comment': '' }
   data = JSON.parse(JSON.stringify(this.data_default));
 
   constructor(public navCtrl: NavController,
@@ -44,11 +44,11 @@ export class AjouterPage {
     let titre = $(".titre_ajout");
     if (this.data.type === "out") {
       titre.text("Nouvelle dépense");
-      this.data.category = this.categories[0];
+      this.data.category = this.categories[0].id;
     }
     else if (this.data.type === "in") {
       titre.text("Nouveau revenu");
-      this.data.category = this.categories_in[0];
+      this.data.category = this.categories_in[0].id;
     }
   }
 
@@ -73,7 +73,27 @@ export class AjouterPage {
 
   enregistrer() {
     console.log(this.data);
+    let montant_pasbon = (!this.data.montant || (typeof this.data.montant === 'number' && this.data.montant <= 0) || (typeof this.data.montant === 'string' && parseFloat(this.data.montant) <= 0));
+    if (!this.data.category || montant_pasbon || !this.data.type || !this.data.name) {
+      if (!this.data.category) console.log("Il faut spécifier une catégorie !");
+      if (montant_pasbon) console.log("Il faut spécifier un montant positif !");
+      if (!this.data.type) console.log("Il faut spécifier une entrée/sortie !");
+      if (!this.data.name) console.log("Il faut spécifier un nom !");
+      return
+    }
+    // on fait un traitement spécial si on est dans le cas d'un retrait ou d'un dépôt d'argent
+    if (this.data.type != 'in' && this.data.type != 'out') {
+      // un transfert pour l'app c'est un retrait = montant négatif côté banque et un montant positif côté caisse
+      // on enregistre toujours la transaction du point de vue de la banque, donc montant négatif si retrait et positif si dépôt
+      this.data.category = 'transfert';
+      if (this.data.type == 'retrait') {
+        // si c'est un retrait, l'utilisateur a mis un montant positif, mais en fait il faut enregistrer un montant négatif
+        // car on enregistre toujours la transaction du point de vue de la banque
+        this.data.montant = (-this.data.montant).toString();
+      }
+    }
     // on sauve dans la database
+    console.log("tr : ",this.data);
     this.transactionService.add(this.data)
       .catch(console.error.bind(console));
     // on remet à zéro

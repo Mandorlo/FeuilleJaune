@@ -7,7 +7,7 @@ import { ParamPage } from '../param/param';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
-import $ from 'jquery';
+// import $ from 'jquery'; / TODO remove ?
 import _ from 'lodash';
 
 declare var pdfMake: any;
@@ -135,9 +135,11 @@ export class FeuillejaunePage {
     return this.fjdata.salaire[banque_ou_caisse] + this.fjdata.allocation[banque_ou_caisse] + this.fjdata.don[banque_ou_caisse];
   }
   soustotal_I(b_or_c) {
-    return this.soustotal(b_or_c, ['salaire', 'allocation', 'don', 'dime', 'autre', 'remboursement_sante', 'remboursement_pro',
-      'remboursement_autre', 'report_mois_precedent', 'avance', 'epargne', 'transfert'])
-
+    let total = this.soustotal(b_or_c, ['salaire', 'allocation', 'don', 'dime', 'autre', 'remboursement_sante', 'remboursement_pro',
+      'remboursement_autre', 'report_mois_precedent', 'avance', 'epargne', 'transfert']);
+    // pour le cas de caisse, il ne faut pas compter this.fjdata.transfert.caisse, qui n'est pas défini, il faut compter -this.fjdata.transfert.banque
+    if (b_or_c == 'caisse') return (parseFloat(total) - this.fjdata.transfert.banque).toString();
+    return total;
   }
   soustotal_II(b_or_c) {
     return this.soustotal(b_or_c, this.liste_maison)
@@ -166,6 +168,7 @@ export class FeuillejaunePage {
   }
 
   prettyEuros(amount) {
+    if (amount == "" || amount == 0) return "";
     return amount + " €";
   }
 
@@ -260,6 +263,9 @@ export class FeuillejaunePage {
   }
 
   createDDBody() {
+    // important : on définit this.fjdata.transfert.caisse uniquement maintenant, pour la génération du pdf
+    this.fjdata.transfert.caisse = -this.fjdata.transfert.banque;
+
     let line_nums = [];
     let body = [];
     body.push([{ text: '1', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'NOM: ' + this.personne + '  -  MOIS: ' + moment(this.curr_month).format('MM-YYYY'), style: "defaultStyle" }, { text: 'BANQUE', alignment: 'center', style: "defaultStyle" }, { text: 'CAISSE', alignment: 'center', style: 'defaultStyle' }, { text: 'OBSERVATIONS', style: 'defaultStyle' }]);
@@ -269,7 +275,7 @@ export class FeuillejaunePage {
     ['salaire', 'allocation', 'don'].forEach((el,i) => {
       body.push([{ text: (i+2).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: this.fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(this.fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata[el].caisse), style: 'montant' }, { text: this.fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '5', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOUS-TOTAL', style: ['section'] }, { text: this.soustotal1('banque'), style: 'montant_imp' }, { text: this.soustotal1('caisse'), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '5', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOUS-TOTAL', style: ['section'] }, { text: this.prettyEuros(this.soustotal1('banque')), style: 'montant_imp' }, { text: this.prettyEuros(this.soustotal1('caisse')), style: 'montant_imp' }, { text: '', style: 'observation' }]);
     line_nums = ['6', '7', '8', '9', '10', '12', '13'];
     ['dime', 'autre', 'remboursement_sante', 'remboursement_pro', 'remboursement_autre'].forEach((el,i) => {
       body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: this.fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(this.fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata[el].caisse), style: 'montant' }, { text: this.fjdata[el].observations, style: 'observation' }])
@@ -281,7 +287,7 @@ export class FeuillejaunePage {
     ['epargne', 'transfert'].forEach((el,i) => {
       body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: this.fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(this.fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata[el].caisse), style: 'montant' }, { text: this.fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '17', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'I - DISPONIBILITÉS DU MOIS', style: ['subsection'] }, { text: this.soustotal_I('banque'), style: 'montant_imp' }, { text: this.soustotal_I('caisse'), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '17', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'I - DISPONIBILITÉS DU MOIS', style: ['subsection'] }, { text: this.prettyEuros(this.soustotal_I('banque')), style: 'montant_imp' }, { text: this.prettyEuros(this.soustotal_I('caisse')), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SORTIES
     // SOUS-TOTAL MAISON
@@ -290,25 +296,25 @@ export class FeuillejaunePage {
     this.liste_maison.forEach((el, i) => {
       body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: this.fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(this.fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata[el].caisse), style: 'montant' }, { text: this.fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'II - TOTAL MAISON', style: ['subsection'] }, { text: this.soustotal_II('banque'), style: 'montant_imp' }, { text: this.soustotal_II('caisse'), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'II - TOTAL MAISON', style: ['subsection'] }, { text: this.prettyEuros(this.soustotal_II('banque')), style: 'montant_imp' }, { text: this.prettyEuros(this.soustotal_II('caisse')), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL VIE COURANTE
     this.liste_viecourante.forEach((el, i) => {
       body.push([{ text: (i+32).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: this.fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(this.fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata[el].caisse), style: 'montant' }, { text: this.fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '44', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'III - TOTAL VIE COURANTE', style: ['subsection'] }, { text: this.soustotal_III('banque'), style: 'montant_imp' }, { text: this.soustotal_III('caisse'), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '44', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'III - TOTAL VIE COURANTE', style: ['subsection'] }, { text: this.prettyEuros(this.soustotal_III('banque')), style: 'montant_imp' }, { text: this.prettyEuros(this.soustotal_III('caisse')), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL TRANSPORT
     this.liste_transport.forEach((el, i) => {
       body.push([{ text: (i+45).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: this.fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(this.fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata[el].caisse), style: 'montant' }, { text: this.fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '52', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'IV - TOTAL TRANSPORT', style: ['subsection'] }, { text: this.soustotal_IV('banque'), style: 'montant_imp' }, { text: this.soustotal_IV('caisse'), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '52', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'IV - TOTAL TRANSPORT', style: ['subsection'] }, { text: this.prettyEuros(this.soustotal_IV('banque')), style: 'montant_imp' }, { text: this.prettyEuros(this.soustotal_IV('caisse')), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL SECRETARIAT
     this.liste_secretariat.forEach((el, i) => {
       body.push([{ text: (i+54).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: this.fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(this.fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata[el].caisse), style: 'montant' }, { text: this.fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '57', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'V - TOTAL SECRÉTARIAT', style: ['subsection'] }, { text: this.soustotal_V('banque'), style: 'montant_imp' }, { text: this.soustotal_V('caisse'), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '57', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'V - TOTAL SECRÉTARIAT', style: ['subsection'] }, { text: this.prettyEuros(this.soustotal_V('banque')), style: 'montant_imp' }, { text: this.prettyEuros(this.soustotal_V('caisse')), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // BANQUE
     ['perte', 'frais_banque'].forEach((el, i) => {
@@ -316,8 +322,8 @@ export class FeuillejaunePage {
     });
     body.push([{ text: '61', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance retournée ou solde feuille jaune', style: ['categorie'] }, { text: this.prettyEuros(this.fjdata.avance_retournee.banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata.avance_retournee.caisse), style: 'montant' }, { text: 'TOTAL BANQUE + CAISSE', style: 'total_banque_caisse' }]);
 
-    body.push([{ text: '62', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'TOTAL DES SORTIES', style: 'total_sorties' }, { text: this.total('banque'), style: 'montant_imp' }, { text: this.total('caisse'), style: 'montant_imp' }, { text: '', style: 'montant_imp' }]);
-    body.push([{ text: '63', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOLDE (à reporter le mois suivant ligne 12)', style: 'solde' }, { text: (parseFloat(this.soustotal_I('banque'))-parseFloat(this.total('banque'))).toString(), style: 'montant' }, { text: (parseFloat(this.soustotal_I('caisse'))-parseFloat(this.total('caisse'))).toString(), style: 'montant' }, { text: '', style: 'montant' }]);
+    body.push([{ text: '62', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'TOTAL DES SORTIES', style: 'total_sorties' }, { text: this.prettyEuros(this.total('banque')), style: 'montant_imp' }, { text: this.prettyEuros(this.total('caisse')), style: 'montant_imp' }, { text: this.prettyEuros(parseFloat(this.total('caisse'))+parseFloat(this.total('banque'))), style: 'montant_imp' }]);
+    body.push([{ text: '63', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOLDE (à reporter le mois suivant ligne 12)', style: 'solde' }, { text: this.prettyEuros(parseFloat(this.soustotal_I('banque'))-parseFloat(this.total('banque'))), style: 'montant' }, { text: this.prettyEuros(parseFloat(this.soustotal_I('caisse'))-parseFloat(this.total('caisse'))), style: 'montant' }, { text: this.prettyEuros(parseFloat(this.soustotal_I('banque'))-parseFloat(this.total('banque'))+parseFloat(this.soustotal_I('caisse'))-parseFloat(this.total('caisse'))), style: 'montant' }]);
 
     return body
   }
@@ -341,13 +347,13 @@ export class FeuillejaunePage {
           },
           layout: {
             hLineWidth: function(i, node) {
-              return (i === 2 || i === 18 || i == 57) ? 2 : 1;
+              return (i === 2 || i === 18 || i == 56) ? 2 : 1;
             },
             vLineWidth: function(i, node) {
               return (i === 0 || i == 3 || i == 4 || i == 5 || i === node.table.widths.length) ? 1 : 0;
             },
             hLineColor: function(i, node) {
-              return (i === 2 || i === 18 || i == 57) ? 'black' : 'gray';
+              return (i === 2 || i === 18 || i == 56) ? 'black' : 'gray';
             },
             vLineColor: function(i, node) {
               return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
@@ -385,7 +391,7 @@ export class FeuillejaunePage {
           fontSize: 7
         },
         montant: {
-          alignemnt: 'right',
+          alignment: 'right',
           fontSize: 7
         },
         montant_imp: {
@@ -412,7 +418,8 @@ export class FeuillejaunePage {
         },
         solde: {
           fontSize: 8,
-          bold: true
+          bold: true,
+          alignment: 'right'
         },
         defaultStyle: {
           fontSize: 9

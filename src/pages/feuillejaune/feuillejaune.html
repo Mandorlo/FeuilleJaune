@@ -36,7 +36,7 @@
       <fj-line line="12" label="REPORT DU MOIS PRECEDENT" [(banque)]="fjdata.report_mois_precedent.banque" [(caisse)]="fjdata.report_mois_precedent.caisse"></fj-line>
       <fj-line [line]="13" [label]="fjdata.avance.label" [(banque)]="fjdata.avance.banque" [(caisse)]="fjdata.avance.caisse" [(observations)]="fjdata.avance.observations"></fj-line>
       <fj-line [line]="15" [label]="fjdata.epargne.label" [(banque)]="fjdata.epargne.banque" [(caisse)]="fjdata.epargne.caisse" [(observations)]="fjdata.epargne.observations"></fj-line>
-      <fj-line [line]="16" [label]="fjdata.transfert.label" [(banque)]="fjdata.transfert.banque" [(caisse)]="fjdata.transfert.caisse" [(observations)]="fjdata.transfert.observations"></fj-line>
+      <fj-line [line]="16" [label]="fjdata.transfert.label" [(banque)]="fjdata.transfert.banque" [(caisse)]="-fjdata.transfert.banque" [(observations)]="fjdata.transfert.observations"></fj-line>
       <fj-line line="17" label="I - DISPONIBILITES DU MOIS" [banque]="soustotal_I('banque')" [caisse]="soustotal_I('caisse')"></fj-line>
     </ion-item-group>
 

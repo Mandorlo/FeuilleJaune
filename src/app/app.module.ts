@@ -3,9 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
-import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
 import { AjouterPage } from '../pages/ajouter/ajouter';
 import { BudgetPage } from '../pages/budget/budget';
@@ -27,9 +24,6 @@ import { BudgetLineComponent } from '../components/budget-line/budget-line';
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
-    ContactPage,
-    HomePage,
     TabsPage,
     AjouterPage,
     BudgetPage,
@@ -46,9 +40,6 @@ import { BudgetLineComponent } from '../components/budget-line/budget-line';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
-    ContactPage,
-    HomePage,
     TabsPage,
     AjouterPage,
     BudgetPage,

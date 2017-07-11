@@ -24,7 +24,7 @@ export class BudgetLineComponent {
   }
 
   ngOnChanges(...args: any[]) {
-    console.log("Args", args);
+    // console.log("Args", args);
     this.cool_date = moment(args[0].tr.date).format("DD/MM/YY")
   }
 
