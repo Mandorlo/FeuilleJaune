@@ -40,7 +40,8 @@ export class TransactionService {
     { 'id': 'telephone', 'label': 'Téléphone', 'type': 'secretariat' },
     { 'id': 'divers_secretariat', 'label': 'Secrétariat (à préciser)', 'type': 'secretariat' },
     { 'id': 'perte', 'label': 'Pertes, écarts de compte, agios bancaires', 'type': 'banque' },
-    { 'id': 'frais_banque', 'label': 'Frais bancaires', 'type': 'banque' }];
+    { 'id': 'frais_banque', 'label': 'Frais bancaires', 'type': 'banque' },
+    { 'id': 'avance_retournee', 'label': 'Avance retournée ou solde feuille jaune', 'type': 'banque'}];
   public categories_in = [{ 'id': 'salaire', 'label': 'Salaires, honoraires, pensions,retraites' },
     { 'id': 'allocation', 'label': 'Allocations familiales, bourses…' },
     { 'id': 'don', 'label': 'Dons...' },
