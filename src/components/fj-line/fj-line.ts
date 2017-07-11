@@ -12,6 +12,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class FjLineComponent {
 
+  banqueValue: string;
+  caisseValue: string;
+
   @Input('line') line_num;
   @Input('label') label: string;
   @Input('banque') banque: string;
@@ -25,8 +28,13 @@ export class FjLineComponent {
     // console.log('Hello FjLineComponent Component');
   }
 
-  deleteTransaction(item) {
-    console.log(item)
+  // deleteTransaction(item) { // TODO delete?
+  //   console.log(item)
+  // }
+
+  isMontantNonNul(m) {
+    // console.log("montant", typeof m, m);
+    return (typeof m === "number" && m != 0)
   }
 
   parseDecimal(s) {

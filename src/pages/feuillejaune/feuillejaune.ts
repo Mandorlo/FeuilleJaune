@@ -170,7 +170,7 @@ export class FeuillejaunePage {
   }
 
   createFJ() {
-    this.fjdata = this.fjdata_test; // TODO remove !!!!!!!
+    // this.fjdata = this.fjdata_test;
     this.createPdf().then((pdf) => {
       let blob = new Blob([pdf], { type: 'application/pdf' });
       this.file.checkFile(this.file.dataDirectory, this.pdf_name).then(exists => {

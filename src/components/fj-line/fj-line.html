@@ -22,8 +22,8 @@
       <tbody>
         <tr>
           <td class='label'>{{label}}</td>
-          <td class='montant'><input class='invisible montant' type="text" name="banque" [(ngModel)]="banque" (input)="banqueChange.emit(parseDecimal(banque))"/></td>
-          <td class='montant'><input class='invisible montant' type="text" name="caisse" [(ngModel)]="caisse" (input)="caisseChange.emit(parseDecimal(caisse))"/></td>
+          <td class='montant'><input class='invisible montant' [ngClass]="{'montantSup': isMontantNonNul(banque)}" type="text" name="banque" [(ngModel)]="banque" (input)="banqueChange.emit(parseDecimal(banque))"/></td>
+          <td class='montant'><input class='invisible montant' [ngClass]="{'montantSup': isMontantNonNul(caisse)}" type="text" name="caisse" [(ngModel)]="caisse" (input)="caisseChange.emit(parseDecimal(caisse))"/></td>
         </tr>
       </tbody>
     </table>
