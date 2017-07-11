@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, Platform, ToastController } from '
 import { File } from '@ionic-native/file';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { TransactionService } from '../../services/transaction.service';
+import { PdfService } from '../../services/pdf.service';
+import { ParamService } from '../../services/param.service';
 import { ParamPage } from '../param/param';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -25,8 +27,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   templateUrl: 'feuillejaune.html',
 })
 export class FeuillejaunePage {
-  public personne = "Carlo Baugé";
-  public maison = "HTC";
+  // public personne;
+  // public maison;
   public transactions = [];
   public pdf_name = "FeuilleJaune.pdf";
   public pdf_url = "";
@@ -41,6 +43,8 @@ export class FeuillejaunePage {
   public fjdata_test; // fjdata rempli avec des données de test pour vérifier que l'export pdf est bien configuré
 
   constructor(private transactionService: TransactionService,
+    private pdfService: PdfService,
+    private paramService: ParamService,
     public navCtrl: NavController,
     public navParams: NavParams,
     public toastCtrl: ToastController,
@@ -77,6 +81,8 @@ export class FeuillejaunePage {
   }
 
   ionViewDidLoad() {
+    this.pdfService.rendereGrazie();
+    this.paramService.initDB();
     moment.locale('fr');
 
     // on récupère la liste des last months
@@ -162,6 +168,7 @@ export class FeuillejaunePage {
   soustotal(b_or_c, liste) {
     var soustotal = 0.0;
     for (let i = 0; i < liste.length; i++) {
+      if (this.fjdata[liste[i]][b_or_c] == "") this.fjdata[liste[i]][b_or_c] = 0;
       soustotal += parseFloat(this.fjdata[liste[i]][b_or_c])
     }
     return soustotal.toFixed(2);
@@ -173,6 +180,40 @@ export class FeuillejaunePage {
   }
 
   createFJ() {
+    // on complète fjdata avec les différents totaux
+    this.fjdata.soustotal1_banque = this.soustotal1('banque');
+    this.fjdata.soustotal1_caisse = this.soustotal1('caisse');
+    this.fjdata.soustotal_I_banque = this.soustotal_I('banque');
+    this.fjdata.soustotal_I_caisse = this.soustotal_I('caisse');
+    this.fjdata.soustotal_II_banque = this.soustotal_II('banque');
+    this.fjdata.soustotal_II_caisse = this.soustotal_II('caisse');
+    this.fjdata.soustotal_III_banque = this.soustotal_III('banque');
+    this.fjdata.soustotal_III_caisse = this.soustotal_III('caisse');
+    this.fjdata.soustotal_IV_banque = this.soustotal_IV('banque');
+    this.fjdata.soustotal_IV_caisse = this.soustotal_IV('caisse');
+    this.fjdata.soustotal_V_banque = this.soustotal_V('banque');
+    this.fjdata.soustotal_V_caisse = this.soustotal_V('caisse');
+    this.fjdata.total_banque = this.total('banque');
+    this.fjdata.total_caisse = this.total('caisse');
+    this.fjdata.total_bc = (parseFloat(this.fjdata.total_banque) + parseFloat(this.fjdata.total_caisse)).toFixed(2);
+    this.fjdata.solde_banque = parseFloat(this.soustotal_I('banque')) - parseFloat(this.total('banque'));
+    this.fjdata.solde_caisse = parseFloat(this.soustotal_I('caisse')) - parseFloat(this.total('caisse'));
+    this.fjdata.solde_bc = (parseFloat(this.fjdata.solde_banque) + parseFloat(this.fjdata.solde_caisse)).toFixed(2);
+
+    // on prépare les options
+    let opt = {
+      'personne': this.paramService.personne,
+      'maison': this.paramService.maison,
+      'curr_month': this.curr_month,
+      'filename': this.pdf_name
+    }
+
+    this.pdfService.createFJ(this.fjdata, opt);
+  }
+
+  // TODO delete everything that is below
+
+  createFJ_old() {
     // this.fjdata = this.fjdata_test;
     this.createPdf().then((pdf) => {
       let blob = new Blob([pdf], { type: 'application/pdf' });
@@ -200,7 +241,7 @@ export class FeuillejaunePage {
   shareFJ(blob) {
     this.file.writeFile(this.file.dataDirectory, this.pdf_name, blob, true).then(_ => {
       console.log("PDF file written in : " + this.file.dataDirectory + "/" + this.pdf_name);
-      let sujet = "Feuille Jaune - " + this.personne + " - mois de " + moment(this.curr_month).format("MMMM - YYYY");
+      let sujet = "Feuille Jaune - " + this.paramService.personne + " - mois de " + moment(this.curr_month).format("MMMM - YYYY");
       this.socialSharing.share("", sujet, this.file.dataDirectory + "/" + this.pdf_name).then(e => {
         console.log("PDF sharing ok", e);
       }).catch(err => {
@@ -268,10 +309,10 @@ export class FeuillejaunePage {
 
     let line_nums = [];
     let body = [];
-    body.push([{ text: '1', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'NOM: ' + this.personne + '  -  MOIS: ' + moment(this.curr_month).format('MM-YYYY'), style: "defaultStyle" }, { text: 'BANQUE', alignment: 'center', style: "defaultStyle" }, { text: 'CAISSE', alignment: 'center', style: 'defaultStyle' }, { text: 'OBSERVATIONS', style: 'defaultStyle' }]);
+    body.push([{ text: '1', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'NOM: ' + this.paramService.personne + '  -  MOIS: ' + moment(this.curr_month).format('MM-YYYY'), style: "defaultStyle" }, { text: 'BANQUE', alignment: 'center', style: "defaultStyle" }, { text: 'CAISSE', alignment: 'center', style: 'defaultStyle' }, { text: 'OBSERVATIONS', style: 'defaultStyle' }]);
 
     // ENTREES
-    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { 'text': 'ENTRÉES', style: ["header"] }, '', '', { text: 'Maison: ' + this.maison, margin: [0, 0, 0, 0], fontSize: 9 }]);
+    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { 'text': 'ENTRÉES', style: ["header"] }, '', '', { text: 'Maison: ' + this.paramService.maison, margin: [0, 0, 0, 0], fontSize: 9 }]);
     ['salaire', 'allocation', 'don'].forEach((el,i) => {
       body.push([{ text: (i+2).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: this.fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(this.fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(this.fjdata[el].caisse), style: 'montant' }, { text: this.fjdata[el].observations, style: 'observation' }])
     });

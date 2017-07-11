@@ -11,6 +11,8 @@ import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
 import { ParamPage } from '../pages/param/param';
 
 import { TransactionService } from '../services/transaction.service';
+import { PdfService } from '../services/pdf.service';
+import { ParamService } from '../services/param.service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -52,6 +54,8 @@ import { BudgetLineComponent } from '../components/budget-line/budget-line';
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     TransactionService,
+    PdfService,
+    ParamService,
     DatePicker,
     File,
     SocialSharing

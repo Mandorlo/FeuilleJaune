@@ -14,5 +14,17 @@
 
 
 <ion-content padding>
+  <form (ngSubmit)="enregistrer()">
+    <ion-item>
+      <ion-label>Prénom Nom</ion-label>
+      <ion-input type="text" [(ngModel)]="paramService.personne" name="nom"></ion-input>
+    </ion-item>
 
+    <ion-item>
+      <ion-label>Maison</ion-label>
+      <ion-input type="text" [(ngModel)]="paramService.maison" name="maison"></ion-input>
+    </ion-item>
+
+    <button ion-button type="submit" block>Enregistrer</button>
+  </form>
 </ion-content>

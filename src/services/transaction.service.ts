@@ -6,7 +6,6 @@ import cordovaWebsqlPlugin from 'pouchdb-adapter-websql';
 @Injectable()
 export class TransactionService {
   private _db;
-  private _dbparam;
   private _transactions;
   public categories = [{ 'id': 'alimentation', 'label': 'Alimentation', 'type': 'maison' },
     { 'id': 'energie', 'label': 'Energie (électricité, gaz, ...)', 'type': 'maison' },
@@ -66,7 +65,6 @@ export class TransactionService {
       console.log("Loaded PouchDB WebSQL adapter for browser");
     }
     this._db = new PouchDB('transactions.db', { adapter: myAdapter });
-    this._dbparam = new PouchDB('param.db', {adapter: myAdapter});
     // (<any>window).mydb = this._db;
   }
 

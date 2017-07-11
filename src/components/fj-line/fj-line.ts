@@ -37,14 +37,9 @@ export class FjLineComponent {
     return (typeof m === "number" && m != 0)
   }
 
-  parseDecimal(s) {
-    let res = s.match(/\-?\s*[0-9]+[\,\.]?[0-9]*/g);
-    if (res && res[0] == s) {
-      return parseFloat(s.replace(',','.').replace(/\s/g, ''))
-    } else {
-      // console.log(s + " is not an amount !")
-    }
-    return 0
+  parseDecimal(n) {
+    if (n === null) n = 0;
+    return n
   }
 
 }

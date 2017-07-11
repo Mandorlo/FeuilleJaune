@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Générer la Feuille Jaune<div style="float:right"><ion-icon name="cog" (click)="showParamPage()"></ion-icon></div><br/><i style='font-size:12px;color:#777777'>{{personne}} - {{maison}}</i></ion-title>
+    <ion-title>Générer la Feuille Jaune<div style="float:right"><ion-icon name="cog" (click)="showParamPage()"></ion-icon></div><br/><i style='font-size:12px;color:#777777'>{{paramService.personne}} - {{paramService.maison}}</i></ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -73,7 +73,6 @@
   </ion-list>
 
   <button ion-button (click)="createFJ()" class="button icon-left ion-play button-assertive" block>Exporter la Feuille Jaune</button>
-  <!-- <button ion-button (click)="debug()" class="button icon-left ion-play button-assertive" block>Debug</button> -->
 
 
 </ion-content>
