@@ -5,6 +5,7 @@ import { MyApp } from './app.component';
 
 import { TabsPage } from '../pages/tabs/tabs';
 import { AjouterPage } from '../pages/ajouter/ajouter';
+import { Ajouter2Page } from '../pages/ajouter2/ajouter2';
 import { BudgetPage } from '../pages/budget/budget';
 import { DetailsPage } from '../pages/details/details';
 import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
@@ -22,18 +23,23 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 
 import { FjLineComponent } from '../components/fj-line/fj-line';
 import { BudgetLineComponent } from '../components/budget-line/budget-line';
+import { RadioSquareComponent } from '../components/radio-square/radio-square';
+import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 
 @NgModule({
   declarations: [
     MyApp,
     TabsPage,
     AjouterPage,
+    Ajouter2Page,
     BudgetPage,
     DetailsPage,
     ParamPage,
     FeuillejaunePage,
     FjLineComponent,
     BudgetLineComponent,
+    RadioSquareComponent,
+    ProgressBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,6 +50,7 @@ import { BudgetLineComponent } from '../components/budget-line/budget-line';
     MyApp,
     TabsPage,
     AjouterPage,
+    Ajouter2Page,
     BudgetPage,
     DetailsPage,
     FeuillejaunePage,
