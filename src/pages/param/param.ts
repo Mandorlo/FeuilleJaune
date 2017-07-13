@@ -26,7 +26,8 @@ export class ParamPage {
 
   enregistrer() {
     this.paramService.setParam("personne", this.paramService.personne).catch(err => console.log("Error setting personne : ",err));
-    this.paramService.setParam("maison", this.paramService.maison).catch(err => console.log("Error setting maison : ",err));;
+    this.paramService.setParam("maison", this.paramService.maison).catch(err => console.log("Error setting maison : ",err));
+    this.navCtrl.pop();
   }
 
 }
