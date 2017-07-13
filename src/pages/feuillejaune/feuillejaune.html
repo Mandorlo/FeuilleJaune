@@ -72,7 +72,7 @@
 
   </ion-list>
 
-  <button ion-button (click)="createFJ()" class="button icon-left ion-play button-assertive" block>Exporter la Feuille Jaune</button>
+  <button ion-button (click)="createFJ()" class="button icon-left ion-play button-assertive" block><ion-spinner *ngIf='FJspinner' name="bubbles"></ion-spinner> Exporter la Feuille Jaune</button>
 
 
 </ion-content>

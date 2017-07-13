@@ -1,3 +1,12 @@
 page-feuillejaune {
+  ion-spinner {
+    margin-right: 20px;
+  }
 
+  ion-spinner * {
+    width: 28px;
+    height: 28px;
+    stroke: white;
+    fill: white;
+  }
 }

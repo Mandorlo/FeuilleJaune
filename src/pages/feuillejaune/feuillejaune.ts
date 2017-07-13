@@ -42,6 +42,8 @@ export class FeuillejaunePage {
   public fjdata;
   public fjdata_test; // fjdata rempli avec des données de test pour vérifier que l'export pdf est bien configuré
 
+  private FJspinner = false;
+
   constructor(private transactionService: TransactionService,
     private pdfService: PdfService,
     private paramService: ParamService,
@@ -180,6 +182,7 @@ export class FeuillejaunePage {
   }
 
   createFJ() {
+    this.FJspinner = true;
     // on complète fjdata avec les différents totaux
     this.fjdata.soustotal1_banque = this.soustotal1('banque');
     this.fjdata.soustotal1_caisse = this.soustotal1('caisse');
@@ -208,7 +211,13 @@ export class FeuillejaunePage {
       'filename': this.pdf_name
     }
 
-    this.pdfService.createFJ(this.fjdata, opt);
+    this.pdfService.createFJ(this.fjdata, opt).then(res => {
+      this.FJspinner = false;
+      console.log(res)
+    }).catch(err => {
+      this.FJspinner = false;
+      console.log(err)
+    });
   }
 
   // TODO delete everything that is below

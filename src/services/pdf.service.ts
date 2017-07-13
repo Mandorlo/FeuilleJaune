@@ -22,9 +22,9 @@ export class PdfService {
   public liste_banque = _.map(_.filter(this.transactionService.categories, ['type', 'banque']), 'id');
 
   constructor(private transactionService: TransactionService,
-              public toastCtrl: ToastController,
-              private file: File,
-              private socialSharing: SocialSharing) {
+    public toastCtrl: ToastController,
+    private file: File,
+    private socialSharing: SocialSharing) {
     moment.locale('fr');
   }
 
@@ -52,26 +52,45 @@ export class PdfService {
     opt = this.manageDefaults(opt);
 
     // this.fjdata = this.fjdata_test;
-    this.createPdf(fjdata, opt).then((pdf) => {
-      let blob = new Blob([pdf], { type: 'application/pdf' });
-      this.file.checkFile(opt.path, opt.filename).then(exists => {
-        if (exists) {
-          this.file.removeFile(opt.path, opt.filename).then(res => {
-            console.log("File remove : ", res);
-            this.shareFJ(blob, opt)
-          }).catch(err => {
-            console.log("Error removing existing pdf file at " + opt.path + "/" + opt.filename)
-          })
-        } else {
-          this.shareFJ(blob, opt)
-        }
+    return new Promise((resolve, reject) => {
+      this.createPdf(fjdata, opt).then((pdf) => {
+        let blob = new Blob([pdf], { type: 'application/pdf' });
+        this.file.checkFile(opt.path, opt.filename).then(exists => {
+          if (exists) {
+            this.file.removeFile(opt.path, opt.filename).then(res => {
+              console.log("File remove : ", res);
+              this.shareFJ(blob, opt).then(msg => {
+                resolve(msg)
+              }).catch(err => {
+                reject(err)
+              });
+            }).catch(err => {
+              console.log("Error removing existing pdf file at " + opt.path + "/" + opt.filename)
+            })
+          } else {
+            this.shareFJ(blob, opt).then(msg => {
+              resolve(msg)
+            }).catch(err => {
+              reject(err)
+            });
+          }
+        }).catch(err => {
+          if (err.code == 1) {
+            this.shareFJ(blob, opt).then(msg => {
+              resolve(msg)
+            }).catch(err => {
+              reject(err)
+            });
+          } else {
+            console.log("Impossible checkFile of " + opt.path + "/" + opt.filename + ", trying direct download...", err);
+            this.pdf_url = URL.createObjectURL(blob);
+            this.downloadBrowser(this.pdf_url, opt);
+            resolve("Trying to download directly from the browser...")
+          }
+        });
       }).catch(err => {
-        console.log("Impossible checkFile, trying direct download...");
-        this.pdf_url = URL.createObjectURL(blob);
-        this.downloadBrowser(this.pdf_url, opt)
-      });
-    }).catch(err => {
-      console.log("Error creating pdf blob : ", err);
+        console.log("Error creating pdf blob : ", err);
+      })
     })
   }
 
@@ -79,32 +98,38 @@ export class PdfService {
     // on gère les paramètres par défaut
     opt = this.manageDefaults(opt);
 
-    this.file.writeFile(opt.path, opt.filename, blob, true).then(_ => {
-      console.log("PDF file written in : " + opt.path + "/" + opt.filename);
-      let sujet = "Feuille Jaune - " + opt.personne + " - mois de " + moment(opt.curr_month).format("MMMM - YYYY");
-      this.socialSharing.share("", sujet, opt.path + "/" + opt.filename).then(e => {
-        console.log("PDF sharing ok", e);
+    return new Promise((resolve, reject) => {
+      this.file.writeFile(opt.path, opt.filename, blob, true).then(_ => {
+        console.log("PDF file written in : " + opt.path + "/" + opt.filename);
+        let sujet = "Feuille Jaune - " + opt.personne + " - mois de " + moment(opt.curr_month).format("MMMM - YYYY");
+        this.socialSharing.share("", sujet, opt.path + "/" + opt.filename).then(e => {
+          console.log("PDF sharing ok", e);
+          resolve(1);
+        }).catch(err => {
+          if (err === false) {
+            let toast = this.toastCtrl.create({
+              message: "Feuille Jaune exportée ! Merci Seigneur de prendre soin de nous !",
+              duration: 2000
+            });
+            toast.present();
+            resolve(2);
+          } else {
+            console.log(err)
+            let toast = this.toastCtrl.create({
+              message: "Erreur pendant l'export de la Feuille Jaune : " + JSON.stringify(err),
+              duration: 2000
+            });
+            toast.present();
+            reject("Erreur pendant l'export de la Feuille Jaune : " + JSON.stringify(err));
+          }
+        });
       }).catch(err => {
-        if (err === false) {
-          let toast = this.toastCtrl.create({
-            message: "Feuille Jaune exportée ! Merci Seigneur de prendre soin de nous !",
-            duration: 2000
-          });
-          toast.present();
-        } else {
-          console.log(err)
-          let toast = this.toastCtrl.create({
-            message: "Erreur pendant l'export de la Feuille Jaune : " + JSON.stringify(err),
-            duration: 2000
-          });
-          toast.present();
-        }
-      });
-    }).catch(err => {
-      console.log("Failed writing PDF file : ", err);
-      console.log("Trying to download PDF directly...");
-      this.pdf_url = URL.createObjectURL(blob);
-      this.downloadBrowser(this.pdf_url, opt)
+        console.log("Failed writing PDF file : ", err);
+        console.log("Trying to download PDF directly...");
+        this.pdf_url = URL.createObjectURL(blob);
+        this.downloadBrowser(this.pdf_url, opt);
+        resolve("Trying to download PDF directly...")
+      })
     })
   }
 
