@@ -43,9 +43,9 @@ export class Ajouter2Page {
   public data = JSON.parse(JSON.stringify(this.data_default));
 
   constructor(public navCtrl: NavController,
-      public navParams: NavParams,
-      private toastCtrl: ToastController,
-      private transactionService: TransactionService,) {
+    public navParams: NavParams,
+    private toastCtrl: ToastController,
+    private transactionService: TransactionService, ) {
   }
 
   ionViewDidLoad() {
@@ -58,7 +58,7 @@ export class Ajouter2Page {
       return
     }
     // on sauve dans la database
-    console.log("tr : ",this.data);
+    console.log("tr : ", this.data);
     this.transactionService.add(this.data)
       .then(d => {
         // on affiche un petit toast :)
@@ -90,12 +90,14 @@ export class Ajouter2Page {
   }
 
   slideChanged() {
-    console.log("coco");
     if (this.slides.getActiveIndex() == 2) {
-      console.log("Lodato sia il Signore !");
       document.getElementById('input_montant').focus();
+    } else if (this.slides.getActiveIndex() == 3) { // montant
+      if (this.data.montant <= 0) {
+        this.presentToast("Le montant ne peut pas être nul");
+        this.slides.slideTo(2, 200);
+      }
     } else if (this.slides.getActiveIndex() == 5) {
-      console.log("Sempre sia lodato !");
       document.getElementById("input_nom").focus();
     }
   }
@@ -139,7 +141,7 @@ export class Ajouter2Page {
       // 5eme phase : la date
       this.goToSlide(n + 1);
 
-    } else if(n == 5) {
+    } else if (n == 5) {
       // 6eme phase : le nom et le commentaire
       this.goToSlide(n + 1);
 

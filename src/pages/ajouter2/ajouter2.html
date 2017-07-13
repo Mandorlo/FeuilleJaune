@@ -16,7 +16,7 @@
 
 
 <ion-content padding>
-  <ion-slides>
+  <ion-slides (ionSlideDidChange)="slideChanged()">
     <ion-slide>
       <h3>J'aimerais enregistrer</h3>
       <radio-square [options]='type_options' [(choice)]="data.type" (click)="donePhase(0)"></radio-square>
@@ -37,7 +37,7 @@
     </ion-slide>
 
     <ion-slide>
-      <h3>C'était aujourd'hui ?</h3>
+      <h3>Indiquer la date d'aujourd'hui ?</h3>
       <button ion-button class='oui_date' block (click)="setDateToday()">Oui</button>
       <button ion-button class='non_date' block small color="light">Non, choisir une autre date</button>
     </ion-slide>

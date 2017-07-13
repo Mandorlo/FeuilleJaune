@@ -13,3 +13,7 @@
 * To do conditional formatting in Angular 2 : https://juristr.com/blog/2016/01/learning-ng2-dynamic-styles/
 * To publish the app : http://ionicframework.com/docs/v1/guide/publishing.html
 * To add fontawesome : https://luiscabrera.site/tech/2017/01/09/fontawesome-in-ionic2.html (not straightforward !)
+
+## To read
+
+* To build for iOS without a Mac : https://www.joshmorony.com/building-ionic-2-applications-for-ios-without-a-mac/
