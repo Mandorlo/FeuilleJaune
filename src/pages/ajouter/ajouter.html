@@ -1,0 +1,102 @@
+<!--
+  Generated template for the AjouterPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>ajouter</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <h1 class="titre_ajout">Dépense</h1>
+  <form (ngSubmit)="enregistrer()">
+
+    <ion-item-group radio-group [(ngModel)]="data.type" id="list_type" name="type" (ionChange)="change_type()">
+      <ion-item-divider color="light">
+        Entrée / sortie
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Sortie</ion-label>
+        <ion-radio value="out"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Entrée</ion-label>
+        <ion-radio value="in"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Retrait d'argent (Banque vers Caisse)</ion-label>
+        <ion-radio value="retrait"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Depot d'argent (Caisse vers Banque)</ion-label>
+        <ion-radio value="depot"></ion-radio>
+      </ion-item>
+    </ion-item-group>
+
+    <ion-item-group *ngIf="data.type == 'in' || data.type == 'out'" radio-group [(ngModel)]="data.moyen" id="list_type" name="type">
+      <ion-item-divider color="light">
+        Banque / Caisse
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Banque</ion-label>
+        <ion-radio value="banque"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Caisse</ion-label>
+        <ion-radio value="caisse"></ion-radio>
+      </ion-item>
+    </ion-item-group>
+
+    <ion-item-group>
+      <ion-item-divider color="light">
+        Détails
+      </ion-item-divider>
+
+      <ion-item>
+        <ion-label>Nom</ion-label>
+        <ion-input type="text" [(ngModel)]="data.name" name="nom"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Montant</ion-label>
+        <ion-input type="number" step="0.01" [(ngModel)]="data.montant" name="montant" placeholder="en euros"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>
+          <ion-icon name="calendar"></ion-icon>
+        </ion-label>
+        <ion-input type="Date" [(ngModel)]="data.date" name="date"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="data.type == 'out' || data.type == 'in'">
+        <ion-label>Catégorie</ion-label>
+        <ion-select *ngIf="data.type == 'out'" name="category" [(ngModel)]="data.category">
+          <ion-option *ngFor="let cat of categories" [value]="cat.id">{{cat.label}}</ion-option>
+        </ion-select>
+        <ion-select *ngIf="data.type == 'in'" name="category" [(ngModel)]="data.category">
+          <ion-option *ngFor="let cat of categories_in" [value]="cat.id">{{cat.label}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Commentaire</ion-label>
+        <ion-textarea [(ngModel)]="data.comment" name="comment"></ion-textarea>
+      </ion-item>
+    </ion-item-group>
+
+    <button *ngIf='transaction_engine_ok' ion-button type="submit" block>Enregistrer</button>
+  </form>
+</ion-content>

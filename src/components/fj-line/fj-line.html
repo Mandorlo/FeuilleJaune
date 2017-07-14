@@ -1,0 +1,13 @@
+<ion-row>
+  <ion-col col-12>
+    <table>
+      <tbody>
+        <tr>
+          <td class='label'>{{label}}</td>
+          <td class='montant'><input class='invisible montant' [ngClass]="{'montantSup': isMontantNonNul(banque)}" type="number" step='0.01' name="banque" [(ngModel)]="banque" (input)="banqueChange.emit(parseDecimal(banque))"/></td>
+          <td class='montant'><input class='invisible montant' [ngClass]="{'montantSup': isMontantNonNul(caisse)}" type="number" step='0.01' name="caisse" [(ngModel)]="caisse" (input)="caisseChange.emit(parseDecimal(caisse))"/></td>
+        </tr>
+      </tbody>
+    </table>
+  </ion-col>
+</ion-row>

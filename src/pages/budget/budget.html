@@ -1,0 +1,35 @@
+<!--
+  Generated template for the BudgetPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>
+      Historique
+    </ion-title>
+
+    <ion-buttons end>
+      <button ion-button icon-only *ngIf="tr_engine_ready" (click)="reload()">
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+      <button ion-button icon-only *ngIf="!tr_engine_ready">
+        <ion-spinner name="bubbles"></ion-spinner>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <budget-line *ngFor="let tr of transactions" [tr]="tr" (onDeleted)="reload()"></budget-line>
+  </ion-list>
+
+  <ion-fab right bottom>
+    <button ion-fab (click)="showAjouterPage()"><ion-icon name="add"></ion-icon></button>
+  </ion-fab>
+</ion-content>
