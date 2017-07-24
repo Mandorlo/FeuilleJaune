@@ -3,6 +3,7 @@ import { App, NavController } from 'ionic-angular';
 import { TransactionService } from '../../services/transaction.service';
 
 import { AjouterPage } from '../ajouter/ajouter';
+import { Ajouter2Page } from '../ajouter2/ajouter2';
 
 @Component({
   selector: 'page-home',
@@ -25,7 +26,7 @@ export class HomePage {
   }
 
   showAjouterPage() {
-    this.appCtrl.getRootNav().push(AjouterPage);
+    this.appCtrl.getRootNav().push(Ajouter2Page);
   }
 
   enregistrer() {

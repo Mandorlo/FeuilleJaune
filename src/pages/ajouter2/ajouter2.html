@@ -1,0 +1,67 @@
+<ion-header>
+
+  <ion-navbar hideBackButton="true">
+    <ion-title *ngIf='this.slides.getActiveIndex() == 0'>Ajouter une transaction</ion-title>
+    <ion-title *ngIf='this.slides.getActiveIndex() > 0'>Ajouter {{traduction_type[data.type]}}</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="this.navCtrl.pop()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+  <progress-bar [progress]="progress()"></progress-bar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-slides (ionSlideDidChange)="slideChanged()">
+    <ion-slide>
+      <h3>J'aimerais enregistrer</h3>
+      <radio-square [options]='type_options' [(choice)]="data.type" (click)="donePhase(0)"></radio-square>
+    </ion-slide>
+
+    <ion-slide>
+      <radio-square [options]='moyen_options' [(choice)]="data.moyen" (click)="donePhase(1)"></radio-square>
+    </ion-slide>
+
+    <ion-slide>
+      <h3>Montant</h3>
+      <ion-input #inputmontant id='input_montant' class='montant' type="number" step="0.01" [(ngModel)]="data.montant" name="montant" placeholder="Montant en euros"></ion-input>
+      <button ion-button color="light" (click)="donePhase(2)" small><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+    </ion-slide>
+
+    <ion-slide style="overflow-y: scroll;display: block;">
+      <h1>Catégorie</h1>
+      <radio-square [options]='categories_options' [(choice)]="data.category" (click)="donePhase(3)"></radio-square>
+    </ion-slide>
+
+    <ion-slide>
+      <h3>Quelle est la date de la transaction ?</h3>
+      <ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="data.date" monthNames="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre" monthShortNames="Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc"></ion-datetime>
+      <button ion-button color="light" (click)="donePhase(4)" small><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+    </ion-slide>
+
+    <ion-slide>
+      <h2>C'est fini !</h2>
+      <h3>Donne un petit nom à cette transaction et écrit un commentaire si tu veux :)</h3>
+      <ion-item>
+        <ion-label floating>Nom de la transaction</ion-label>
+        <ion-input id="input_nom" type="text" [(ngModel)]="data.name" name="nom"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Commentaire</ion-label>
+        <ion-textarea rows="5" [(ngModel)]="data.comment" name="comment"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <button ion-button (click)="donePhase(5)" block>Vérifier les infos</button>
+      </ion-item>
+    </ion-slide>
+
+    <ion-slide>
+      <div>J'ai eu un {{data.type}} de {{data.montant}} € le {{data.date}} par {{data.moyen}}</div>
+      <button ion-button (click)="enregistrer()" block>Enregistrer</button>
+    </ion-slide>
+  </ion-slides>
+</ion-content>

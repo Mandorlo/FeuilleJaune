@@ -30,6 +30,7 @@ export class AjouterPage {
               public toastCtrl: ToastController,
               private transactionService: TransactionService,
               private paramService: ParamService) {
+      moment.locale('fr');
       this.categories = paramService.categories;
       this.categories_in = paramService.categories_in;
       transactionService.getAll().then(data => {

@@ -22,6 +22,8 @@ Car dans index.html, on pointe vers le pdfmake.min.js et vfs_fonts.js de ce doss
 * jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore android-release-unsigned.apk alias_name
 * zipalign -v 4 android-release-unsigned.apk FeuilleJaune-vXXX.apk
 
+Then add the APK to Github as a release
+
 ## What helped me writing this app
 
 * For persistent storage with PouchDB + SQLite : https://gonehybrid.com/how-to-use-pouchdb-sqlite-for-local-storage-in-ionic-2/
@@ -30,3 +32,4 @@ Car dans index.html, on pointe vers le pdfmake.min.js et vfs_fonts.js de ce doss
 * To do 2-way data-binding in custom components : https://blog.thoughtram.io/angular/2016/10/13/two-way-data-binding-in-angular-2.html
 * To generate app icon : http://blog.ionic.io/automating-icons-and-splash-screens/ (sauf que là la commande c'est ionic cordova resources)
 * To do conditional formatting in Angular 2 : https://juristr.com/blog/2016/01/learning-ng2-dynamic-styles/
+* To add fontawesome : https://luiscabrera.site/tech/2017/01/09/fontawesome-in-ionic2.html (not straightforward !)

@@ -46,7 +46,7 @@ export class FjLineComponent {
         {
           text: 'Annuler',
           handler: data => {
-            console.log('Cancel clicked');
+            console.log('Ô mon âme bénis le Seigneur');
           }
         },
         {

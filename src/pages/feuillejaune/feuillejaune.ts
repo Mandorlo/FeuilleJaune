@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ToastController } from 'ionic-angular';
 
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
@@ -10,12 +10,7 @@ import { ParamPage } from '../param/param';
 import moment from 'moment';
 import _ from 'lodash';
 
-/**
- * Generated class for the FeuillejaunePage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+
 
 @Component({
   selector: 'page-feuillejaune',
@@ -37,6 +32,7 @@ export class FeuillejaunePage {
     public navParams: NavParams,
     private paramService: ParamService,
     private trService: TransactionService,
+    private toastCtrl: ToastController,
     private pdfService: PdfService) {
 
     this.pdfService.rendereGrazie();
@@ -54,6 +50,14 @@ export class FeuillejaunePage {
 
   ionViewDidLoad() {
     console.log('FeuillejaunePage : Hosanna nell\'alto dei cieli !');
+  }
+
+  presentToast(msg, temps=2000) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: temps
+    });
+    toast.present();
   }
 
   showParamPage() {
@@ -88,6 +92,16 @@ export class FeuillejaunePage {
       'maison': this.paramService.maison,
       'curr_month': this.curr_month,
       'filename': this.pdf_name
+    }
+
+    if (!opt.personne) {
+      this.presentToast("Il faut spécifier une personne dans les paramètres");
+      this.pdf_export_ongoing = false;
+      return
+    } else if (!opt.maison) {
+      this.presentToast("Il faut spécifier une maison dans les paramètres");
+      this.pdf_export_ongoing = false;
+      return
     }
 
     this.pdfService.createFJ(this.fjdata, opt).then(res => {

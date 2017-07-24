@@ -3,7 +3,7 @@ import { App, NavController, NavParams } from 'ionic-angular';
 
 import { TransactionService } from '../../services/transaction.service';
 
-import { AjouterPage } from '../ajouter/ajouter';
+import { Ajouter2Page } from '../ajouter2/ajouter2';
 
 /**
  * Generated class for the BudgetPage page.
@@ -31,6 +31,10 @@ export class BudgetPage {
     console.log('BudgetPage : I cieli e la terra sono pieni della tua gloria o Signore !');
   }
 
+  ionViewDidEnter() {
+    this.reload();
+  }
+
   reload() {
     this.tr_engine_ready = false;
     this.trService.getAll().then(data => {
@@ -50,7 +54,7 @@ export class BudgetPage {
   }
 
   showAjouterPage() {
-    this.appCtrl.getRootNav().push(AjouterPage);
+    this.appCtrl.getRootNav().push(Ajouter2Page);
   }
 
 }

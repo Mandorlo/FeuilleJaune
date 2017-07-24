@@ -7,6 +7,7 @@ import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { AjouterPage } from '../pages/ajouter/ajouter';
+import { Ajouter2Page } from '../pages/ajouter2/ajouter2';
 import { BudgetPage } from '../pages/budget/budget';
 import { ParamPage } from '../pages/param/param';
 import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
@@ -22,8 +23,11 @@ import { TransactionService } from '../services/transaction.service';
 import { ParamService } from '../services/param.service';
 import { PdfService } from '../services/pdf.service';
 
+import { DatePicker } from '@ionic-native/date-picker';
 import { BudgetLineComponent } from '../components/budget-line/budget-line';
 import { FjLineComponent } from '../components/fj-line/fj-line';
+import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
+import { RadioSquareComponent } from '../components/radio-square/radio-square';
 
 @NgModule({
   declarations: [
@@ -32,12 +36,15 @@ import { FjLineComponent } from '../components/fj-line/fj-line';
     ContactPage,
     HomePage,
     AjouterPage,
+    Ajouter2Page,
     BudgetPage,
     ParamPage,
     FeuillejaunePage,
     TabsPage,
     BudgetLineComponent,
-    FjLineComponent
+    FjLineComponent,
+    ProgressBarComponent,
+    RadioSquareComponent
   ],
   imports: [
     BrowserModule,
@@ -51,6 +58,7 @@ import { FjLineComponent } from '../components/fj-line/fj-line';
     ContactPage,
     HomePage,
     AjouterPage,
+    Ajouter2Page,
     BudgetPage,
     ParamPage,
     FeuillejaunePage,
@@ -64,7 +72,8 @@ import { FjLineComponent } from '../components/fj-line/fj-line';
     SocialSharing,
     TransactionService,
     ParamService,
-    PdfService
+    PdfService,
+    DatePicker
   ]
 })
 export class AppModule {}
