@@ -1,11 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { AlertController } from 'ionic-angular';
 
-/**
- * Generated class for the FjLineComponent component.
- *
- * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
- * for more info on Angular Components.
- */
+
 @Component({
   selector: 'fj-line',
   templateUrl: 'fj-line.html'
@@ -24,7 +20,7 @@ export class FjLineComponent {
   @Input() observations: string;
   @Output() observationsChange: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor() {}
+  constructor(public alertCtrl: AlertController) { }
 
   isMontantNonNul(m) {
     return (typeof m === "number" && m != 0)
@@ -33,6 +29,36 @@ export class FjLineComponent {
   parseDecimal(n) {
     if (n === null) n = 0;
     return n
+  }
+
+  addComment(titre) {
+    let prompt = this.alertCtrl.create({
+      title: titre,
+      message: "",
+      inputs: [
+        {
+          name: 'observations',
+          placeholder: 'Observations',
+          value: this.observations
+        },
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Ok',
+          handler: data => {
+            console.log('Saved clicked', data);
+            this.observationsChange.emit(data.observations)
+          }
+        }
+      ]
+    });
+    prompt.present();
   }
 
 }
