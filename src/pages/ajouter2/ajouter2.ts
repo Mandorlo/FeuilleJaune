@@ -17,6 +17,9 @@ export class Ajouter2Page {
   @ViewChild('inputmontant') myInput;
 
   private today: string = "";
+  private cool_date:string = "";
+  private pretty_moyen:string = "";
+
   private nbPhases: number = 6;
   private traduction_type = { 'in': 'un revenu', 'out': 'une dépense', 'retrait': 'un retrait DAB', 'depot': "un dépôt en banque" };
   private moyen_titles = { // c'est le titre à mettre dans le radio-square si l'utilisateur a choisi data.type = 'in' ou 'out'
@@ -29,6 +32,10 @@ export class Ajouter2Page {
       'caisse': 'J\'ai reçu de l\'argent liquide'
     }
   };
+
+  public is_valid_transaction:boolean = false;
+  public error_validity_details = {};
+  public last_slide_visited:boolean = false;
 
   public type_options = [{ 'val': 'out', 'title': 'Une dépense / sortie d\'argent', 'icon': 'fa-shopping-cart' },
     { 'val': 'in', 'title': "Un revenu / entrée d\'argent", 'icon': 'fa-trophy' },
@@ -144,6 +151,15 @@ export class Ajouter2Page {
       }
     } else if (this.slides.getActiveIndex() == 5) {
       document.getElementById("input_nom").focus();
+    } else if (this.slides.getActiveIndex() == 6) {
+      console.log("last slide selected");
+      this.last_slide_visited = true;
+      this.cool_date = moment(this.data.date).format("le dddd DD MMMM YYYY");
+      if (moment(this.data.date).format("DDMMYY") == moment().format("DDMMYY")) this.cool_date = "aujourd'hui";
+      this.pretty_moyen = "en liquide";
+      if (this.data.moyen == "banque" && this.data.type == "in") this.pretty_moyen = "sur mon compte bancaire";
+      if (this.data.moyen == "banque" && this.data.type == "out") this.pretty_moyen = "par carte ou chèque";
+      this.is_valid_transaction = this.validateData();
     }
   }
 
@@ -186,16 +202,18 @@ export class Ajouter2Page {
         this.moyen_options[ind_banque].title = this.moyen_titles[this.data.type]['banque'];
         this.moyen_options[ind_caisse].title = this.moyen_titles[this.data.type]['caisse'];
       }
-      this.goToSlide(ind_slide)
+      if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(ind_slide);
 
     } else if (n == 1) {
       // 2eme phase : le moyen de paiement
-      this.goToSlide(n + 1);
+      if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
 
     } else if (n == 2) {
       // 3eme phase : le montant
       if (this.data.montant > 0) {
-        if (this.data.type != 'in' && this.data.type != 'out') {
+        if (this.last_slide_visited) {
+          this.goToSlide(6);
+        } else if(this.data.type != 'in' && this.data.type != 'out') {
           this.goToSlide(n + 2);
         } else {
           this.goToSlide(n + 1);
@@ -206,15 +224,15 @@ export class Ajouter2Page {
 
     } else if (n == 3) {
       // 4eme phase : la catégorie
-      this.goToSlide(n + 1);
+      if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
 
     } else if (n == 4) {
       // 5eme phase : la date
-      this.goToSlide(n + 1);
+      if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
 
     } else if (n == 5) {
       // 6eme phase : le nom et le commentaire
-      this.goToSlide(n + 1);
+      if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
 
     } else {
       console.log("Phase " + n + ' inconnue');
@@ -222,20 +240,21 @@ export class Ajouter2Page {
   }
 
   validateData() {
+    this.error_validity_details = {};
     // check validity
     let montant_pasbon = (!this.data.montant || (typeof this.data.montant === 'number' && this.data.montant <= 0) || (typeof this.data.montant === 'string' && parseFloat(this.data.montant) <= 0));
     if (!this.data.category || montant_pasbon || !this.data.type || !this.data.name) {
+      if (montant_pasbon) this.error_validity_details["montant"] = "Il faut spécifier un montant positif.";
+      if (!this.data.type) this.error_validity_details["type"] = "Il faut spécifier un type de transaction (entrée/sortie).";
+      if (!this.data.name) this.error_validity_details["nom"] = "Il faut donner un nom à la transaction";
       if (!this.data.category) {
         if (this.data.type != 'in' && this.data.type != 'out') { // si c'est un retrait ou un dépôt
           return true;
         } else {
-          console.log("Il faut spécifier une catégorie !");
+          this.error_validity_details["categorie"] = "Il faut spécifier une catégorie !";
           return false;
         }
       }
-      if (montant_pasbon) console.log("Il faut spécifier un montant positif !");
-      if (!this.data.type) console.log("Il faut spécifier une entrée/sortie !");
-      if (!this.data.name) console.log("Il faut spécifier un nom !");
       return false
     }
     return true;

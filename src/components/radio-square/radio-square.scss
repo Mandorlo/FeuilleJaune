@@ -43,6 +43,11 @@ radio-square {
     color: #333333;
     float: left;
     font-size: 0.8em;
+    padding-left: 0px;
+  }
+
+  .myitem {
+    padding-left: 0px;
   }
 
   .square_fit .icon {
@@ -50,8 +55,9 @@ radio-square {
   }
 
   .text {
-    width: 75%;
+    // width: 75%;
     color: #333333;
+    white-space: initial;
   }
 
   .active {

@@ -16,4 +16,46 @@ page-ajouter2 {
     width: 98%;
     margin-left: 1%;
   }
+
+  .transparent_back {
+    background-color: rgba(40,40,40,0.8);
+  }
+
+  .rounded {
+    border-radius: 12px;
+  }
+
+  hr {
+    margin-bottom: 1em;
+  }
+
+  .card_back_green {
+    background-color: #5bd45b;
+    font-size: 7em;
+    color: white;
+    padding: 4px;
+  }
+
+  .card_back_red {
+    background-color: #DD7777;
+    font-size: 7em;
+    color: white;
+    padding: 4px;
+  }
+
+  .error_click {
+    border-bottom: 1px dashed gray;
+    cursor: pointer;
+    color: #DD7777;
+  }
+
+  .valid_click {
+    border-bottom: 1px dashed gray;
+    cursor: pointer;
+    color: #5bd45b;
+  }
+
+  .text_confirm {
+    font-size: 1.2em;
+  }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { App, NavController, NavParams } from 'ionic-angular';
+import { App, NavController, NavParams, ModalController } from 'ionic-angular';
 
 import { TransactionService } from '../../services/transaction.service';
 
@@ -22,6 +22,7 @@ export class BudgetPage {
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
+              public modalCtrl: ModalController,
               public appCtrl: App,
               public trService: TransactionService) {
       this.reload();
@@ -54,7 +55,9 @@ export class BudgetPage {
   }
 
   showAjouterPage() {
-    this.appCtrl.getRootNav().push(Ajouter2Page);
+    // this.appCtrl.getRootNav().push(Ajouter2Page);
+    let modal = this.modalCtrl.create(Ajouter2Page, {opt: "optional parameters"});
+    modal.present();
   }
 
 }

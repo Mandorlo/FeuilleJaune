@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { App, NavController } from 'ionic-angular';
+import { App, NavController, ModalController } from 'ionic-angular';
 import { TransactionService } from '../../services/transaction.service';
 
 import { AjouterPage } from '../ajouter/ajouter';
@@ -12,7 +12,10 @@ import { Ajouter2Page } from '../ajouter2/ajouter2';
 export class HomePage {
   private transactions;
 
-  constructor(public navCtrl: NavController, private trService: TransactionService, private appCtrl: App) {
+  constructor(public navCtrl: NavController,
+              private trService: TransactionService,
+              public modalCtrl: ModalController,
+              private appCtrl: App) {
     // this.trService = trService;
     trService.getAll().then(data => {
       this.transactions = data;
@@ -26,7 +29,9 @@ export class HomePage {
   }
 
   showAjouterPage() {
-    this.appCtrl.getRootNav().push(Ajouter2Page);
+    // this.appCtrl.getRootNav().push(Ajouter2Page);
+    let modal = this.modalCtrl.create(Ajouter2Page, {opt: "optional parameters"});
+    modal.present();
   }
 
   enregistrer() {

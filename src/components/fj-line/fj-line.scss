@@ -22,4 +22,9 @@ fj-line {
     color: blue;
     font-weight: bold;
   }
+
+  .icon_comment {
+    margin-left: 4px;
+    color: map-get($colors, primary);
+  }
 }

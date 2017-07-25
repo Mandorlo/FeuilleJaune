@@ -15,53 +15,100 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding class='transparent_back'>
   <ion-slides (ionSlideDidChange)="slideChanged()">
     <ion-slide>
-      <h3>J'aimerais enregistrer</h3>
-      <radio-square [options]='type_options' [(choice)]="data.type" (click)="donePhase(0)"></radio-square>
+      <ion-card class="rounded">
+        <ion-card-content>
+          <ion-card-title>J'aimerais enregistrer</ion-card-title>
+          <hr>
+          <radio-square [options]='type_options' [(choice)]="data.type" (click)="donePhase(0)"></radio-square>
+        </ion-card-content>
+      </ion-card>
     </ion-slide>
 
     <ion-slide>
-      <radio-square [options]='moyen_options' [(choice)]="data.moyen" (click)="donePhase(1)"></radio-square>
+      <ion-card class="rounded">
+        <ion-card-content>
+          <ion-card-title>Moyen de paiement</ion-card-title>
+          <hr>
+          <radio-square [options]='moyen_options' [(choice)]="data.moyen" (click)="donePhase(1)"></radio-square>
+        </ion-card-content>
+      </ion-card>
     </ion-slide>
 
     <ion-slide>
-      <h3>Montant</h3>
-      <ion-input #inputmontant id='input_montant' class='montant' type="number" step="0.01" [(ngModel)]="data.montant" name="montant" placeholder="Montant en euros"></ion-input>
-      <button ion-button color="light" (click)="donePhase(2)" small><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+      <ion-card class="rounded">
+        <ion-card-content>
+          <ion-card-title>Montant</ion-card-title>
+          <ion-input #inputmontant id='input_montant' class='montant' type="number" step="0.01" [(ngModel)]="data.montant" name="montant" placeholder="Montant en euros"></ion-input>
+          <button ion-button color="light" (click)="donePhase(2)" small><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+        </ion-card-content>
+      </ion-card>
     </ion-slide>
 
     <ion-slide style="overflow-y: scroll;display: block;">
-      <h1>Catégorie</h1>
-      <radio-square [options]='categories_options' [(choice)]="data.category" (click)="donePhase(3)"></radio-square>
+      <ion-card class="rounded">
+        <ion-card-content>
+          <ion-card-title>Catégorie</ion-card-title>
+          <hr>
+          <radio-square [options]='categories_options' [(choice)]="data.category" (click)="donePhase(3)"></radio-square>
+        </ion-card-content>
+      </ion-card>
     </ion-slide>
 
     <ion-slide>
-      <h3>Quelle est la date de la transaction ?</h3>
-      <ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="data.date" monthNames="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre" monthShortNames="Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc"></ion-datetime>
-      <button ion-button color="light" (click)="donePhase(4)" small><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+      <ion-card class="rounded">
+        <ion-card-content>
+          <ion-card-title><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;&nbsp;Date</ion-card-title>
+          <ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="data.date" monthNames="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre" monthShortNames="Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc"></ion-datetime>
+          <button ion-button color="light" (click)="donePhase(4)" small><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+        </ion-card-content>
+      </ion-card>
     </ion-slide>
 
     <ion-slide>
-      <h2>C'est fini !</h2>
-      <h3>Donne un petit nom à cette transaction et écrit un commentaire si tu veux :)</h3>
-      <ion-item>
-        <ion-label floating>Nom de la transaction</ion-label>
-        <ion-input id="input_nom" type="text" [(ngModel)]="data.name" name="nom"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label floating>Commentaire</ion-label>
-        <ion-textarea rows="5" [(ngModel)]="data.comment" name="comment"></ion-textarea>
-      </ion-item>
-      <ion-item>
-        <button ion-button (click)="donePhase(5)" block>Vérifier les infos</button>
-      </ion-item>
+      <ion-card class="rounded">
+        <ion-card-content>
+          <ion-card-title>Ajoute un petit nom et un commentaire si tu veux :)</ion-card-title>
+          <ion-item>
+            <ion-label floating>Nom de la transaction</ion-label>
+            <ion-input id="input_nom" type="text" [(ngModel)]="data.name" name="nom"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label floating>Commentaire</ion-label>
+            <ion-textarea rows="5" [(ngModel)]="data.comment" name="comment"></ion-textarea>
+          </ion-item>
+          <ion-item>
+            <button ion-button (click)="donePhase(5)" block>Vérifier les infos</button>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
     </ion-slide>
 
     <ion-slide>
-      <div>J'ai eu un {{data.type}} de {{data.montant}} € le {{data.date}} par {{data.moyen}}</div>
-      <button ion-button (click)="enregistrer()" block>Enregistrer</button>
+      <ion-card class="rounded">
+        <div class="card_back_green" *ngIf="is_valid_transaction"><i class="fa fa-check-circle-o" aria-hidden="true"></i></div>
+        <div class="card_back_red" *ngIf="!is_valid_transaction"><i class="fa fa-times-circle-o" aria-hidden="true"></i></div>
+        <ion-card-content>
+          <ion-card-title *ngIf="is_valid_transaction">Confirmation</ion-card-title>
+          <ion-card-title *ngIf="!is_valid_transaction">Erreur :(</ion-card-title>
+          <div *ngIf="is_valid_transaction" class="text_confirm">
+            <div *ngIf="data.type == 'in'">J'ai eu un revenu de <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span>, <span class="valid_click" (click)="goToSlide(1)">{{pretty_moyen}}</span> dans la catégorie <span class="valid_click" (click)="goToSlide(3)">{{data.category}}</span></div>
+            <div *ngIf="data.type == 'out'">J'ai eu une dépense de <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span>, <span class="valid_click" (click)="goToSlide(1)">{{pretty_moyen}}</span> dans la catégorie <span class="valid_click" (click)="goToSlide(3)">{{data.category}}</span></div>
+            <div *ngIf="data.type == 'retrait'">J'ai fait un retrait d'argent de <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span></div>
+            <div *ngIf="data.type == 'depot'">J'ai déposé <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> à la banque <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span></div>
+            <br/>
+            <button ion-button (click)="enregistrer()" block *ngIf="is_valid_transaction">Valider</button>
+          </div>
+          <div *ngIf="!is_valid_transaction" class="text_confirm">
+            <p *ngIf="error_validity_details['type']">il faut spécifier un <span class="error_click" (click)="goToSlide(1)">type de transaction</span></p>
+            <p *ngIf="error_validity_details['categorie']">il faut spécifier une <span class="error_click" (click)="goToSlide(3)">catégorie</span></p>
+            <p *ngIf="error_validity_details['montant']">Le <span class="error_click" (click)="goToSlide(2)">montant</span> doit être supérieur à zéro.</p>
+            <p *ngIf="error_validity_details['nom']">il faut donner un <span class="error_click" (click)="goToSlide(5)">nom</span> à la transaction.</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
     </ion-slide>
   </ion-slides>
 </ion-content>
