@@ -34,11 +34,18 @@ $app-direction: ltr;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #488aff,
-  secondary:  #32db64,
-  danger:     #f53d3d,
-  light:      #f4f4f4,
-  dark:       #222
+  primary:     #ffb219,
+  light:       #fff5e0,
+  secondary:   #ffc758,
+  dark:        #222,
+  lightgray:   #999999,
+  ultralight:  #ffffff,
+  valid:       #5bd45b,
+  danger:      #f53d3d,
+
+  primary2:    #488aff,
+  secondary2:  #32db64,
+  light2:      #f4f4f4,
 );
 
 
@@ -52,8 +59,14 @@ $colors: (
 // App Material Design Variables
 // --------------------------------------------------
 // Material Design only Sass variables can go here
+.tabs-md .tab-button[aria-selected=true] {
+    color: #999999; /*your  text color */
+    background: color($colors, ultralight); /* your background color*/
+}
 
-
+.tabs-md .tab-button {
+    background-color: color($colors, ultralight);
+}
 
 
 // App Windows Variables

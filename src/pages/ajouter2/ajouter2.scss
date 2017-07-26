@@ -1,8 +1,7 @@
 page-ajouter2 {
   .montant {
-    border: 1px solid #777777;
+    border: 1px solid #999999;
     width: 100%;
-    background-color: #CCCCFF;
   }
 
   .oui_date {
@@ -30,14 +29,14 @@ page-ajouter2 {
   }
 
   .card_back_green {
-    background-color: #5bd45b;
+    background-color: color($colors, valid);
     font-size: 7em;
     color: white;
     padding: 4px;
   }
 
   .card_back_red {
-    background-color: #DD7777;
+    background-color: color($colors, danger);
     font-size: 7em;
     color: white;
     padding: 4px;
@@ -46,13 +45,13 @@ page-ajouter2 {
   .error_click {
     border-bottom: 1px dashed gray;
     cursor: pointer;
-    color: #DD7777;
+    color: color($colors, danger);
   }
 
   .valid_click {
     border-bottom: 1px dashed gray;
     cursor: pointer;
-    color: #5bd45b;
+    color: color($colors, valid);
   }
 
   .text_confirm {

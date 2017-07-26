@@ -15,16 +15,16 @@ fj-line {
   .montant {
     text-align: center;
     width: 20%;
-    color: gray;
+    color: color($colors, lightgray);
   }
 
   .montantSup {
-    color: blue;
+    color: color($colors, primary);
     font-weight: bold;
   }
 
   .icon_comment {
     margin-left: 4px;
-    color: map-get($colors, primary);
+    color: color($colors, primary);
   }
 }

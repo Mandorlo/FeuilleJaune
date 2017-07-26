@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar hideBackButton="true">
+  <ion-navbar hideBackButton="true" color="ultralight">
     <ion-title *ngIf='this.slides.getActiveIndex() == 0'>Ajouter une transaction</ion-title>
     <ion-title *ngIf='this.slides.getActiveIndex() > 0'>Ajouter {{traduction_type[data.type]}}</ion-title>
 
@@ -71,17 +71,19 @@
       <ion-card class="rounded">
         <ion-card-content>
           <ion-card-title>Ajoute un petit nom et un commentaire si tu veux :)</ion-card-title>
-          <ion-item>
-            <ion-label floating>Nom de la transaction</ion-label>
-            <ion-input id="input_nom" type="text" [(ngModel)]="data.name" name="nom"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label floating>Commentaire</ion-label>
-            <ion-textarea rows="5" [(ngModel)]="data.comment" name="comment"></ion-textarea>
-          </ion-item>
-          <ion-item>
-            <button ion-button (click)="donePhase(5)" block>Vérifier les infos</button>
-          </ion-item>
+          <ion-list>
+            <ion-item>
+              <ion-label floating>Nom de la transaction</ion-label>
+              <ion-input id="input_nom" type="text" [(ngModel)]="data.name" name="nom"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label floating>Commentaire</ion-label>
+              <ion-textarea rows="5" [(ngModel)]="data.comment" name="comment"></ion-textarea>
+            </ion-item>
+            <ion-item>
+              <button ion-button (click)="donePhase(5)" block>Vérifier les infos</button>
+            </ion-item>
+          </ion-list>
         </ion-card-content>
       </ion-card>
     </ion-slide>
@@ -94,12 +96,12 @@
           <ion-card-title *ngIf="is_valid_transaction">Confirmation</ion-card-title>
           <ion-card-title *ngIf="!is_valid_transaction">Erreur :(</ion-card-title>
           <div *ngIf="is_valid_transaction" class="text_confirm">
-            <div *ngIf="data.type == 'in'">J'ai eu un revenu de <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span>, <span class="valid_click" (click)="goToSlide(1)">{{pretty_moyen}}</span> dans la catégorie <span class="valid_click" (click)="goToSlide(3)">{{data.category}}</span></div>
-            <div *ngIf="data.type == 'out'">J'ai eu une dépense de <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span>, <span class="valid_click" (click)="goToSlide(1)">{{pretty_moyen}}</span> dans la catégorie <span class="valid_click" (click)="goToSlide(3)">{{data.category}}</span></div>
+            <div *ngIf="data.type == 'in'">J'ai eu un revenu de <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span>, <span class="valid_click" (click)="goToSlide(1)">{{pretty_moyen}}</span>              dans la catégorie "<span class="valid_click" (click)="goToSlide(3)">{{pretty_category}}</span>"</div>
+            <div *ngIf="data.type == 'out'">J'ai eu une dépense de <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span>, <span class="valid_click" (click)="goToSlide(1)">{{pretty_moyen}}</span>              dans la catégorie "<span class="valid_click" (click)="goToSlide(3)">{{pretty_category}}</span>"</div>
             <div *ngIf="data.type == 'retrait'">J'ai fait un retrait d'argent de <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span></div>
             <div *ngIf="data.type == 'depot'">J'ai déposé <span class="valid_click" (click)="goToSlide(2)">{{data.montant}} €</span> à la banque <span class="valid_click" (click)="goToSlide(4)">{{cool_date}}</span></div>
             <br/>
-            <button ion-button (click)="enregistrer()" block *ngIf="is_valid_transaction">Valider</button>
+            <button ion-button color="valid" (click)="enregistrer()" block *ngIf="is_valid_transaction">Valider</button>
           </div>
           <div *ngIf="!is_valid_transaction" class="text_confirm">
             <p *ngIf="error_validity_details['type']">il faut spécifier un <span class="error_click" (click)="goToSlide(1)">type de transaction</span></p>

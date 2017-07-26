@@ -14,11 +14,12 @@ import _ from 'lodash';
 export class Ajouter2Page {
 
   @ViewChild(Slides) slides: Slides;
-  @ViewChild('inputmontant') myInput;
+  @ViewChild('inputmontant') myInput; // sert pour pouvoir mettre le focus automatiquement sur un input et afficher le clavier
 
   private today: string = "";
-  private cool_date:string = "";
-  private pretty_moyen:string = "";
+  private cool_date: string = "";
+  private pretty_moyen: string = "";
+  private pretty_category: string = "";
 
   private nbPhases: number = 6;
   private traduction_type = { 'in': 'un revenu', 'out': 'une dépense', 'retrait': 'un retrait DAB', 'depot': "un dépôt en banque" };
@@ -33,9 +34,9 @@ export class Ajouter2Page {
     }
   };
 
-  public is_valid_transaction:boolean = false;
+  public is_valid_transaction: boolean = false;
   public error_validity_details = {};
-  public last_slide_visited:boolean = false;
+  public last_slide_visited: boolean = false;
 
   public type_options = [{ 'val': 'out', 'title': 'Une dépense / sortie d\'argent', 'icon': 'fa-shopping-cart' },
     { 'val': 'in', 'title': "Un revenu / entrée d\'argent", 'icon': 'fa-trophy' },
@@ -131,11 +132,11 @@ export class Ajouter2Page {
 
   slideChanged() {
     if (this.slides.getActiveIndex() == 2) {
-      this.myInput.setFocus();
+      // this.myInput.setFocus();
     } else if (this.slides.getActiveIndex() == 3) { // montant
       if (this.data.montant <= 0) {
         this.presentToast("Le montant ne peut pas être nul");
-        this.slides.slideTo(2, 200);
+        // this.slides.slideTo(2, 200);
       } else {
         if (this.data.type == "in") {
           this.categories_options = _.map(this.paramService.categories_in, el => {
@@ -150,13 +151,20 @@ export class Ajouter2Page {
         }
       }
     } else if (this.slides.getActiveIndex() == 5) {
-      document.getElementById("input_nom").focus();
+      // document.getElementById("input_nom").focus();
     } else if (this.slides.getActiveIndex() == 6) {
       console.log("last slide selected");
       this.last_slide_visited = true;
-      this.cool_date = moment(this.data.date).format("le dddd DD MMMM YYYY");
+      this.cool_date = "le " + moment(this.data.date).format("dddd DD MMMM YYYY");
       if (moment(this.data.date).format("DDMMYY") == moment().format("DDMMYY")) this.cool_date = "aujourd'hui";
       this.pretty_moyen = "en liquide";
+      if (this.data.category) {
+        console.log("debug: ",this.data.category);
+        if (this.data.type == "out") this.pretty_category = _.find(this.paramService.categories, { 'id': this.data.category }).label;
+        else if (this.data.type == 'in') this.pretty_category = _.find(this.paramService.categories_in, { 'id': this.data.category }).label;
+      } else {
+        this.pretty_category = "";
+      }
       if (this.data.moyen == "banque" && this.data.type == "in") this.pretty_moyen = "sur mon compte bancaire";
       if (this.data.moyen == "banque" && this.data.type == "out") this.pretty_moyen = "par carte ou chèque";
       this.is_valid_transaction = this.validateData();
@@ -192,8 +200,9 @@ export class Ajouter2Page {
 
   donePhase(n) {
     if (n == 0) {
-      // 1ere phase : le type de transaciton (in/out/retrait/depot)
+      // 1ere phase : le type de transaction (in/out/retrait/depot)
       let ind_slide = n + 1;
+      this.data.category = "";
       if (this.data.type != 'in' && this.data.type != 'out') {
         ind_slide++;
       } else { // alors on change un peu le texte
@@ -213,7 +222,7 @@ export class Ajouter2Page {
       if (this.data.montant > 0) {
         if (this.last_slide_visited) {
           this.goToSlide(6);
-        } else if(this.data.type != 'in' && this.data.type != 'out') {
+        } else if (this.data.type != 'in' && this.data.type != 'out') {
           this.goToSlide(n + 2);
         } else {
           this.goToSlide(n + 1);
@@ -249,7 +258,7 @@ export class Ajouter2Page {
       if (!this.data.name) this.error_validity_details["nom"] = "Il faut donner un nom à la transaction";
       if (!this.data.category) {
         if (this.data.type != 'in' && this.data.type != 'out') { // si c'est un retrait ou un dépôt
-          return true;
+          return !montant_pasbon && this.data.name;
         } else {
           this.error_validity_details["categorie"] = "Il faut spécifier une catégorie !";
           return false;
