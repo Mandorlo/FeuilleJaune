@@ -13,7 +13,8 @@
 
     <ion-buttons end>
       <button ion-button icon-only *ngIf="tr_engine_ready" (click)="reload()">
-        <ion-icon name="refresh"></ion-icon>
+        <!-- <ion-icon name="refresh"></ion-icon> -->
+        <i style="font-size:1.6em" class="fa fa-refresh" aria-hidden="true"></i>
       </button>
       <button ion-button icon-only *ngIf="!tr_engine_ready">
         <ion-spinner name="bubbles"></ion-spinner>
