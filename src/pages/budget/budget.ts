@@ -19,6 +19,7 @@ import { Ajouter2Page } from '../ajouter2/ajouter2';
 export class BudgetPage {
   private tr_engine_ready:boolean = false;
   public transactions;
+  private modalAddTr;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -30,6 +31,7 @@ export class BudgetPage {
 
   ionViewDidLoad() {
     console.log('BudgetPage : I cieli e la terra sono pieni della tua gloria o Signore !');
+    this.modalAddTr = this.modalCtrl.create(Ajouter2Page, {opt: "optional parameters"});
   }
 
   ionViewDidEnter() {
@@ -56,8 +58,7 @@ export class BudgetPage {
 
   showAjouterPage() {
     // this.appCtrl.getRootNav().push(Ajouter2Page);
-    let modal = this.modalCtrl.create(Ajouter2Page, {opt: "optional parameters"});
-    modal.present();
+    this.modalAddTr.present();
   }
 
 }

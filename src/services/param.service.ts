@@ -49,8 +49,8 @@ export class ParamService {
     { 'id': 'remboursement_pro', 'label': 'Remboursement frais professionnels' },
     { 'id': 'remboursement_autre', 'label': 'Autres remboursements (à préciser)' },
     { 'id': 'avance', 'label': 'Avance demandée à la MM ou à la Cté' },
-    { 'id': 'epargne', 'label': 'Pour les fraternités de quartier : Epargne' },
-    { 'id': 'transfert', 'label': 'Transfert banque/caisse' }];
+    { 'id': 'epargne', 'label': 'Pour les fraternités de quartier : Epargne' }];
+    // { 'id': 'transfert', 'label': 'Transfert banque/caisse' }];
 
   public liste_maison = _.map(_.filter(this.categories, ['type', 'maison']), 'id');
   public liste_viecourante = _.map(_.filter(this.categories, ['type', 'vie courante']), 'id');
