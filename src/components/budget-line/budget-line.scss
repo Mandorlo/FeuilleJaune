@@ -1,3 +1,46 @@
 budget-line {
+  .icon_padd {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
 
+  .montant {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+
+  ion-avatar {
+    text-align: center;
+    font-size: 1.1em;
+    line-height: 1.1em;
+    // border: 2px solid gray;
+    color: color($colors, primary);
+    border-radius: 20px;
+    padding-top: 11px;
+    background-color: color($colors, light);
+  }
+
+  ion-avatar.domaine_maison {
+    background-color: color($colors, light);
+  }
+  ion-avatar.domaine_retrait {
+    background-color: color($colors, light); //gray;
+  }
+  ion-avatar.domaine_depot {
+    background-color: color($colors, light);//gray;
+  }
+  ion-avatar.domaine_viecourante {
+    background-color: color($colors, light); //#488aff;
+  }
+  ion-avatar.domaine_transport {
+    background-color: color($colors, light); //green;
+  }
+  ion-avatar.domaine_banque {
+    background-color: color($colors, light); //#999999;
+  }
+
+  .myicon {
+    line-height: 1.1em;
+    font-size: 1.1em;
+  }
 }

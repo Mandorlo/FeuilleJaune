@@ -27,16 +27,16 @@ export class ParamService {
     { 'id': 'enfant', 'label': 'Enfants (scolarité, extrascolaires...)', 'type': 'vie courante', 'icon': 'fa-child' },
     { 'id': 'liturgie', 'label': 'Culte et liturgie', 'type': 'vie courante' },
     { 'id': 'divers_vie', 'label': 'Divers vie courante (à préciser)', 'type': 'vie courante' },
-    { 'id': 'voiture', 'label': 'Investissement voiture', 'type': 'transport', 'icon': 'fa-car' },
-    { 'id': 'entretien_voiture', 'label': 'Entretien et réparations', 'type': 'transport' },
+    { 'id': 'voiture', 'label': 'Investissement voiture', 'type': 'transport', 'icon': 'fa-car'},
+    { 'id': 'entretien_voiture', 'label': 'Entretien et réparations', 'type': 'transport', 'icon': 'fa-wrench' },
     { 'id': 'carburant', 'label': 'Carburant', 'type': 'transport' },
     { 'id': 'transport_commun', 'label': 'Transport en commun (train, bus, avion)', 'type': 'transport', 'icon': 'fa-bus' },
     { 'id': 'parking', 'label': 'Péage, parking, etc', 'type': 'transport' },
     { 'id': 'amende', 'label': 'Amendes, contraventions', 'type': 'transport' },
-    { 'id': 'assurance_voiture', 'label': 'Assurances, vignette, carte-grise, divers (à préciser)', 'type': 'transport' },
+    { 'id': 'assurance_voiture', 'label': 'Assurances, vignette, carte-grise, divers (à préciser)', 'type': 'transport', 'icon': 'fa-shield' },
     { 'id': 'affranchissement', 'label': 'Affranchissements', 'type': 'secretariat', 'icon': 'fa-envelope' },
     { 'id': 'telephone', 'label': 'Téléphone', 'type': 'secretariat', 'icon': 'fa-mobile' },
-    { 'id': 'divers_secretariat', 'label': 'Secrétariat (à préciser)', 'type': 'secretariat' },
+    { 'id': 'divers_secretariat', 'label': 'Secrétariat (à préciser)', 'type': 'secretariat', 'icon': 'fa-file' },
     { 'id': 'perte', 'label': 'Pertes, écarts de compte, agios bancaires', 'type': 'banque' },
     { 'id': 'frais_banque', 'label': 'Frais bancaires', 'type': 'banque' },
     { 'id': 'avance_retournee', 'label': 'Avance retournée ou solde feuille jaune', 'type': 'banque' }];
@@ -49,8 +49,8 @@ export class ParamService {
     { 'id': 'remboursement_pro', 'label': 'Remboursement frais professionnels' },
     { 'id': 'remboursement_autre', 'label': 'Autres remboursements (à préciser)' },
     { 'id': 'avance', 'label': 'Avance demandée à la MM ou à la Cté' },
-    { 'id': 'epargne', 'label': 'Pour les fraternités de quartier : Epargne' }];
-    // { 'id': 'transfert', 'label': 'Transfert banque/caisse' }];
+    { 'id': 'epargne', 'label': 'Pour les fraternités de quartier : Epargne' },
+    { 'id': 'transfert', 'label': 'Transfert banque/caisse' }];
 
   public liste_maison = _.map(_.filter(this.categories, ['type', 'maison']), 'id');
   public liste_viecourante = _.map(_.filter(this.categories, ['type', 'vie courante']), 'id');
