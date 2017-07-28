@@ -6,7 +6,7 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color='primary'>
     <ion-title>Feuille Jaune</ion-title>
     <ion-buttons end>
       <button ion-button (click)="showParamPage()">
@@ -20,6 +20,6 @@
 
 
 <ion-content padding>
-  <div *ngFor='let fj of fj_list'>{{fj.personne}}</div>
+  <fjcircle *ngFor='let fj of fj_list' [fj]='fj'></fjcircle>
   <button ion-button (click)="showFjPage()" class="button icon-left ion-play button-assertive" block>New FJ</button>
 </ion-content>

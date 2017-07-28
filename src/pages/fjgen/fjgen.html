@@ -1,13 +1,8 @@
 <ion-header>
 
   <ion-navbar color="primary">
-    <ion-title>New Feuille Jaune<br/><span style="font-size:14px;"><i>{{paramService.personne}} - {{paramService.maison}}</i></span></ion-title>
+    <ion-title>Nouvelle Feuille Jaune</ion-title>
     <ion-buttons end>
-      <button ion-button (click)="showParamPage()">
-        <!-- <ion-icon name="cog"></ion-icon> -->
-        <i style="font-size:1.6em" class="fa fa-cog" aria-hidden="true"></i>
-      </button>
-
       <button ion-button icon-only *ngIf="tr_engine_ready" (click)="reload()">
         <!-- <ion-icon name="refresh"></ion-icon> -->
         <i style="font-size:1.6em" class="fa fa-refresh" aria-hidden="true"></i>

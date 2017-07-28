@@ -141,7 +141,7 @@ export class PdfService {
     })
   }
 
-  private shareFJ(blob, opt) {
+  public shareFJ(blob, opt) {
     // on gère les paramètres par défaut
     opt = this.manageDefaults(opt);
 

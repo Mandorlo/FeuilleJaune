@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+
+import { FjService } from '../../services/fj.service';
+
+import moment from 'moment';
 
 /**
  * Generated class for the FjcircleComponent component.
@@ -12,11 +16,15 @@ import { Component } from '@angular/core';
 })
 export class FjcircleComponent {
 
-  text: string;
+  @Input() fj;
 
-  constructor() {
-    console.log('Hello FjcircleComponent Component');
-    this.text = 'Hello World';
+  constructor(private fjService: FjService) {
+    // console.log('Hello FjcircleComponent Component');
+    moment.locale('fr');
+  }
+
+  shareFJ(month) {
+    this.fjService.shareFJ(month);
   }
 
 }

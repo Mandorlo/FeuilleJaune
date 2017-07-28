@@ -29,11 +29,11 @@ import { FjService } from '../services/fj.service';
 import { DatePicker } from '@ionic-native/date-picker';
 import { BudgetLineComponent } from '../components/budget-line/budget-line';
 import { FjLineComponent } from '../components/fj-line/fj-line';
+import { FjcircleComponent } from '../components/fjcircle/fjcircle';
 import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 import { RadioSquareComponent } from '../components/radio-square/radio-square';
 
 import { CurrencyPipe } from '../pipes/currency';
-import { FjcircleComponent } from '../components/fjcircle/fjcircle';
 
 @NgModule({
   declarations: [

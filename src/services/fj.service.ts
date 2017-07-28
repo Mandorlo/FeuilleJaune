@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 
+import { PdfService } from './pdf.service';
+import { ParamService } from './param.service';
+
 import _ from 'lodash';
 
 @Injectable()
 export class FjService {
   private db_fj = "dbfj";
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage,
+    private pdfService: PdfService,
+    private paramService: ParamService) {
 
   }
 
@@ -25,8 +30,8 @@ export class FjService {
 
     return new Promise((resolve, reject) => {
       this.getAllFJ().then(data => {
-        if(!data || !data.length) data = [];
-        let already_exists = _.find(data, {'month': fjdata_plus.month});
+        if (!data || !data.length) data = [];
+        let already_exists = _.find(data, { 'month': fjdata_plus.month });
         if (already_exists) { // TODO gérer de manière plus cool avec un prompt
           console.log("une feuille jaune du mois de " + fjdata_plus.month + " existe déjà : ", already_exists);
           reject("une feuille jaune du mois de " + fjdata_plus.month + " existe déjà")
@@ -39,6 +44,38 @@ export class FjService {
           reject(err)
         })
       }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
+  shareFJ(month) { // month should have format YYYY-MM-DD
+    let opt = {
+      'personne': this.paramService.personne,
+      'maison': this.paramService.maison,
+      'curr_month': month,
+      'filename': 'feuillejaune.pdf'
+    }
+
+    return new Promise((resolve, reject) => {
+      this.getAllFJ().then(data => {
+        let myfj = _.find(data, { 'month': month });
+        if (myfj) {
+          this.pdfService.createPdf(myfj.data, opt).then((pdf) => {
+            let blob = new Blob([pdf], { type: 'application/pdf' });
+            this.pdfService.shareFJ(blob, opt).then(res => {
+              resolve(res)
+            }).catch(err => {
+              reject(err)
+            })
+          }).catch(err => {
+            reject(err)
+          })
+        } else {
+          reject("Pas de feuille jaune pour le mois de " + month + " dans la db :(")
+        }
+      }).catch(err => {
+        console.log("Error retrieving all fj from db : ", err);
         reject(err)
       })
     })
