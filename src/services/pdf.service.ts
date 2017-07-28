@@ -22,9 +22,9 @@ export class PdfService {
   public liste_banque = _.map(_.filter(this.paramService.categories, ['type', 'banque']), 'id');
 
   constructor(private paramService: ParamService,
-              public toastCtrl: ToastController,
-              private file: File,
-              private socialSharing: SocialSharing) {
+    public toastCtrl: ToastController,
+    private file: File,
+    private socialSharing: SocialSharing) {
     moment.locale('fr');
   }
 
@@ -45,6 +45,53 @@ export class PdfService {
     if (!opt.curr_month) opt.curr_month = moment().format("YYYY-MM-DD");
     if (!opt.maison) opt.maison = "HTC";
     return opt;
+  }
+
+  saveFJ_old(fjdata, opt) { // TODO tobedel
+    // on gère les paramètres par défaut
+    opt = this.manageDefaults(opt);
+
+    return new Promise((resolve, reject) => {
+      this.createPdf(fjdata, opt).then((pdf) => {
+        let blob = new Blob([pdf], { type: 'application/pdf' });
+        this.coolWrite(opt.path, opt.filename, blob).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      }).catch(err => {
+        console.log("Error creating pdf blob : ", err);
+        reject(err)
+      });
+    });
+  }
+
+  coolWrite(path, filename, blob) { // TODO tobedel
+    return new Promise((resolve, reject) => {
+      this.file.checkFile(path, filename).then(exists => {
+        if (exists) {
+          this.file.removeFile(path, filename).then(res => {
+            this.file.writeFile(path, filename, blob, true).then(res => {
+              resolve(res)
+            }).catch(err => {
+              reject(err)
+            });
+          }).catch(err => {
+            console.log("Error removing existing file at " + path + "/" + filename);
+            reject(err)
+          })
+        } else {
+          this.file.writeFile(path, filename, blob, true).then(res => {
+            resolve(res)
+          }).catch(err => {
+            reject(err)
+          });
+        }
+      }).catch(err => {
+        console.log("Impossible de vérifier l'existence du fichier " + path + "/" + filename)
+        reject(err)
+      });
+    });
   }
 
   createFJ(fjdata, opt) {

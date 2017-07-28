@@ -27,13 +27,12 @@ export class BudgetLineComponent {
   constructor(private transactionService: TransactionService,
               private paramService: ParamService) {
     moment.locale('fr');
-    console.log('BudgetLineComponent : Benedetto sei Signore, Dio dell\'universo');
+    // console.log('BudgetLineComponent : Benedetto sei Signore, Dio dell\'universo');
   }
 
   ngOnChanges(...args: any[]) {
-    // console.log("Args", args);
     let curr_tr = args[0].tr.currentValue;
-    console.log(curr_tr);
+    // console.log(curr_tr);
     this.cool_date = this.getCoolDate(curr_tr.date);
     let cat_list = (curr_tr.type == 'out') ? this.paramService.categories : this.paramService.categories_in ;
     let el = _.find(cat_list, {'id': curr_tr.category});

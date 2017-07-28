@@ -11,6 +11,8 @@ import { Ajouter2Page } from '../pages/ajouter2/ajouter2';
 import { BudgetPage } from '../pages/budget/budget';
 import { ParamPage } from '../pages/param/param';
 import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
+import { FjgenPage } from '../pages/fjgen/fjgen';
+import { FjmgmtPage } from '../pages/fjmgmt/fjmgmt';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -22,12 +24,16 @@ import { IonicStorageModule } from '@ionic/storage';
 import { TransactionService } from '../services/transaction.service';
 import { ParamService } from '../services/param.service';
 import { PdfService } from '../services/pdf.service';
+import { FjService } from '../services/fj.service';
 
 import { DatePicker } from '@ionic-native/date-picker';
 import { BudgetLineComponent } from '../components/budget-line/budget-line';
 import { FjLineComponent } from '../components/fj-line/fj-line';
 import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 import { RadioSquareComponent } from '../components/radio-square/radio-square';
+
+import { CurrencyPipe } from '../pipes/currency';
+import { FjcircleComponent } from '../components/fjcircle/fjcircle';
 
 @NgModule({
   declarations: [
@@ -40,11 +46,15 @@ import { RadioSquareComponent } from '../components/radio-square/radio-square';
     BudgetPage,
     ParamPage,
     FeuillejaunePage,
+    FjgenPage,
+    FjmgmtPage,
     TabsPage,
     BudgetLineComponent,
     FjLineComponent,
     ProgressBarComponent,
-    RadioSquareComponent
+    RadioSquareComponent,
+    CurrencyPipe,
+    FjcircleComponent
   ],
   imports: [
     BrowserModule,
@@ -62,6 +72,8 @@ import { RadioSquareComponent } from '../components/radio-square/radio-square';
     BudgetPage,
     ParamPage,
     FeuillejaunePage,
+    FjgenPage,
+    FjmgmtPage,
     TabsPage
   ],
   providers: [
@@ -73,6 +85,7 @@ import { RadioSquareComponent } from '../components/radio-square/radio-square';
     TransactionService,
     ParamService,
     PdfService,
+    FjService,
     DatePicker
   ]
 })

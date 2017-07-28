@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 
+import { CurrencyPipe } from '../../pipes/currency';
+
 
 @Component({
   selector: 'fj-line',
