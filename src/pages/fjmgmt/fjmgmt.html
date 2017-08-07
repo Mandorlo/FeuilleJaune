@@ -13,6 +13,10 @@
         <!-- <ion-icon name="cog"></ion-icon> -->
         <i style="font-size:1.6em" class="fa fa-cog" aria-hidden="true"></i>
       </button>
+
+      <button ion-button (click)="supprFJ()" *ngIf="multiple_selection">
+        <i style="font-size:1.6em" class="fa fa-trash-o" aria-hidden="true"></i>
+      </button>
     </ion-buttons>
   </ion-navbar>
 
@@ -20,6 +24,16 @@
 
 
 <ion-content padding>
-  <fjcircle *ngFor='let fj of fj_list' [fj]='fj'></fjcircle>
-  <button ion-button (click)="showFjPage()" class="button icon-left ion-play button-assertive" block>New FJ</button>
+  <div class="circle_container">
+    <div class="circle_div" *ngFor='let fj of fj_list'>
+      <div class="checkbox_or_not" *ngIf="multiple_selection">
+        <i class="fa fa-check-square-o check" *ngIf="isSelected(fj); else elseBlock" (click)="unselectFJ(fj)"></i>
+        <ng-template #elseBlock><i class="fa fa-square-o check" (click)="selectFJ(fj)"></i></ng-template>
+      </div>
+      <fjcircle [fj]='fj' (long-press)="showCheckboxes()"></fjcircle>
+    </div>
+    <div class="add_circle" (click)="showFjPage()" block>
+      <i class="fa fa-plus fa-2x"></i>
+    </div>
+  </div>
 </ion-content>

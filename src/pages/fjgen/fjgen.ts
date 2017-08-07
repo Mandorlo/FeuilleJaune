@@ -61,7 +61,7 @@ export class FjgenPage {
     toast.present();
   }
 
-  createFJ() {
+  createFJ() { // le bouton sauver fj
     this.saving_ongoing = true;
     // on complète fjdata avec les différents totaux
     this.fjdata.soustotal1_banque = this.soustotal1('banque');
@@ -102,7 +102,8 @@ export class FjgenPage {
 
     this.fjService.saveFJ(this.fjdata, opt).then(res => {
       this.saving_ongoing = false;
-      console.log(res)
+      console.log("FJ sauvée ! Merci Seigneur !", res);
+      this.navCtrl.pop();
     }).catch(err => {
       this.saving_ongoing = false;
       console.log(err)

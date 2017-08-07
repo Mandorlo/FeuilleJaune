@@ -1,3 +1,18 @@
 fjcircle {
+  .circle {
+    text-align: center;
+    background-color: color($colors, light);
+    border-radius: 40px;
+    width: 70px;
+    height: 70px;
+    padding: 20px;
+    margin: 12px;
+    color: color($colors, lightgray);
+  }
 
+  .text {
+    text-align: center;
+    font-style: italic;
+    color: gray;
+  }
 }

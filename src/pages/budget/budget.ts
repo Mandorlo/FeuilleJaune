@@ -5,12 +5,7 @@ import { TransactionService } from '../../services/transaction.service';
 
 import { Ajouter2Page } from '../ajouter2/ajouter2';
 
-/**
- * Generated class for the BudgetPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+import _ from 'lodash';
 
 @Component({
   selector: 'page-budget',
@@ -42,7 +37,7 @@ export class BudgetPage {
     this.tr_engine_ready = false;
     this.trService.getAll().then(data => {
       if (typeof data == 'object' && data.length) {
-        this.transactions = data;
+        this.transactions = _.orderBy(data, ['date'], ['desc']);
       } else {
         console.log("Le format de la base de transactions n'est pas bon ou la base est vide, on utilise du coup une base vide");
         this.transactions = [];
