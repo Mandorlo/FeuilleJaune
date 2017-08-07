@@ -73,12 +73,13 @@
           <ion-card-title>Ajoute un petit nom et un commentaire si tu veux :)</ion-card-title>
           <ion-list>
             <ion-item>
-              <ion-label floating>Nom de la transaction</ion-label>
-              <ion-input id="input_nom" type="text" [(ngModel)]="data.name" name="nom"></ion-input>
+              <!-- <ion-label floating>Nom de la transaction</ion-label> -->
+              <label>Nom de la transaction</label><br/>
+              <input id="input_nom" class="nom_input" type="text" [(ngModel)]="data.name" name="nom" placeholder='Nom'>
             </ion-item>
             <ion-item>
-              <ion-label floating>Commentaire</ion-label>
-              <ion-textarea rows="5" [(ngModel)]="data.comment" name="comment"></ion-textarea>
+              <label>Commentaire</label><br/>
+              <textarea class="comment_textarea" rows="5" [(ngModel)]="data.comment" name="comment"></textarea>
             </ion-item>
             <ion-item>
               <button ion-button (click)="donePhase(5)" block>Vérifier les infos</button>

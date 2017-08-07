@@ -24,6 +24,23 @@ page-ajouter2 {
     border-radius: 12px;
   }
 
+  label {
+    color: color($colors, lightgray);
+  }
+
+  .comment_textarea {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+  }
+
+  .nom_input {
+    margin-top: 4px;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+  }
+
   hr {
     margin-bottom: 1em;
   }

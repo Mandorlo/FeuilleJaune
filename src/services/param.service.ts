@@ -36,7 +36,7 @@ export class ParamService {
     { 'id': 'assurance_voiture', 'label': 'Assurances, vignette, carte-grise, divers (à préciser)', 'type': 'transport', 'icon': 'fa-shield' },
     { 'id': 'affranchissement', 'label': 'Affranchissements', 'type': 'secretariat', 'icon': 'fa-envelope' },
     { 'id': 'telephone', 'label': 'Téléphone', 'type': 'secretariat', 'icon': 'fa-mobile' },
-    { 'id': 'divers_secretariat', 'label': 'Secrétariat (à préciser)', 'type': 'secretariat', 'icon': 'fa-file' },
+    { 'id': 'divers_secretariat', 'label': 'Secrétariat (à préciser)', 'type': 'secretariat', 'icon': 'fa-files-o' },
     { 'id': 'perte', 'label': 'Pertes, écarts de compte, agios bancaires', 'type': 'banque' },
     { 'id': 'frais_banque', 'label': 'Frais bancaires', 'type': 'banque' },
     { 'id': 'avance_retournee', 'label': 'Avance retournée ou solde feuille jaune', 'type': 'banque' }];
@@ -47,8 +47,8 @@ export class ParamService {
     { 'id': 'autre', 'label': 'Autres revenus (à détailler)' },
     { 'id': 'remboursement_sante', 'label': 'Remboursement frais médicaux' },
     { 'id': 'remboursement_pro', 'label': 'Remboursement frais professionnels' },
-    { 'id': 'remboursement_autre', 'label': 'Autres remboursements (à préciser)' },
-    { 'id': 'avance', 'label': 'Avance demandée à la MM ou à la Cté' },
+    { 'id': 'remboursement_autre', 'label': 'Autres remboursements (à préciser)', 'icon': 'fa-money' },
+    { 'id': 'avance', 'label': 'Avance demandée à la MM ou à la Cté', 'icon': 'fa-money' },
     { 'id': 'epargne', 'label': 'Pour les fraternités de quartier : Epargne' },
     { 'id': 'transfert', 'label': 'Transfert banque/caisse' }];
 
