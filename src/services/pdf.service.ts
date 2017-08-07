@@ -66,7 +66,7 @@ export class PdfService {
     });
   }
 
-  coolWrite(path, filename, blob) { // TODO tobedel
+  coolWrite(path, filename, blob) {
     return new Promise((resolve, reject) => {
       this.file.checkFile(path, filename).then(exists => {
         if (exists) {
@@ -146,7 +146,8 @@ export class PdfService {
     opt = this.manageDefaults(opt);
 
     return new Promise((resolve, reject) => {
-      this.file.writeFile(opt.path, opt.filename, blob, true).then(_ => {
+      // this.file.writeFile(opt.path, opt.filename, blob, true).then(_ => {
+      this.coolWrite(opt.path, opt.filename, blob).then(_ => {
         console.log("PDF file written in : " + opt.path + "/" + opt.filename);
         let sujet = "Feuille Jaune - " + opt.personne + " - mois de " + moment(opt.curr_month).format("MMMM - YYYY");
         this.socialSharing.share("", sujet, opt.path + "/" + opt.filename).then(e => {

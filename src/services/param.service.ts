@@ -31,7 +31,7 @@ export class ParamService {
     { 'id': 'entretien_voiture', 'label': 'Entretien et réparations', 'type': 'transport', 'icon': 'fa-wrench' },
     { 'id': 'carburant', 'label': 'Carburant', 'type': 'transport' },
     { 'id': 'transport_commun', 'label': 'Transport en commun (train, bus, avion)', 'type': 'transport', 'icon': 'fa-bus' },
-    { 'id': 'parking', 'label': 'Péage, parking, etc', 'type': 'transport' },
+    { 'id': 'parking', 'label': 'Péage, parking, etc', 'type': 'transport', 'icon': 'fa-road' },
     { 'id': 'amende', 'label': 'Amendes, contraventions', 'type': 'transport' },
     { 'id': 'assurance_voiture', 'label': 'Assurances, vignette, carte-grise, divers (à préciser)', 'type': 'transport', 'icon': 'fa-shield' },
     { 'id': 'affranchissement', 'label': 'Affranchissements', 'type': 'secretariat', 'icon': 'fa-envelope' },

@@ -16,6 +16,11 @@ export class FjService {
 
   }
 
+  setAllFJ(fj_list) {
+    // /!\ be careful using this
+    this.storage.set(this.db_fj, fj_list);
+  }
+
   getAllFJ() { // renvoie tous les json + metadata de feuilles faunes
     return this.storage.get(this.db_fj);
   }

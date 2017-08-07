@@ -19,12 +19,16 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { File } from '@ionic-native/file';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { FileChooser } from '@ionic-native/file-chooser';
 import { IonicStorageModule } from '@ionic/storage';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { Diagnostic } from '@ionic-native/diagnostic';
 
 import { TransactionService } from '../services/transaction.service';
 import { ParamService } from '../services/param.service';
 import { PdfService } from '../services/pdf.service';
 import { FjService } from '../services/fj.service';
+import { ExportService } from '../services/export.service';
 
 import { DatePicker } from '@ionic-native/date-picker';
 import { BudgetLineComponent } from '../components/budget-line/budget-line';
@@ -82,11 +86,15 @@ import { CurrencyPipe } from '../pipes/currency';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     File,
     SocialSharing,
+    FileChooser,
     TransactionService,
     ParamService,
     PdfService,
     FjService,
-    DatePicker
+    ExportService,
+    DatePicker,
+    AndroidPermissions,
+    Diagnostic
   ]
 })
 export class AppModule {}

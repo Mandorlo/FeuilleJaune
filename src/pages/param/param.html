@@ -27,4 +27,15 @@
 
     <button ion-button type="submit" block>Enregistrer</button>
   </form>
+
+  <hr style="margin-top:2em;margin-bottom:2em;">
+  <ion-list no-lines>
+    <ion-item>
+      <button ion-item type="button" (click)="exporter()" block color="secondary">Exporter toute la base de données</button>
+    </ion-item>
+    <ion-item>
+      <input type="file" id="file_picker_browser" hidden>
+      <button ion-item type="button" (click)="importer()" block color="secondary">Importer une base de données</button>
+    </ion-item>
+  </ion-list>
 </ion-content>
