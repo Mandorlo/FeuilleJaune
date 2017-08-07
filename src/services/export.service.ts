@@ -43,7 +43,7 @@ export class ExportService {
   exportDB() { // exports all the dbs (param, transaction, fj) in json format
     this.db2json().then(db => {
       let data = JSON.stringify(db, null, '\t');
-      this.file.writeFile(this.file.dataDirectory, this.dbfilename, data, true).then(_ => {
+      this.coolWrite(this.file.dataDirectory, this.dbfilename, data).then(_ => {
         this.socialSharing.share("", "Export db Feuille Jaune", this.file.dataDirectory + "/" + this.dbfilename).then(e => {
           this.showToast("Base de données exportée ! Merci Seigneur de prendre soin de nous !");
         }).catch(err => {
@@ -179,6 +179,34 @@ export class ExportService {
     element.click();
 
     document.body.removeChild(element);
+  }
+
+  coolWrite(path, filename, blob) {
+    return new Promise((resolve, reject) => {
+      this.file.checkFile(path, filename).then(exists => {
+        if (exists) {
+          this.file.removeFile(path, filename).then(res => {
+            this.file.writeFile(path, filename, blob, true).then(res => {
+              resolve(res)
+            }).catch(err => {
+              reject(err)
+            });
+          }).catch(err => {
+            console.log("Error removing existing file at " + path + "/" + filename);
+            reject(err)
+          })
+        } else {
+          this.file.writeFile(path, filename, blob, true).then(res => {
+            resolve(res)
+          }).catch(err => {
+            reject(err)
+          });
+        }
+      }).catch(err => {
+        console.log("Impossible de vérifier l'existence du fichier " + path + "/" + filename)
+        reject(err)
+      });
+    });
   }
 
 }
