@@ -1,9 +1,7 @@
 <ion-item-sliding>
   <ion-item>
     <ion-avatar class="domaine_{{category_domain}}" item-start><i class="myicon fa {{category_icon}} fa-w"></i></ion-avatar>
-    <!-- <div item-left (click)="showDetail(tr)"><b>{{tr.name}}</b></div> -->
     <h2 (click)="showDetail(tr)">{{tr.name}}</h2>
-    <!-- <p item-right *ngIf="tr.type == 'in' || tr.type == 'out'">{{category_domain}}</p> -->
     <h3>{{cool_date}}</h3>
     <p item-right class='montant'>{{tr.montant}} €</p>
     <p>{{category_pretty}}</p>

@@ -37,6 +37,8 @@ export class BudgetLineComponent {
     let cat_list = (curr_tr.type == 'out') ? this.paramService.categories : this.paramService.categories_in ;
     let el = _.find(cat_list, {'id': curr_tr.category});
     this.category_icon = el.icon;
+    let smart_icon = this.smartIcon(curr_tr);
+    if (smart_icon.length) this.category_icon = smart_icon;
     this.category_domain = (el.type) ? el.type.replace(" ", ""): "";
 
     this.category_pretty = el.label;
@@ -48,6 +50,21 @@ export class BudgetLineComponent {
       this.category_pretty = "Retrait d'argent liquide";
       this.category_domain = "retrait";
       this.category_icon = "fa-angle-double-right";
+    }
+  }
+
+  smartIcon(tr) {
+    let nom = tr.name.toLowerCase();
+    if (nom.indexOf("vol ") > -1 || nom.indexOf("avion") > -1 || nom.indexOf("flight") > -1 || nom.indexOf("plane") > -1) {
+      return "fa-plane"
+    } else if (nom.indexOf("hairdresser") > -1 || nom.indexOf("coiffeur") > -1) {
+      return "fa-scissors"
+    } else if (nom.indexOf("taxi") > -1 || nom.indexOf("cab") > -1) {
+      return "fa-cab"
+    } else if (nom.indexOf("metro") > -1 || nom.indexOf("subway") > -1) {
+      return "fa-subway"
+    } else {
+      return ""
     }
   }
 
