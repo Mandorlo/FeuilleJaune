@@ -34,7 +34,9 @@ export class PdfService {
 
   private prettyEuros(amount) {
     if (amount == "" || amount == 0) return "";
-    return amount + " €";
+    let symbol = "€";
+    if (this.paramService.currency = "USD") symbol = "$";
+    return amount + " " + symbol;
   }
 
   private manageDefaults(opt) {

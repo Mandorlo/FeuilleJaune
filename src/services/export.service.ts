@@ -109,6 +109,7 @@ export class ExportService {
     if (!this.isValidDB(db)) return;
     this.paramService.setMaison(db.param.maison);
     this.paramService.setPersonne(db.param.personne);
+    this.paramService.setCurrency(db.param.currency);
     this.trService.set(db.transaction);
     this.fjService.setAllFJ(db.fj);
     this.showToast('Base de données chargée, béni soit le nom du Seigneur !')
@@ -126,7 +127,8 @@ export class ExportService {
     let db = { 'param': {}, 'transaction': [], 'fj': [] };
     db.param = {
       'personne': this.paramService.personne,
-      'maison': this.paramService.maison
+      'maison': this.paramService.maison,
+      'currency': this.paramService.currency
     }
 
     return new Promise((resolve, reject) => {

@@ -60,6 +60,7 @@ export class ParamService {
 
   public personne:string;
   public maison:string;
+  public currency:string;
 
   constructor(private storage: Storage) {
     // on récupère la personne si elle existe
@@ -76,6 +77,14 @@ export class ParamService {
     }).catch(err => {
       console.log("No maison found, using empty maison");
       this.maison = ""
+    });
+
+    // on récupère la currency si elle existe
+    this.storage.get("currency").then(res => {
+      this.currency = res;
+    }).catch(err => {
+      console.log("No currency found, using euros (EUR)");
+      this.currency = "EUR"
     })
   }
 
@@ -87,6 +96,11 @@ export class ParamService {
   setPersonne(val) {
     this.personne = val;
     return this.storage.set("personne", val);
+  }
+
+  setCurrency(val) {
+    this.currency = val;
+    return this.storage.set("currency", val);
   }
 
   get(key) {
