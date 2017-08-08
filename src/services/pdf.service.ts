@@ -89,7 +89,11 @@ export class PdfService {
         }
       }).catch(err => {
         console.log("Impossible de vérifier l'existence du fichier " + path + "/" + filename)
-        reject(err)
+        this.file.writeFile(path, filename, blob, true).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        });
       });
     });
   }
