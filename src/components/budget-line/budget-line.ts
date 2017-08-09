@@ -63,6 +63,14 @@ export class BudgetLineComponent {
       return "fa-cab"
     } else if (nom.indexOf("metro") > -1 || nom.indexOf("subway") > -1) {
       return "fa-subway"
+    } else if (nom.indexOf("beer") > -1 || nom.indexOf("bière") > -1 || nom.indexOf("biere") > -1 || nom.indexOf("verre") > -1) {
+      return "fa-beer"
+    } else if (nom.indexOf("hotel") > -1 || nom.indexOf("bnb") > -1) {
+      return "fa-bed"
+    } else if (nom.indexOf("boat") > -1 || nom.indexOf("bateau") > -1 || nom.indexOf("voile") > -1) {
+      return "fa-anchor"
+    } else if (nom.indexOf("book") > -1 || nom.indexOf("livre") > -1) {
+      return "fa-book"
     } else {
       return ""
     }
