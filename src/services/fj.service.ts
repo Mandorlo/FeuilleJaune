@@ -35,11 +35,19 @@ export class FjService {
 
     return new Promise((resolve, reject) => {
       this.getAllFJ().then(data => {
+        console.log("going to save fjdata_plus: ",fjdata_plus);
+        console.log("already existing FJs: ", data);
         if (!data || !data.length) data = [];
         let already_exists = _.find(data, { 'month': fjdata_plus.month });
         if (already_exists) { // TODO gérer de manière plus cool avec un prompt
-          console.log("une feuille jaune du mois de " + fjdata_plus.month + " existe déjà : ", already_exists);
-          reject("une feuille jaune du mois de " + fjdata_plus.month + " existe déjà")
+          if (!opt.already_exists) {
+            console.log("une feuille jaune du mois de " + fjdata_plus.month + " existe déjà : ", already_exists);
+            reject("une feuille jaune du mois de " + fjdata_plus.month + " existe déjà")
+          } else {
+            console.log("une feuille jaune du mois de " + fjdata_plus.month + " existe déjà, on overwrite ");
+            data = _.reject(data, {'month': fjdata_plus.month});
+            data.push(fjdata_plus);
+          }
         } else {
           data.push(fjdata_plus);
         }
@@ -64,7 +72,7 @@ export class FjService {
           let newdata = _.reject(data, (o) => {
             return (list_months.indexOf(o.month) > -1);
           });
-          console.log("newdata",newdata);
+          console.log("new fj_list will be: ", newdata);
           this.storage.set(this.db_fj, newdata).then(res => {
             resolve(res)
           }).catch(err => {
@@ -77,7 +85,7 @@ export class FjService {
     })
   }
 
-  shareFJ(month) { // month should have format YYYY-MM-DD
+  shareFJ(month) { // month should have format YYYY-MM
     let opt = {
       'personne': this.paramService.personne,
       'maison': this.paramService.maison,

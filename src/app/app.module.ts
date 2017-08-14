@@ -13,6 +13,7 @@ import { ParamPage } from '../pages/param/param';
 import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
 import { FjgenPage } from '../pages/fjgen/fjgen';
 import { FjmgmtPage } from '../pages/fjmgmt/fjmgmt';
+import { FjactionsPage } from '../pages/fjactions/fjactions';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -52,6 +53,7 @@ import { CurrencyPipe } from '../pipes/currency';
     FeuillejaunePage,
     FjgenPage,
     FjmgmtPage,
+    FjactionsPage,
     TabsPage,
     BudgetLineComponent,
     FjLineComponent,
@@ -78,6 +80,7 @@ import { CurrencyPipe } from '../pipes/currency';
     FeuillejaunePage,
     FjgenPage,
     FjmgmtPage,
+    FjactionsPage,
     TabsPage
   ],
   providers: [

@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, ToastController, AlertController, ModalController } from 'ionic-angular';
 
 import { ParamService } from '../../services/param.service';
 import { FjService } from '../../services/fj.service';
 
 import { ParamPage } from '../param/param';
 import { FjgenPage } from '../fjgen/fjgen';
+import { FjactionsPage } from '../fjactions/fjactions';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -17,16 +18,17 @@ import _ from 'lodash';
 })
 export class FjmgmtPage {
   private fj_list;
-  private multiple_selection:boolean = false; // pour afficher ou non les checkbox de sélection multiple
+  private multiple_selection: boolean = false; // pour afficher ou non les checkbox de sélection multiple
   private selected_fj = [];
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              private toastCtrl: ToastController,
-              private alertCtrl: AlertController,
-              public paramService: ParamService,
-              public fjService: FjService) {
-      this.reload();
+    public navParams: NavParams,
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController,
+    private modalCtrl: ModalController,
+    public paramService: ParamService,
+    public fjService: FjService) {
+    this.reload();
   }
 
   ionViewDidLoad() {
@@ -41,13 +43,13 @@ export class FjmgmtPage {
     this.fjService.getAllFJ().then(data => {
       this.fj_list = data;
       if (!data || !data.length) this.fj_list = [];
-      this.fj_list = _.sortBy(this.fj_list, [(o) => {return o.month}])
+      this.fj_list = _.sortBy(this.fj_list, [(o) => { return o.month }])
     }).catch(err => {
       console.log("Error retrieving list of FJs : ", err)
     })
   }
 
-  presentToast(msg, temps=2000) {
+  presentToast(msg, temps = 2000) {
     let toast = this.toastCtrl.create({
       message: msg,
       duration: temps
@@ -93,33 +95,42 @@ export class FjmgmtPage {
 
   supprFJ() {
     let alert = this.alertCtrl.create({
-    title: 'Supprimer',
-    message: 'Veux-tu vraiment supprimer les feuilles jaunes sélectionnées ?',
-    buttons: [
-      {
-        text: 'Annuler',
-        role: 'cancel',
-        handler: () => {
-          console.log('Suppression des feuilles jaunes annulée.');
+      title: 'Supprimer',
+      message: 'Veux-tu vraiment supprimer les feuilles jaunes sélectionnées ?',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: () => {
+            console.log('Suppression des feuilles jaunes annulée.');
+          }
+        },
+        {
+          text: 'Supprimer',
+          handler: () => {
+            console.log('Suppression des feuilles jaunes ', this.selected_fj);
+            this.supprFJcore();
+          }
         }
-      },
-      {
-        text: 'Supprimer',
-        handler: () => {
-          console.log('Suppression des feuilles jaunes ', this.selected_fj);
-          this.supprFJcore();
-        }
-      }
-    ]
-  });
-  alert.present();
+      ]
+    });
+    alert.present();
   }
 
   supprFJcore() {
     this.fj_list = _.xorBy(this.fj_list, this.selected_fj, 'month');
-    this.fjService.deleteFJ(this.selected_fj);
+    this.fjService.deleteFJ(this.selected_fj).then(res => {
+      console.log("deleted successfully ! Grazie Signore !", res)
+    }).catch(err => {
+      console.log("Error deleting FJ", err)
+    });
     this.selected_fj = [];
     this.multiple_selection = false;
+  }
+
+  showFJActions(fj) { // montre la modal window pour choisir une action relative à la feuille jaune cliquée
+    let modalActions = this.modalCtrl.create(FjactionsPage, { "fj": fj });
+    modalActions.present();
   }
 
   showParamPage() {

@@ -1,0 +1,25 @@
+<!-- <ion-header>
+
+  <ion-navbar>
+    <ion-title>fjactions</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="this.navCtrl.pop()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header> -->
+
+
+<ion-content padding class='transparent_back' (click)="this.navCtrl.pop()">
+  <h3 style="margin-top:50%">Feuille Jaune de {{mois}}</h3>
+  <!-- <radio-square class="interieur" [options]='options' [(choice)]='choix' (click)="handleClick()"></radio-square>" -->
+  <ion-list>
+    <!-- <div *ngFor="let o of options"> -->
+
+      <button *ngFor="let o of options" ion-item (click)="handleClick(o)"><i class="opt_icon fa {{o.icon}}" aria-hidden="true"></i>{{ o.title }}</button>
+    <!-- </div> -->
+  </ion-list>
+</ion-content>

@@ -1,8 +1,14 @@
 <ion-header>
 
   <ion-navbar color="primary">
-    <ion-title>Nouvelle Feuille Jaune</ion-title>
+    <ion-title *ngIf="!edit_fj">Nouvelle Feuille Jaune</ion-title>
+    <ion-title *ngIf="edit_fj"><ion-icon class="back_fa" name="arrow-back" (click)="this.navCtrl.pop()"></ion-icon>Editer FJ de {{curr_month_pretty}}</ion-title>
+
     <ion-buttons end>
+      <button ion-button icon-only class="button_fa" (click)="createFJ()">
+        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+      </button>
+
       <button ion-button icon-only *ngIf="tr_engine_ready" (click)="reload()">
         <!-- <ion-icon name="refresh"></ion-icon> -->
         <i style="font-size:1.6em" class="fa fa-refresh" aria-hidden="true"></i>
@@ -19,7 +25,7 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item>
+    <ion-item *ngIf="!edit_fj">
       <ion-label>Mois</ion-label>
       <ion-select name="mois" [(ngModel)]="curr_month" (ionChange)="computeAmounts()">
         <ion-option *ngFor="let m of last_months" [value]="m.date">{{m.label}}</ion-option>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
@@ -10,12 +10,8 @@ import { ParamPage } from '../param/param';
 import moment from 'moment';
 import _ from 'lodash';
 
-/**
- * Generated class for the FjgenPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+
+
 
 @Component({
   selector: 'page-fjgen',
@@ -26,26 +22,49 @@ export class FjgenPage {
   private saving_ongoing: boolean = false;
 
   public transactions = [];
-  public curr_month = moment().format("YYYY-MM-DD");
+  public curr_month = moment().format("YYYY-MM") + "-01";
+  public curr_month_pretty:string = moment().format("MMM YYYY");
   public last_months = [];
   public fjdata;
   public fjdata_test;
+  public edit_fj: boolean = false;
 
   constructor(public navCtrl: NavController,
-              public navParams: NavParams,
-              private paramService: ParamService,
-              private trService: TransactionService,
-              private toastCtrl: ToastController,
-              private fjService: FjService) {
-    this.initFjdata();
-
-    // on load la db des transactions
-    this.reload();
+    public navParams: NavParams,
+    private paramService: ParamService,
+    private trService: TransactionService,
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController,
+    private fjService: FjService) {
+    let curr_fj = navParams.get("curr_fj");
+    if (curr_fj) {
+      console.log("editing fj: ", curr_fj);
+      this.edit_fj = true;
+      this.fjdata = curr_fj.data;
+      this.curr_month = moment(curr_fj.month).format("YYYY-MM") + "-01";
+      this.curr_month_pretty = moment(curr_fj.month).format("MMM YYYY");
+    } else {
+      console.log("creating new FJ");
+      this.initFjdata();
+      // on load la db des transactions
+      this.reload(false);
+    }
 
     // on récupère la liste des last months
-    for (let i = 0; i < 7; i++) {
-      let mydate = moment(this.curr_month).subtract(i, 'months');
-      this.last_months.push({ 'date': mydate.format("YYYY-MM-DD"), 'label': mydate.format('MMMM YYYY') })
+    if (!this.edit_fj) {
+      this.fjService.getAllFJ().then(fj_list => {
+        let mymonths = _.map(fj_list, "month");
+        for (let i = 0; i < 7; i++) {
+          let mydate = moment(this.curr_month).subtract(i, 'months');
+          if (mymonths.indexOf(mydate.format("YYYY-MM") + "-01") < 0) this.last_months.push({ 'date': mydate.format("YYYY-MM") + "-01", 'label': mydate.format('MMMM YYYY') })
+        }
+        if (this.last_months && this.last_months.length) this.curr_month = this.last_months[0].date;
+        this.tr_engine_ready = true;
+      }).catch(err => {
+        console.log(err)
+      });
+    } else {
+      this.tr_engine_ready = true;
     }
   }
 
@@ -53,7 +72,7 @@ export class FjgenPage {
     console.log('FjgenPage : Hosanna nell\'alto dei cieli !');
   }
 
-  presentToast(msg, temps=2000) {
+  presentToast(msg, temps = 2000) {
     let toast = this.toastCtrl.create({
       message: msg,
       duration: temps
@@ -87,7 +106,8 @@ export class FjgenPage {
     let opt = {
       'personne': this.paramService.personne,
       'maison': this.paramService.maison,
-      'curr_month': this.curr_month
+      'curr_month': this.curr_month,
+      'already_exists': this.edit_fj
     }
 
     if (!opt.personne) {
@@ -110,13 +130,38 @@ export class FjgenPage {
     });
   }
 
-  reload() {
+  reload(prompt = true) {
+    let alert = this.alertCtrl.create({
+      title: 'Recalculer',
+      message: 'Veux-tu vraiment recalculer tous les montants ? Cela écrasera les montants modifiés à la main.',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: () => {
+            console.log('Recalcul des montants annulé.');
+          }
+        },
+        {
+          text: 'Recalculer',
+          handler: () => {
+            console.log('Recalcul des montants...');
+            this.reloadcore();
+          }
+        }
+      ]
+    });
+    if (prompt) alert.present();
+    else this.reloadcore();
+  }
+
+  reloadcore() {
     this.tr_engine_ready = false;
     this.trService.getAll().then(data => {
       if (typeof data == 'object' && data.length) {
         console.log("We got the transaction db, lodato sia il Signore !")
         this.transactions = data;
-        console.log("transactions : ", this.transactions);
+        // console.log("transactions : ", this.transactions);
         this.computeAmounts()
       } else {
         console.log("Le format de la base de transactions n'est pas bon ou la base est vide, on utilise du coup une base vide");
@@ -173,7 +218,7 @@ export class FjgenPage {
         }
       }
     }
-    console.log(this.fjdata);
+    // console.log(this.fjdata);
   }
 
   soustotal1(banque_ou_caisse) {
