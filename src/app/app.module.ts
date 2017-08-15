@@ -9,6 +9,7 @@ import { HomePage } from '../pages/home/home';
 import { AjouterPage } from '../pages/ajouter/ajouter';
 import { Ajouter2Page } from '../pages/ajouter2/ajouter2';
 import { BudgetPage } from '../pages/budget/budget';
+import { ChartsPage } from '../pages/charts/charts';
 import { ParamPage } from '../pages/param/param';
 import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
 import { FjgenPage } from '../pages/fjgen/fjgen';
@@ -49,6 +50,7 @@ import { CurrencyPipe } from '../pipes/currency';
     AjouterPage,
     Ajouter2Page,
     BudgetPage,
+    ChartsPage,
     ParamPage,
     FeuillejaunePage,
     FjgenPage,
@@ -76,6 +78,7 @@ import { CurrencyPipe } from '../pipes/currency';
     AjouterPage,
     Ajouter2Page,
     BudgetPage,
+    ChartsPage,
     ParamPage,
     FeuillejaunePage,
     FjgenPage,

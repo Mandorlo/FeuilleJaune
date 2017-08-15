@@ -33,3 +33,4 @@ Then add the APK to Github as a release
 * To generate app icon : http://blog.ionic.io/automating-icons-and-splash-screens/ (sauf que là la commande c'est ionic cordova resources)
 * To do conditional formatting in Angular 2 : https://juristr.com/blog/2016/01/learning-ng2-dynamic-styles/
 * To add fontawesome : https://luiscabrera.site/tech/2017/01/09/fontawesome-in-ionic2.html (not straightforward !)
+* To add charts with chart.js : https://www.joshmorony.com/adding-responsive-charts-graphs-to-ionic-2-applications/

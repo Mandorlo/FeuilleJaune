@@ -14,7 +14,7 @@ import moment from 'moment';
 })
 export class FjactionsPage {
   private options = [{title: "Editer", val: "editer", "icon": "fa-pencil-square-o"},
-                      {title: "Exporter en PDF", val: "pdf", "icon": "fa-file-pdf-o"},
+                      {title: "Partager le pdf", val: "pdf", "icon": "fa-share"},
                       {title: "Supprimer", val: "suppr", "icon": "fa-trash"}];
   private fj;
   private mois:string = "";
