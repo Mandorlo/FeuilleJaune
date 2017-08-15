@@ -47,7 +47,7 @@ export class ChartsPage {
   reload() {
     this.trService.getAll().then(trlist => {
       this.tr_list = trlist;
-      console.log("Transactions loaded ! Grazie Signore !");
+      // console.log("Transactions loaded ! Grazie Signore !");
       this.genDataBarTotalDepensesParMois();
       this.genDataPie();
     }).catch(err => {
@@ -120,7 +120,7 @@ export class ChartsPage {
       }
       labels = labels.reverse();
       data = data.reverse();
-      console.log("Bar chart data : ", labels, data);
+      // console.log("Bar chart data : ", labels, data);
       this.genBarTotalDepensesParMois(labels, data)
     }).catch(err => {
       console.log("Impossible de récupérer la liste des feuilles jaunes :(")
