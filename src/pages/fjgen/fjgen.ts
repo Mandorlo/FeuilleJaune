@@ -24,10 +24,12 @@ export class FjgenPage {
   public transactions = [];
   public curr_month = moment().format("YYYY-MM") + "-01";
   public curr_month_pretty:string = moment().format("MMM YYYY");
+  public solde_mois_prec:any = {'banque': 0, 'caisse': 0};
   public last_months = [];
   public fjdata;
   public fjdata_test;
   public edit_fj: boolean = false;
+  public fj_list:any;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -44,15 +46,22 @@ export class FjgenPage {
       this.curr_month = moment(curr_fj.month).format("YYYY-MM") + "-01";
       this.curr_month_pretty = moment(curr_fj.month).format("MMM YYYY");
     } else {
-      console.log("creating new FJ");
+      console.log("creating neww FJ");
+      this.edit_fj = false;
       this.initFjdata();
       // on load la db des transactions
       this.reload(false);
     }
 
-    // on récupère la liste des last months
+    // on récupère la liste des last months et le solde du mois prec s'il existe
     if (!this.edit_fj) {
       this.fjService.getAllFJ().then(fj_list => {
+        this.fj_list = fj_list;
+
+        // on récupère le solde du mois prec
+        this.updateSoldeLastMonth();
+
+        // on récupère la liste des last months
         let mymonths = _.map(fj_list, "month");
         for (let i = 0; i < 7; i++) {
           let mydate = moment(this.curr_month).subtract(i, 'months');
@@ -177,9 +186,11 @@ export class FjgenPage {
   }
 
   initFjdata() {
+
     let last_fjdata = (this.fjdata) ? JSON.parse(JSON.stringify(this.fjdata)) : undefined;
     let report_obs = (last_fjdata && last_fjdata.report_mois_precedent && last_fjdata.report_mois_precedent.observations) ? last_fjdata.report_mois_precedent.observations : '';
-    this.fjdata = { 'report_mois_precedent': { 'label': 'Report du mois précédent', 'banque': 0, 'caisse': 0, 'observations': report_obs } }
+    this.fjdata = { 'report_mois_precedent': { 'label': 'Report du mois précédent', 'banque': this.solde_mois_prec.banque, 'caisse': this.solde_mois_prec.caisse, 'observations': report_obs } }
+    this.updateSoldeLastMonth();
     this.fjdata_test = { 'report_mois_precedent': { 'label': 'Report du mois précédent', 'banque': 'report_mois_prec_B', 'caisse': 'report_mois_prec_C', 'observations': 'report_mois_prec_O' } }
     this.paramService.categories.forEach(el => {
       let rep_obs = (last_fjdata && last_fjdata[el.id] && last_fjdata[el.id].observations) ? last_fjdata[el.id].observations : "";
@@ -191,6 +202,29 @@ export class FjgenPage {
       this.fjdata[el.id] = { 'label': el.label, 'banque': 0.0, 'caisse': 0.0, 'observations': rep_obs }
       this.fjdata_test[el.id] = { 'label': el.label, 'banque': el.id + '_B', 'caisse': el.id + '_C', 'observations': el.id + '_O' }
     });
+  }
+
+  updateSoldeLastMonth() {
+    let mois_prec = moment(this.curr_month).subtract(1,'months').format("YYYY-MM-DD");
+    let fj_mois_prec = _.find(this.fj_list, {"month": mois_prec});
+    // console.log("Trying to get fj last month", fj_mois_prec);
+    if (fj_mois_prec) {
+      console.log("Found solde précédent du mois " + mois_prec, fj_mois_prec);
+      this.solde_mois_prec.banque = fj_mois_prec.data.solde_banque;
+      this.solde_mois_prec.caisse = fj_mois_prec.data.solde_caisse;
+      if (this.fjdata && this.fjdata.report_mois_precedent) {
+        this.fjdata.report_mois_precedent.banque = this.solde_mois_prec.banque;
+        this.fjdata.report_mois_precedent.caisse = this.solde_mois_prec.caisse;
+      } else {
+        this.fjdata.report_mois_precedent.banque = 0;
+        this.fjdata.report_mois_precedent.caisse = 0;
+      }
+    } else {
+      console.log("Impossible de trouver le solde du mois précédent", this.fjdata);
+      if (!this.fjdata.report_mois_precedent) this.fjdata.report_mois_precedent = {};
+      this.fjdata.report_mois_precedent.banque = 0;
+      this.fjdata.report_mois_precedent.caisse = 0;
+    }
   }
 
   computeAmounts() {
