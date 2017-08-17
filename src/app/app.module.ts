@@ -3,10 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
-import { AjouterPage } from '../pages/ajouter/ajouter';
 import { Ajouter2Page } from '../pages/ajouter2/ajouter2';
 import { BudgetPage } from '../pages/budget/budget';
 import { ChartsPage } from '../pages/charts/charts';
@@ -25,6 +22,7 @@ import { FileChooser } from '@ionic-native/file-chooser';
 import { IonicStorageModule } from '@ionic/storage';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Diagnostic } from '@ionic-native/diagnostic';
+import { AppVersion } from '@ionic-native/app-version';
 
 import { TransactionService } from '../services/transaction.service';
 import { ParamService } from '../services/param.service';
@@ -40,14 +38,12 @@ import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 import { RadioSquareComponent } from '../components/radio-square/radio-square';
 
 import { CurrencyPipe } from '../pipes/currency';
+import { GaugeComponent } from '../components/gauge/gauge';
 
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
-    ContactPage,
     HomePage,
-    AjouterPage,
     Ajouter2Page,
     BudgetPage,
     ChartsPage,
@@ -62,7 +58,8 @@ import { CurrencyPipe } from '../pipes/currency';
     ProgressBarComponent,
     RadioSquareComponent,
     CurrencyPipe,
-    FjcircleComponent
+    FjcircleComponent,
+    GaugeComponent
   ],
   imports: [
     BrowserModule,
@@ -72,10 +69,7 @@ import { CurrencyPipe } from '../pipes/currency';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
-    ContactPage,
     HomePage,
-    AjouterPage,
     Ajouter2Page,
     BudgetPage,
     ChartsPage,
@@ -100,7 +94,8 @@ import { CurrencyPipe } from '../pipes/currency';
     ExportService,
     DatePicker,
     AndroidPermissions,
-    Diagnostic
+    Diagnostic,
+    AppVersion
   ]
 })
 export class AppModule {}

@@ -14,6 +14,7 @@
 
 
 <ion-content padding>
+
   <form (ngSubmit)="enregistrer()">
     <ion-item>
       <ion-label>Prénom Nom</ion-label>
@@ -44,6 +45,10 @@
     <ion-item>
       <input type="file" id="file_picker_browser" hidden>
       <button ion-item type="button" (click)="importer()" block color="secondary">Importer une base de données</button>
+    </ion-item>
+
+    <ion-item class="info">
+      Version: {{version}}<br/> Contact: <a href="mailto:shaqed@outlook.fr">shaqed@outlook.fr</a>
     </ion-item>
   </ion-list>
 </ion-content>

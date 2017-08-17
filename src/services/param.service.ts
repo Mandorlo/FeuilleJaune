@@ -58,11 +58,23 @@ export class ParamService {
   public liste_secretariat = _.map(_.filter(this.categories, ['type', 'secretariat']), 'id');
   public liste_banque = _.map(_.filter(this.categories, ['type', 'banque']), 'id');
 
+  public init:any;
+  public gauges:any; // min/max values for the gauges on home screen
+
   public personne:string;
   public maison:string;
   public currency:string;
 
   constructor(private storage: Storage) {
+    // on récupère les variables d'initialisation
+    this.storage.get("init").then(res => {
+      this.init = res;
+    }).catch(err => {
+      console.log("No person found, using empty personne");
+      this.init = {'bienvenue_msg': true}
+      this.storage.set("init", this.init);
+    });
+
     // on récupère la personne si elle existe
     this.storage.get("personne").then(res => {
       this.personne = res;
@@ -88,6 +100,11 @@ export class ParamService {
     })
   }
 
+  setInit(o) {
+    this.init = o;
+    return this.storage.set("init", o);
+  }
+
   setMaison(val) {
     this.maison = val;
     return this.storage.set("maison", val);
@@ -105,6 +122,12 @@ export class ParamService {
 
   get(key) {
     return this.storage.get(key)
+  }
+
+  symbolCurrency() {
+    if (this.currency == "EUR") return "€";
+    else if (this.currency == "USD") return "$";
+    else return "."
   }
 
 

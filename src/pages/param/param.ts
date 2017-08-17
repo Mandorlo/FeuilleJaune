@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
+import { AppVersion } from '@ionic-native/app-version';
 
 import { ParamService } from '../../services/param.service';
 import { ExportService } from '../../services/export.service';
@@ -16,16 +17,30 @@ import { ExportService } from '../../services/export.service';
   templateUrl: 'param.html',
 })
 export class ParamPage {
+  private version:string = "";
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public paramService: ParamService,
+    public appVersion: AppVersion,
     public exportService: ExportService,
     public ptfm: Platform) {
+      this.appVersion.getVersionNumber().then(v => {
+        console.log("AppVersion", v);
+        this.version = v;
+      }).catch(err => {
+        console.log("Impossible de récupérer le num de version de l'app: ", err)
+      });
   }
 
   ionViewDidLoad() {
     document.getElementById('file_picker_browser').addEventListener('change', this.import_core_browser.bind(this), false);
     console.log('ParamPage : Benedetto sia il tuo nome santissimo Signore');
+    this.appVersion.getVersionNumber().then(v => {
+      console.log("App Version", v);
+      this.version = v;
+    }).catch(err => {
+      console.log("Impossible de récupérer le num de version de l'app: ", err)
+    });
   }
 
   enregistrer() {
@@ -56,12 +71,12 @@ export class ParamPage {
     let files = evt.target.files;
     let file = files[0];
     let reader = new FileReader();
-    let _this = this;
+    let mythis = this;
     reader.onload = (function(theFile) {
       return function(e) {
         let data = JSON.parse(e.target.result);
-        if (_this.exportService.isValidDB(data)) {
-          _this.exportService.importDBcore(data);
+        if (mythis.exportService.isValidDB(data)) {
+          mythis.exportService.importDBcore(data);
         } else {
           console.log("invalid db ", data)
         }

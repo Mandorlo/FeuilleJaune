@@ -1,0 +1,19 @@
+gauge {
+  #meter {
+    transform: rotateZ(138deg);
+    width: 100%;
+  }
+
+  #wrapper {
+    width: 100%;
+    margin-bottom: -2em;
+  }
+
+  .text {
+    font-size: 1.7em;
+    position: relative;
+    top: -96px;
+    left: 0px;
+    text-align: center;
+  }
+}

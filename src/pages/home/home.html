@@ -1,23 +1,37 @@
 <ion-header>
   <ion-navbar color="primary">
     <ion-title>Accueil</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="showParamPage()">
+        <i style="font-size:1.6em" class="fa fa-cog" aria-hidden="true"></i>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Bienvenue dans l'appli Feuille Jaune !</h2>
-  <p>
-    Ici tu peux rentrer de nouvelles dépenses ou de nouveaux revenus et générer la feuille jaune du mois en PDF dans l'onglet "Feuille Jaune".
-  </p>
-  <p>
-    Cette appli n'est pas encore très fiable, donc ne te base pas encore là-dessus à 100% pour ta feuille jaune, mais si tu peux me faire part de tes
-    commentaires, je pourrai la rendre fonctionnelle et fiable.<br/> Pour cela, n'hésite pas à m'envoyer
-    un mail à <a href="mailto:shaqed@outlook.fr">shaqed@outlook.fr</a> :)
-  </p>
-  <p>
+  <button ion-button (click)="showAjouterPage()">Ajouter une nouvelle transaction</button>
 
-  </p>
-  <p>
-    <button ion-button (click)="showAjouterPage()">Ajouter une nouvelle transaction</button>
-  </p>
+  <h3 style="width:100%;text-align:center">Solde</h3>
+  <div style="float:left;width:50%;text-align:center">Banque</div>
+  <div style="float:right;width:50%;text-align:center">Liquide</div>
+  <gauge [level]="gauges.banque" min="0" max="1000" text="" style="float:left;width:50%;margin-top:-10px">{{gauges.pretty_banque}}</gauge>
+  <gauge [level]="gauges.caisse" min="0" max="1000" text="" style="float:right;width:50%;margin-top:-10px">{{gauges.pretty_caisse}}</gauge>
+
+  <ion-card *ngIf="init.bienvenue_msg">
+    <ion-card-header>
+      <ion-icon name="close" style="float:right" (click)="closeBienvenue()"></ion-icon>
+      <p><b>Bienvenue dans l'appli Feuille Jaune !</b></p>
+    </ion-card-header>
+    <ion-card-content>
+      <p>
+        Ici tu peux rentrer de nouvelles dépenses ou de nouveaux revenus et générer la feuille jaune du mois en PDF dans l'onglet "Feuille Jaune".
+      </p>
+      <p>
+        Cette appli n'est pas encore très fiable, donc ne te base pas encore là-dessus à 100% pour ta feuille jaune, mais si tu peux me faire part de tes commentaires, je pourrai la rendre fonctionnelle et fiable.<br/> Pour cela, n'hésite pas à m'envoyer
+        un mail à <a href="mailto:shaqed@outlook.fr">shaqed@outlook.fr</a> :)
+      </p>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
