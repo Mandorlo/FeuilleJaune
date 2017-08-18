@@ -18,6 +18,7 @@ export class FjactionsPage {
                       {title: "Supprimer", val: "suppr", "icon": "fa-trash"}];
   private fj;
   private mois:string = "";
+  private loading:boolean = false;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -47,13 +48,16 @@ export class FjactionsPage {
       this.navCtrl.pop();
       this.navCtrl.push(FjgenPage, {"curr_fj": this.fj})
     } else if (o.val === "pdf") {
+      this.loading = true
       this.fjService.shareFJ(this.fj.month).then(res => {
         this.presentToast("Feuille Jaune partagée ! Béni soit le Seigneur, Dieu de l'univers !");
         this.navCtrl.pop();
+        this.loading = false
       }).catch(err => {
         this.presentToast("Impossible de partager la feuille jaune :(");
         console.log(err);
         this.navCtrl.pop();
+        this.loading = false
       });
     } else if (o.val === "suppr") {
       this.supprFJ();
@@ -87,12 +91,15 @@ export class FjactionsPage {
   }
 
   supprFJcore() {
+    this.loading = true;
     this.fjService.deleteFJ([this.fj]).then(res => {
       console.log("Delete completed !", res);
       this.navCtrl.pop();
+      this.loading = false
     }).catch(err => {
       console.log("Error while deleting :(", err);
       this.navCtrl.pop();
+      this.loading = false
     });
   }
 

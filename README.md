@@ -17,6 +17,7 @@ Car dans index.html, on pointe vers le pdfmake.min.js et vfs_fonts.js de ce doss
 
 ## Publish new version
 
+* change version number in package.json, config.xml and param.ts
 * ionic cordova plugin rm cordova-plugin-console
 * ionic cordova build --release android --prod
 * jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore android-release-unsigned.apk alias_name

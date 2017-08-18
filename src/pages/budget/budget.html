@@ -26,6 +26,10 @@
 
 
 <ion-content padding>
+  <div class="header_list">
+    {{nb_tr}} transactions
+  </div>
+
   <ion-list>
     <budget-line *ngFor="let tr of transactions" [tr]="tr" (onDeleted)="reload()"></budget-line>
   </ion-list>

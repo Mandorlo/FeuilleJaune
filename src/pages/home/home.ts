@@ -125,6 +125,9 @@ export class HomePage {
   showAjouterPage() {
     // this.appCtrl.getRootNav().push(Ajouter2Page);
     let modal = this.modalCtrl.create(Ajouter2Page, { opt: "optional parameters" });
+    modal.onDidDismiss(data => {
+      this.updateGauges();
+    });
     modal.present();
   }
 

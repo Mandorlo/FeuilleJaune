@@ -5,19 +5,17 @@ import { AppVersion } from '@ionic-native/app-version';
 import { ParamService } from '../../services/param.service';
 import { ExportService } from '../../services/export.service';
 
-/**
- * Generated class for the ParamPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+
+
+
+
 
 @Component({
   selector: 'page-param',
   templateUrl: 'param.html',
 })
 export class ParamPage {
-  private version:string = "";
+  private version:string = "0.9.0";
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public paramService: ParamService,

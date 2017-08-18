@@ -130,6 +130,9 @@ export class FjmgmtPage {
 
   showFJActions(fj) { // montre la modal window pour choisir une action relative à la feuille jaune cliquée
     let modalActions = this.modalCtrl.create(FjactionsPage, { "fj": fj });
+    modalActions.onDidDismiss(data => {
+      this.reload();
+    });
     modalActions.present();
   }
 

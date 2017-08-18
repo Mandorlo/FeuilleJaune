@@ -14,6 +14,7 @@ import _ from 'lodash';
 export class BudgetPage {
   private tr_engine_ready:boolean = false;
   public transactions;
+  public nb_tr = 0;
   private modalAddTr;
 
   constructor(public navCtrl: NavController,
@@ -27,6 +28,9 @@ export class BudgetPage {
   ionViewDidLoad() {
     console.log('BudgetPage : I cieli e la terra sono pieni della tua gloria o Signore !');
     this.modalAddTr = this.modalCtrl.create(Ajouter2Page, {opt: "optional parameters"});
+    this.modalAddTr.onDidDismiss(data => {
+      this.reload();
+    });
   }
 
   ionViewDidEnter() {
@@ -38,6 +42,7 @@ export class BudgetPage {
     this.trService.getAll().then(data => {
       if (typeof data == 'object' && data.length) {
         this.transactions = _.orderBy(data, ['date'], ['desc']);
+        this.nb_tr = this.transactions.length;
       } else {
         console.log("Le format de la base de transactions n'est pas bon ou la base est vide, on utilise du coup une base vide");
         this.transactions = [];
