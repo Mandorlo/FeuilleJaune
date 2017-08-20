@@ -38,6 +38,7 @@ import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 import { RadioSquareComponent } from '../components/radio-square/radio-square';
 
 import { CurrencyPipe } from '../pipes/currency';
+import { HistoFilter } from '../pipes/histoFilter'
 import { GaugeComponent } from '../components/gauge/gauge';
 
 @NgModule({
@@ -58,6 +59,7 @@ import { GaugeComponent } from '../components/gauge/gauge';
     ProgressBarComponent,
     RadioSquareComponent,
     CurrencyPipe,
+    HistoFilter,
     FjcircleComponent,
     GaugeComponent
   ],

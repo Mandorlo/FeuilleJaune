@@ -16,6 +16,7 @@ export class BudgetPage {
   public transactions;
   public nb_tr = 0;
   private modalAddTr;
+  public searchText:string = "";
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -59,6 +60,10 @@ export class BudgetPage {
   showAjouterPage() {
     // this.appCtrl.getRootNav().push(Ajouter2Page);
     this.modalAddTr.present();
+  }
+
+  onInputSearch(e) {
+    let text = e.data;
   }
 
 }

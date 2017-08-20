@@ -12,10 +12,12 @@
     </ion-title>
 
     <ion-buttons end>
+
       <button ion-button icon-only *ngIf="tr_engine_ready" (click)="reload()">
         <!-- <ion-icon name="refresh"></ion-icon> -->
         <i style="font-size:1.6em" class="fa fa-refresh" aria-hidden="true"></i>
       </button>
+
       <button ion-button icon-only *ngIf="!tr_engine_ready">
         <ion-spinner name="bubbles"></ion-spinner>
       </button>
@@ -26,12 +28,15 @@
 
 
 <ion-content padding>
+  <ion-searchbar [(ngModel)]="searchText" [showCancelButton]="shouldShowCancel" (ionInput)="onInputSearch($event)" (ionCancel)="onCancelSearch($event)">
+  </ion-searchbar>
+
   <div class="header_list">
     {{nb_tr}} transactions
   </div>
 
   <ion-list>
-    <budget-line *ngFor="let tr of transactions" [tr]="tr" (onDeleted)="reload()"></budget-line>
+    <budget-line *ngFor="let tr of transactions | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()"></budget-line>
   </ion-list>
 
   <ion-fab right bottom>
