@@ -18,6 +18,7 @@ import * as pik from 'pikaday';
 })
 export class TrDetailsPage {
   @ViewChild('myPicker') mypicker;
+  private pickerObject:any;
 
   private processing: boolean = false;
   private orig_tr: Object;
@@ -45,6 +46,7 @@ export class TrDetailsPage {
 
   ionViewDidLoad() {
     console.log('TrDetailsPage : Signore, tu solo hai parole di vita eterna');
+    this.setupDatePicker();
   }
 
   presentToast(msg) {
@@ -128,26 +130,25 @@ export class TrDetailsPage {
       err => {
         console.log('Error occurred while getting date: ', err);
         console.log("Trying with ionic datepicker...TODO");
-        // this.browserDatePicker();
+        this.pickerObject.show();
       });
   }
 
-  dateChanged(e) {
-    console.log("coco", e)
-  }
-
-  browserDatePicker() { // TODO : doesn't work, maybe remove pikaday with npm
-    let field:HTMLDivElement = this.mypicker.nativeElement;//document.getElementById('datepicker');
+  setupDatePicker() {
+    let field:HTMLDivElement = this.mypicker.nativeElement;
     console.log("pik", field, this.mypicker);
-    let picker = new pik({
+    let mythis = this;
+    this.pickerObject = new pik({
       field: this.mypicker.nativeElement,
+      defaultDate: moment(mythis.curr_tr["date"]),
       onSelect: function(date) {
-        console.log("coco", picker.toString());
+        console.log("pikaday: ", date);
+        mythis.curr_tr["date"] = moment(date).format("YYYY-MM-DD");
+        mythis.pretty['date'] = moment(date).fromNow();
+        mythis.pretty['date2'] = moment(date).format("ddd D MMM YYYY");
       },
       format: 'D MMM YYYY'
     });
-    picker.show();
-    // field.parentNode.insertBefore(picker.el, field.nextSibling);
   }
 
 }

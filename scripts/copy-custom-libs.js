@@ -29,5 +29,9 @@ module.exports = {
   copyFontawesomeCss: {
     src: ['{{ROOT}}/node_modules/font-awesome/css/font-awesome.min.css'],
     dest: '{{WWW}}/assets/css'
+  },
+  copyPikadayCss: {
+    src: ['{{ROOT}}/node_modules/pikaday/css/pikaday.css', '{{ROOT}}/node_modules/pikaday/css/site.css', '{{ROOT}}/node_modules/pikaday/css/theme.css', '{{ROOT}}/node_modules/pikaday/css/triangle.css'],
+    dest: '{{WWW}}/assets/css'
   }
 }
