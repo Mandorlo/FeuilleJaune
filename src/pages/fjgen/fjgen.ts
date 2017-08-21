@@ -23,13 +23,13 @@ export class FjgenPage {
 
   public transactions = [];
   public curr_month = moment().format("YYYY-MM") + "-01";
-  public curr_month_pretty:string = moment().format("MMM YYYY");
-  public solde_mois_prec:any = {'banque': 0, 'caisse': 0};
+  public curr_month_pretty: string = moment().format("MMM YYYY");
+  public solde_mois_prec: any = { 'banque': 0, 'caisse': 0 };
   public last_months = [];
   public fjdata;
   public fjdata_test;
   public edit_fj: boolean = false;
-  public fj_list:any;
+  public fj_list: any;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -54,27 +54,26 @@ export class FjgenPage {
     }
 
     // on récupère la liste des last months et le solde du mois prec s'il existe
-    if (!this.edit_fj) {
-      this.fjService.getAllFJ().then(fj_list => {
-        this.fj_list = fj_list;
+    this.fjService.getAllFJ().then(fj_list => {
+      this.fj_list = fj_list;
 
-        // on récupère le solde du mois prec
-        this.updateSoldeLastMonth();
+      // on récupère le solde du mois prec
+      this.updateSoldeLastMonth();
 
-        // on récupère la liste des last months
+      // on récupère la liste des last months
+      if (!this.edit_fj) {
         let mymonths = _.map(fj_list, "month");
         for (let i = 0; i < 7; i++) {
           let mydate = moment(this.curr_month).subtract(i, 'months');
           if (mymonths.indexOf(mydate.format("YYYY-MM") + "-01") < 0) this.last_months.push({ 'date': mydate.format("YYYY-MM") + "-01", 'label': mydate.format('MMMM YYYY') })
         }
         if (this.last_months && this.last_months.length) this.curr_month = this.last_months[0].date;
-        this.tr_engine_ready = true;
-      }).catch(err => {
-        console.log(err)
-      });
-    } else {
+
+      }
       this.tr_engine_ready = true;
-    }
+    }).catch(err => {
+      console.log(err)
+    });
   }
 
   ionViewDidLoad() {
@@ -205,8 +204,9 @@ export class FjgenPage {
   }
 
   updateSoldeLastMonth() {
-    let mois_prec = moment(this.curr_month).subtract(1,'months').format("YYYY-MM-DD");
-    let fj_mois_prec = _.find(this.fj_list, {"month": mois_prec});
+    let mois_prec = moment(this.curr_month).subtract(1, 'months').format("YYYY-MM-DD");
+    console.log("fj_list", this.fj_list);
+    let fj_mois_prec = _.find(this.fj_list, { "month": mois_prec });
     // console.log("Trying to get fj last month", fj_mois_prec);
     if (fj_mois_prec) {
       console.log("Found solde précédent du mois " + mois_prec, fj_mois_prec);
@@ -220,7 +220,7 @@ export class FjgenPage {
         this.fjdata.report_mois_precedent.caisse = 0;
       }
     } else {
-      console.log("Impossible de trouver le solde du mois précédent", this.fjdata);
+      console.log("Impossible de trouver le solde du mois précédent " + mois_prec, this.fjdata);
       if (!this.fjdata.report_mois_precedent) this.fjdata.report_mois_precedent = {};
       this.fjdata.report_mois_precedent.banque = 0;
       this.fjdata.report_mois_precedent.caisse = 0;

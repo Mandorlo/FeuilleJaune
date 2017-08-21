@@ -1,0 +1,52 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>{{curr_tr.name}}</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="save()">
+        <i class="icons_nav fa fa-floppy-o"></i>
+      </button>
+
+      <button ion-button (click)="delete()">
+        <i class="icons_nav fa fa-trash-o"></i>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <div class="big_back">
+    <i class="myicon fa" [ngClass]="icon"></i>
+  </div>
+  <div class="montant">{{pretty.montant}}</div>
+  <div class="container">
+    <h3 class="nom" contenteditable="true" [textContent]="curr_tr.name" (input)="curr_tr.name=$event.target.textContent"></h3>
+    <div class="date">{{pretty.date}}</div>
+
+    <div class="details">
+      <div class="detail_item">
+        <i class="fa fa-exchange"></i>
+        <div>{{pretty.type}}</div>
+      </div>
+
+      <div class="detail_item">
+        <i class="fa fa-tags"></i>
+        <div>{{pretty.category}}</div>
+      </div>
+
+      <div class="detail_item" #myPicker (click)="changeDate()">
+        <i class="fa fa-calendar-o"></i>
+        <!-- <input type="text" id="datepicker"> -->
+        <div>{{pretty.date2}}</div>
+        <!-- <input type="datetime-local" [ngModel]="pretty.date2" (ngModel)='changedDate($event)'> -->
+        <!-- <ion-datetime displayFormat="D MMM YY" [(ngModel)]="curr_tr.date" (changed)="dateChanged($event)" monthNames="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre" monthShortNames="Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc"></ion-datetime> -->
+      </div>
+    </div>
+
+    <h4>COMMENTAIRE</h4>
+    <div class="comment">{{curr_tr.comment}}</div>
+  </div>
+</ion-content>

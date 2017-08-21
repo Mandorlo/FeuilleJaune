@@ -4,12 +4,9 @@ import { ParamService } from '../../services/param.service';
 import moment from 'moment';
 import _ from 'lodash';
 
-/**
- * Generated class for the BudgetLineComponent component.
- *
- * See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
- * for more info on Angular Components.
- */
+
+
+
 @Component({
   selector: 'budget-line',
   templateUrl: 'budget-line.html'
@@ -36,20 +33,20 @@ export class BudgetLineComponent {
     this.cool_date = this.getCoolDate(curr_tr.date);
     let cat_list = (curr_tr.type == 'out') ? this.paramService.categories : this.paramService.categories_in ;
     let el = _.find(cat_list, {'id': curr_tr.category});
-    this.category_icon = el.icon;
-    let smart_icon = this.smartIcon(curr_tr);
-    if (smart_icon.length) this.category_icon = smart_icon;
+    this.category_icon = this.transactionService.smartIcon(curr_tr);
+    // let smart_icon = this.smartIcon(curr_tr);
+    // if (smart_icon.length) this.category_icon = smart_icon;
     this.category_domain = (el.type) ? el.type.replace(" ", ""): "";
 
     this.category_pretty = el.label;
     if (curr_tr.type == 'depot') {
       this.category_pretty = "Dépôt à la banque";
       this.category_domain = "depot";
-      this.category_icon = "fa-angle-double-left";
+      // this.category_icon = "fa-angle-double-left";
     } else if (curr_tr.type == 'retrait') {
       this.category_pretty = "Retrait d'argent liquide";
       this.category_domain = "retrait";
-      this.category_icon = "fa-angle-double-right";
+      // this.category_icon = "fa-angle-double-right";
     }
   }
 

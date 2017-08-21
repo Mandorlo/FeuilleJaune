@@ -36,7 +36,7 @@
   </div>
 
   <ion-list>
-    <budget-line *ngFor="let tr of transactions | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()"></budget-line>
+    <budget-line *ngFor="let tr of transactions | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
   </ion-list>
 
   <ion-fab right bottom>

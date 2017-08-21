@@ -4,6 +4,7 @@ import { App, NavController, NavParams, ModalController } from 'ionic-angular';
 import { TransactionService } from '../../services/transaction.service';
 
 import { Ajouter2Page } from '../ajouter2/ajouter2';
+import { TrDetailsPage } from '../tr-details/tr-details';
 
 import _ from 'lodash';
 
@@ -55,6 +56,10 @@ export class BudgetPage {
       this.transactions = [];
       this.tr_engine_ready = true;
     })
+  }
+
+  showDetails(tr) {
+    this.navCtrl.push(TrDetailsPage, {"tr": tr});
   }
 
   showAjouterPage() {

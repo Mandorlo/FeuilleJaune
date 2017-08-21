@@ -6,6 +6,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { Ajouter2Page } from '../pages/ajouter2/ajouter2';
 import { BudgetPage } from '../pages/budget/budget';
+import { TrDetailsPage } from '../pages/tr-details/tr-details';
 import { ChartsPage } from '../pages/charts/charts';
 import { ParamPage } from '../pages/param/param';
 import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
@@ -47,6 +48,7 @@ import { GaugeComponent } from '../components/gauge/gauge';
     HomePage,
     Ajouter2Page,
     BudgetPage,
+    TrDetailsPage,
     ChartsPage,
     ParamPage,
     FeuillejaunePage,
@@ -74,6 +76,7 @@ import { GaugeComponent } from '../components/gauge/gauge';
     HomePage,
     Ajouter2Page,
     BudgetPage,
+    TrDetailsPage,
     ChartsPage,
     ParamPage,
     FeuillejaunePage,
