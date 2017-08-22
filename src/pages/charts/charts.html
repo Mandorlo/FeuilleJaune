@@ -29,7 +29,14 @@
       Répartition des dépenses du mois
     </ion-card-header>
     <ion-card-content>
+      <ion-item>
+        <ion-label>Mois</ion-label>
+        <ion-select style="max-width: 100% !important;" [(ngModel)]="repartition_depenses_mois" (ionChange)="this.genDataPie(this.repartition_depenses_mois, 1)">
+          <ion-option *ngFor="let m of last_months" [value]="m.date">{{m.label}}</ion-option>
+        </ion-select>
+      </ion-item>
       <canvas #doughnutCanvas></canvas>
+      <div class="total_pie_month">TOTAL : {{repartition_depenses_mois_total}} {{mycurrency}}</div>
     </ion-card-content>
   </ion-card>
 

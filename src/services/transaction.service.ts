@@ -128,11 +128,13 @@ export class TransactionService {
     let nom = tr.name.toLowerCase();
     if (nom.indexOf("vol ") > -1 || nom.indexOf("avion") > -1 || nom.indexOf("flight") > -1 || nom.indexOf("plane") > -1) {
       return "fa-plane"
+    } else if (nom.indexOf("train") > -1) {
+      return "fa-train"
     } else if (nom.indexOf("photo") > -1) {
       return "fa-camera"
     } else if (nom.indexOf("hairdresser") > -1 || nom.indexOf("coiffeur") > -1) {
       return "fa-scissors"
-    } else if (nom.indexOf("taxi") > -1 || nom.indexOf("cab") > -1) {
+    } else if (nom.indexOf("taxi") > -1 || nom.indexOf("cab") > -1 || nom.indexOf("uber") > -1) {
       return "fa-cab"
     } else if (nom.indexOf("metro") > -1 || nom.indexOf("subway") > -1) {
       return "fa-subway"

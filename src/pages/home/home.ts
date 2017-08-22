@@ -113,8 +113,8 @@ export class HomePage {
       });
     }
 
-    solde["pretty_banque"] = solde.banque.toString() + " " + this.paramService.symbolCurrency();
-    solde["pretty_caisse"] = solde.caisse.toString() + " " + this.paramService.symbolCurrency();
+    solde["pretty_banque"] = solde.banque.toFixed(2).toString() + " " + this.paramService.symbolCurrency();
+    solde["pretty_caisse"] = solde.caisse.toFixed(2).toString() + " " + this.paramService.symbolCurrency();
     this.gauges = solde;
   }
 

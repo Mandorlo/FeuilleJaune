@@ -28,6 +28,12 @@ export class ChartsPage {
 
   private tr_list: any;
 
+  private repartition_depenses_mois:string;
+  private repartition_depenses_mois_total:string = "0";
+  private last_months:any;
+
+  private mycurrency:string = "";
+
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private fjService: FjService,
@@ -40,6 +46,14 @@ export class ChartsPage {
     this.reload();
   }
 
+  getLastMonths() {
+    this.last_months = [];
+    for (let i = 0; i < 7; i++) {
+      let mydate = moment().subtract(i, 'months');
+      this.last_months.push({ 'date': mydate.format("YYYY-MM") + "-01", 'label': mydate.format('MMMM YYYY') })
+    }
+  }
+
   goToHistoPage() {
     this.navCtrl.push(BudgetPage);
   }
@@ -49,27 +63,32 @@ export class ChartsPage {
       this.tr_list = trlist;
       // console.log("Transactions loaded ! Grazie Signore !");
       this.genDataBarTotalDepensesParMois();
-      this.genDataPie();
+      this.genDataPie(this.repartition_depenses_mois, 1);
     }).catch(err => {
       console.log("Impossible de charger les transactions", err)
     });
   }
 
-  genDataPie(nb_mois = 1) {
+  genDataPie(mois_ref = "auto", nb_mois = 1) {
+    // mois_ref = "YYYY-MM-DD"
     // genere les données de répartition des dépenses sur les nb_mois derniers mois
     let categories = ['maison', 'vie courante', 'transport', 'secretariat', 'banque'];
     let data = [0, 0, 0, 0, 0];
-    let date_limit = moment().startOf("month").subtract(nb_mois-1, "months");
+    if (mois_ref == "auto") mois_ref = moment().format("YYYY-MM-DD");
+    let date_limit_inf = moment(mois_ref).startOf("month").subtract(nb_mois-1, "months");
+    let date_limit_sup = moment(mois_ref).endOf("month");
 
     this.tr_list.forEach(tr => {
       let mycat = _.find(this.paramService.categories, { 'id': tr.category });
       if (mycat && mycat.type) {
         mycat = mycat.type;
-        if (tr.type === 'out' && date_limit.isBefore(tr.date) && categories.indexOf(mycat) > -1) {
+        if (tr.type === 'out' && date_limit_inf.isBefore(tr.date) && moment(tr.date).isBefore(date_limit_sup) && categories.indexOf(mycat) > -1) {
           data[categories.indexOf(mycat)] += parseFloat(tr.montant);
         }
       }
     });
+
+    this.repartition_depenses_mois_total = _.sum(data).toFixed(2).toString();
 
     this.genPie(categories, data)
   }
@@ -170,42 +189,10 @@ export class ChartsPage {
 
   ionViewDidLoad() {
     console.log('ChartsPage: Heureux l\'homme qui remet sa vie entre les mains du Père.');
-
+    this.getLastMonths();
+    this.mycurrency = this.paramService.symbolCurrency();
+    this.repartition_depenses_mois = this.last_months[0].date;
     this.reload();
-
-    // this.lineChart = new Chart(this.lineCanvas.nativeElement, {
-    //
-    //   type: 'line',
-    //   data: {
-    //     labels: ["January", "February", "March", "April", "May", "June", "July"],
-    //     datasets: [
-    //       {
-    //         label: "My First dataset",
-    //         fill: false,
-    //         lineTension: 0.1,
-    //         backgroundColor: "rgba(75,192,192,0.4)",
-    //         borderColor: "rgba(75,192,192,1)",
-    //         borderCapStyle: 'butt',
-    //         borderDash: [],
-    //         borderDashOffset: 0.0,
-    //         borderJoinStyle: 'miter',
-    //         pointBorderColor: "rgba(75,192,192,1)",
-    //         pointBackgroundColor: "#fff",
-    //         pointBorderWidth: 1,
-    //         pointHoverRadius: 5,
-    //         pointHoverBackgroundColor: "rgba(75,192,192,1)",
-    //         pointHoverBorderColor: "rgba(220,220,220,1)",
-    //         pointHoverBorderWidth: 2,
-    //         pointRadius: 1,
-    //         pointHitRadius: 10,
-    //         data: [65, 59, 80, 81, 56, 55, 40],
-    //         spanGaps: false,
-    //       }
-    //     ]
-    //   }
-    //
-    // });
-
   }
 
 }

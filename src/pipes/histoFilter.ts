@@ -24,9 +24,11 @@ export class HistoFilter implements PipeTransform {
     return items.filter((item, i) => {
       let b = false;
       let norm_name = this.normalize(item.name);
-      b = b || (norm_name.indexOf(myfilter) > -1)
+      let norm_comment = this.normalize(item.comment);
+      b = b || norm_name.indexOf(myfilter) > -1
             || item.date.indexOf(myfilter) > -1
             || item.category.indexOf(myfilter) > -1
+            || norm_comment.indexOf(myfilter) > -1
             || item.montant.toString().indexOf(myfilter) > -1;
       return b
     });
