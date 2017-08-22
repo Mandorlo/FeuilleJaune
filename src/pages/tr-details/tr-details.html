@@ -21,18 +21,18 @@
   <div class="big_back">
     <i class="myicon fa" [ngClass]="icon"></i>
   </div>
-  <div class="montant">{{pretty.montant}}</div>
+  <div class="montant" (click)="changeMontant()">{{pretty.montant}}</div>
   <div class="container">
     <h3 class="nom" contenteditable="true" [textContent]="curr_tr.name" (input)="curr_tr.name=$event.target.textContent"></h3>
     <div class="date">{{pretty.date}}</div>
 
     <div class="details">
-      <div class="detail_item">
+      <div class="detail_item" (click)="showMoyenPrompt()">
         <i class="fa fa-exchange"></i>
         <div>{{pretty.type}}</div>
       </div>
 
-      <div class="detail_item">
+      <div class="detail_item" (click)="showCategoryPrompt()">
         <i class="fa fa-tags"></i>
         <div>{{pretty.category}}</div>
       </div>
@@ -47,6 +47,28 @@
     </div>
 
     <h4>COMMENTAIRE</h4>
-    <div class="comment">{{curr_tr.comment}}</div>
+    <textarea rows="7" class="comment" [(ngModel)]="curr_tr.comment"></textarea>
+
+
+
+    <div class="category_container" [ngClass]="{'category_container_hidden': !show_choixCategory}">
+      <ion-card class="prompt_category">
+        <ion-card-content>
+          <ion-card-title>Catégorie</ion-card-title>
+          <hr>
+          <radio-square [options]='categories_options' [(choice)]="curr_tr.category" (click)="changeCategory()"></radio-square>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="moyen_container" [ngClass]="{'moyen_container_hidden': !show_choixMoyen}">
+      <ion-card class="prompt_moyen">
+        <ion-card-content>
+          <ion-card-title>Moyen de paiement</ion-card-title>
+          <hr>
+          <radio-square [options]='moyen_options' [(choice)]="curr_tr.moyen" (click)="changeMoyen()"></radio-square>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 </ion-content>
