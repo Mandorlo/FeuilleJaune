@@ -3,4 +3,22 @@ page-param {
     color: color($colors, lightgray);
     font-style: italic;
   }
+
+  form {
+    padding-left: 7px;
+  }
+
+  .personne label {
+    font-weight: normal;
+    color: color($colors, lightgray);
+  }
+
+  .personne input {
+    border: none;
+    margin: 0px;
+    padding: 4px;
+    text-align: right;
+    width: auto;
+    float: right;
+  }
 }
