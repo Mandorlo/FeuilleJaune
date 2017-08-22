@@ -17,6 +17,7 @@ Car dans index.html, on pointe vers le pdfmake.min.js et vfs_fonts.js de ce doss
 
 ## Publish new version
 
+### for PlayStore
 * change version number in package.json, config.xml and param.ts
 * ionic cordova plugin rm cordova-plugin-console
 * ionic cordova build --release android --prod
@@ -24,6 +25,12 @@ Car dans index.html, on pointe vers le pdfmake.min.js et vfs_fonts.js de ce doss
 * zipalign -v 4 android-release-unsigned.apk FeuilleJaune-vXXX.apk
 
 Then add the APK to Github as a release
+
+### for PWA in Firebase
+* npm run ionic:build --prod
+* firebase reauth
+* firebase deploy
+
 
 ## What helped me writing this app
 
