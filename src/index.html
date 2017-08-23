@@ -19,12 +19,16 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('service worker installed'))
-        .catch(err => console.error('Error', err));
+        .catch(err => console.error('Error installing service worker', err));
     }
   </script>
 
   <link href="build/main.css" rel="stylesheet">
   <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+  <link href="assets/css/pikaday.css" rel="stylesheet">
+  <link href="assets/css/theme.css" rel="stylesheet">
+  <link href="assets/css/site.css" rel="stylesheet">
+  <link href="assets/css/triangle.css" rel="stylesheet">
 </head>
 <body>
 
