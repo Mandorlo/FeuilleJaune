@@ -25,7 +25,7 @@ export class FjLineComponent {
   constructor(public alertCtrl: AlertController) { }
 
   isMontantNonNul(m) {
-    return (typeof m === "number" && m != 0)
+    return (typeof m === "number" && m != 0 || typeof m === "string" && !isNaN(parseFloat(m)))
   }
 
   parseDecimal(n) {

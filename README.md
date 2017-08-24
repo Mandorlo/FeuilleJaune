@@ -28,7 +28,7 @@ Then add the APK to Github as a release
 
 ### for PWA in Firebase
 * npm run ionic:build --prod
-* firebase reauth
+* (option) firebase reauth
 * firebase deploy
 
 

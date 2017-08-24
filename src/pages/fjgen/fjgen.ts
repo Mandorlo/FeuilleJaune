@@ -252,7 +252,13 @@ export class FjgenPage {
         }
       }
     }
-    // console.log(this.fjdata);
+
+    this.paramService.categories.forEach(cat => {
+      this.fjdata[cat.id]['banque'] = (this.fjdata[cat.id]['banque'] > 0) ? this.fjdata[cat.id]['banque'].toFixed(2) : 0;
+      this.fjdata[cat.id]['caisse'] = ( this.fjdata[cat.id]['caisse'] > 0) ? this.fjdata[cat.id]['caisse'].toFixed(2) : 0;
+    })
+
+    console.log("FJDATA", this.fjdata);
   }
 
   soustotal1(banque_ou_caisse) {
