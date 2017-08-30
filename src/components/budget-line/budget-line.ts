@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { AlertController } from 'ionic-angular';
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
 import moment from 'moment';
@@ -21,7 +22,8 @@ export class BudgetLineComponent {
   @Input() tr;
   @Output('onDeleted') onDeleted: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor(private transactionService: TransactionService,
+  constructor(public alertCtrl: AlertController,
+              private transactionService: TransactionService,
               private paramService: ParamService) {
     moment.locale('fr');
     // console.log('BudgetLineComponent : Benedetto sei Signore, Dio dell\'universo');
@@ -86,7 +88,31 @@ export class BudgetLineComponent {
     alert("TODO.... sorry :-S Mais prie le Seigneur pour que j'aie plus de temps :)")
   }
 
-  delete(transaction) {
+  delete(e, transaction) {
+    e.stopPropagation();
+    let alert = this.alertCtrl.create({
+      title: 'Supprimer',
+      message: 'Veux-tu vraiment supprimer la transaction ?',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: () => {
+            console.log('Suppression de la transaction annulée.');
+          }
+        },
+        {
+          text: 'Supprimer',
+          handler: () => {
+            this.deleteCore(transaction)
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  deleteCore(transaction) {
     console.log("Deleting...", transaction);
     this.transactionService.delete(transaction)
       .then(d => {

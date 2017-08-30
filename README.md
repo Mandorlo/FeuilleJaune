@@ -22,7 +22,7 @@ Car dans index.html, on pointe vers le pdfmake.min.js et vfs_fonts.js de ce doss
 * ionic cordova plugin rm cordova-plugin-console
 * ionic cordova build --release android --prod
 * jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore android-release-unsigned.apk alias_name
-* zipalign -v 4 android-release-unsigned.apk FeuilleJaune-vXXX.apk
+* zipalign -v 4 android-release-unsigned.apk FeuilleJaune-vXXX.apk (/!\ ne marche pas dans powershell, uniqmt dans cmd !!!)
 
 Then add the APK to Github as a release
 
@@ -30,6 +30,12 @@ Then add the APK to Github as a release
 * npm run ionic:build --prod
 * (option) firebase reauth
 * firebase deploy
+
+## How does the custom font work ?
+
+I used the fontastic web service to create a custom font and added it, not in /src but in /www/assets/fonts (it's called untitled-font-1). I added also the custom-font.css file in /www/assets/css to use it as font awesome classes, like <span class="my-icon"></span>. I fixed in the custom-font.css file with the right URL to the font files (added "../").
+
+Pour utiliser la custom font, c'est un peu comme font awesome, on ajoute des balises <i></i> avec la bonne classe. Les classes de la custom font sont prefixées par "icon-", typiquement "icon-church". Mais pour que ça ne rentre pas en conflit avec les icones de Ionic, il ne faut pas prefixer avec "icon-" mais avec "myicon-" ou autre. Perso j'ai utilisé "myicon-". Pour cela j'ai édité le fichier custom-font.css.
 
 
 ## What helped me writing this app
@@ -42,3 +48,4 @@ Then add the APK to Github as a release
 * To do conditional formatting in Angular 2 : https://juristr.com/blog/2016/01/learning-ng2-dynamic-styles/
 * To add fontawesome : https://luiscabrera.site/tech/2017/01/09/fontawesome-in-ionic2.html (not straightforward !)
 * To add charts with chart.js : https://www.joshmorony.com/adding-responsive-charts-graphs-to-ionic-2-applications/
+* Adding custom font : https://stackoverflow.com/questions/36870847/custom-font-with-ionic2
