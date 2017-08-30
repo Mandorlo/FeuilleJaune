@@ -7,7 +7,8 @@
 'use strict';
 importScripts('./build/sw-toolbox.js');
 
-let version = "0.9.0";
+let dev_version = "1"
+let version = "0.9.1";
 
 self.toolbox.options.cache = {
   name: 'ionic-cache'
