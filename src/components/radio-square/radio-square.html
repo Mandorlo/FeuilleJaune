@@ -1,12 +1,4 @@
-<!-- <div class="container">
-  <div *ngFor='let el of options' class='square' (click)="handleChange(el.val)" [ngClass]="{'active': (choice == el.val), square_fit: ui_fit}">
-    <div class='part icon'><i class="fa {{el.icon}} fa-2x" aria-hidden="true"></i></div>
-    <input type="radio" name="choice" [(ngModel)]="choice" [value]="el.val">
-    <label for="option" class='part text'>{{el.title}}</label>
-  </div>
-</div> -->
-
-<!-- TODO : clear html above + scss useless styles -->
+<!-- TODO : clear scss useless styles -->
 
 <ion-list>
   <ion-item *ngFor='let el of options' class="myitem wrap item-wrap item-text-wrap" style="white-space: normal;" [ngClass]="{'active': (choice == el.val)}" (click)="handleChange(el.val)">

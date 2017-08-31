@@ -149,11 +149,6 @@ export class FeuillejaunePage {
       this.fjdata[el.id] = { 'label': el.label, 'banque': 0.0, 'caisse': 0.0, 'observations': rep_obs }
       this.fjdata_test[el.id] = { 'label': el.label, 'banque': el.id + '_B', 'caisse': el.id + '_C', 'observations': el.id + '_O' }
     });
-    // on ajoute la catégorie transfert banque/caisse en plus TODO: suppr these commented lines
-    // let el = { 'id': 'transfert', 'label': 'Transfert banque/caisse' };
-    // let rep_obs = (last_fjdata && last_fjdata[el.id] && last_fjdata[el.id].observations) ? last_fjdata[el.id].observations : "";
-    // this.fjdata[el.id] = { 'label': el.label, 'banque': 0.0, 'caisse': 0.0, 'observations': rep_obs }
-    // this.fjdata_test[el.id] = { 'label': el.label, 'banque': el.id + '_B', 'caisse': el.id + '_C', 'observations': el.id + '_O' }
 
     // console.log(this.fjdata);
   }

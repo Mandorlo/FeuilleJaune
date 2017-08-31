@@ -49,25 +49,6 @@ export class PdfService {
     return opt;
   }
 
-  saveFJ_old(fjdata, opt) { // TODO tobedel
-    // on gère les paramètres par défaut
-    opt = this.manageDefaults(opt);
-
-    return new Promise((resolve, reject) => {
-      this.createPdf(fjdata, opt).then((pdf) => {
-        let blob = new Blob([pdf], { type: 'application/pdf' });
-        this.coolWrite(opt.path, opt.filename, blob).then(res => {
-          resolve(res)
-        }).catch(err => {
-          reject(err)
-        })
-      }).catch(err => {
-        console.log("Error creating pdf blob : ", err);
-        reject(err)
-      });
-    });
-  }
-
   coolWrite(path, filename, blob) {
     return new Promise((resolve, reject) => {
       this.file.checkFile(path, filename).then(exists => {
