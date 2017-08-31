@@ -35,7 +35,7 @@ export class BudgetLineComponent {
     this.cool_date = this.getCoolDate(curr_tr.date);
     let cat_list = (curr_tr.type == 'out') ? this.paramService.categories : this.paramService.categories_in ;
     let el = _.find(cat_list, {'id': curr_tr.category});
-    this.category_icon = this.transactionService.smartIcon(curr_tr);
+    this.category_icon = ('icon' in curr_tr) ? curr_tr.icon : this.transactionService.smartIcon(curr_tr);
     // let smart_icon = this.smartIcon(curr_tr);
     // if (smart_icon.length) this.category_icon = smart_icon;
     this.category_domain = (el.type) ? el.type.replace(" ", ""): "";

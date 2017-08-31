@@ -96,7 +96,7 @@ export class Ajouter2Page {
     // on sauve dans la database
     console.log("tr à enregistrer : ", this.data);
     this.transactions.push(this.data);
-    this.transactionService.set(this.transactions)
+    this.transactionService.add(this.data)
       .then(d => {
         // on affiche un petit toast :)
         this.presentToast("La transaction a été enregistrée, merci Seigneur !");

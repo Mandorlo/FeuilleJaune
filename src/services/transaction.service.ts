@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { ParamService } from './param.service';
 
 import _ from 'lodash';
+import moment from 'moment';
 
 
 
@@ -21,26 +22,57 @@ export class TransactionService {
   }
 
   add(tr) {
-    // TODO ?
+    return new Promise((resolve, reject) => {
+      this.getAll().then(data => {
+        tr.id = this.genId(tr);
+        tr.icon = this.smartIcon(tr);
+        data.push(tr);
+        this.set(data).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
+  update(id, tr) {
+    return new Promise((resolve, reject) => {
+      this.getAll().then(data => {
+        let newdata = [];
+        let updated = false;
+        data.forEach((el, i) => {
+          if ('id' in el && el["id"] == id) {
+            newdata.push(tr)
+            updated = true;
+          } else {
+            if (!('id' in el)) el.id = this.genId(el);
+            newdata.push(el)
+          }
+        });
+        if (!updated) console.log("Aucune mise à jour de la trasanction pour id=" + id + " et tr:", tr)
+        this.set(newdata).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 
   trEqual(tr, el) {
-    return el.montant == tr.montant && el.name == tr.name && el.date == tr.date
+    if ('id' in tr && 'id' in el) return tr['id'] == el['id'];
+    else return el.montant == tr.montant && el.name == tr.name && el.date == tr.date
   }
 
-  // update(tr) { // TODO à compléter, ne pas utiliser ! Car il faut ajouter un id pour chaque tr !!!!
-  //   return new Promise((resolve, reject) => {
-  //     this.getAll().then(data => {
-  //       if (typeof data != 'object' || !data.length) reject("le format de la base de données des transactions est corrompu, ou la base est vide");
-  //       let newdata = [];
-  //       data.forEach(el => {
-  //         // if (this.trEqual(tr, el))
-  //       })
-  //     }).catch(err => {
-  //       reject(err)
-  //     })
-  //   });
-  // }
+  genId(tr) {
+    let alea = "_" + Math.round(Math.random()*1000000).toString();
+    return moment(tr.date).format("YYMMDD") + "_" + tr.name + alea;
+  }
 
   delete(tr) {
     if (typeof tr == 'object') {
@@ -50,6 +82,7 @@ export class TransactionService {
           let newdata = [];
           let supprime: boolean = false;
           data.forEach(el => {
+            if (!('id' in el)) el['id'] = this.genId(el);
             if (this.trEqual(tr,el)) {
               supprime = true;
             } else {

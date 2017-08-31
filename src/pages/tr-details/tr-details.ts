@@ -54,7 +54,7 @@ export class TrDetailsPage {
     public trService: TransactionService) {
     this.curr_tr = navParams.get("tr");
     this.orig_tr = JSON.parse(JSON.stringify(this.curr_tr));
-    this.icon = this.trService.smartIcon(this.curr_tr);
+    this.icon = ('icon' in this.curr_tr) ? this.curr_tr['icon'] : this.trService.smartIcon(this.curr_tr);
     this.pretty['montant'] = this.curr_tr['montant'].toString() + " " + this.paramService.symbolCurrency();
     this.pretty['date'] = moment(this.curr_tr["date"]).fromNow();
     this.pretty['date2'] = moment(this.curr_tr['date']).format("ddd D MMM YYYY");
@@ -193,6 +193,7 @@ export class TrDetailsPage {
   changeCategory() {
     this.pretty['category'] = this.trService.categoryLabel(this.curr_tr);
     this.icon = this.trService.smartIcon(this.curr_tr);
+    this.curr_tr['icon'] = this.icon;
     this.show_choixCategory = false;
   }
 
