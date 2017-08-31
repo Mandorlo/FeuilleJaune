@@ -33,7 +33,8 @@ budget-line {
     color: color($colors, lightgray);
   }
   ion-avatar.domaine_depot {
-    background-color: color($colors, light);//gray;
+    background-color: #EBEBEB; //gray;
+    color: color($colors, lightgray);
   }
   ion-avatar.domaine_viecourante {
     background-color: color($colors, light); //#488aff;
