@@ -157,6 +157,7 @@ export class TrDetailsPage {
     }).then(
       date => {
         console.log('Got date: ', date);
+        this.pickerObject.hide();
         this.curr_tr["date"] = moment(date).format("YYYY-MM-DD");
         this.pretty['date'] = moment(this.curr_tr["date"]).fromNow();
         this.pretty['date2'] = moment(this.curr_tr['date']).format("ddd D MMM YYYY");
