@@ -52,28 +52,28 @@ export class BudgetLineComponent {
     }
   }
 
-  smartIcon(tr) {
-    let nom = tr.name.toLowerCase();
-    if (nom.indexOf("vol ") > -1 || nom.indexOf("avion") > -1 || nom.indexOf("flight") > -1 || nom.indexOf("plane") > -1) {
-      return "fa-plane"
-    } else if (nom.indexOf("hairdresser") > -1 || nom.indexOf("coiffeur") > -1) {
-      return "fa-scissors"
-    } else if (nom.indexOf("taxi") > -1 || nom.indexOf("cab") > -1) {
-      return "fa-cab"
-    } else if (nom.indexOf("metro") > -1 || nom.indexOf("subway") > -1) {
-      return "fa-subway"
-    } else if (nom.indexOf("beer") > -1 || nom.indexOf("bière") > -1 || nom.indexOf("biere") > -1 || nom.indexOf("verre") > -1) {
-      return "fa-beer"
-    } else if (nom.indexOf("hotel") > -1 || nom.indexOf("bnb") > -1) {
-      return "fa-bed"
-    } else if (nom.indexOf("boat") > -1 || nom.indexOf("bateau") > -1 || nom.indexOf("voile") > -1) {
-      return "fa-anchor"
-    } else if (nom.indexOf("book") > -1 || nom.indexOf("livre") > -1) {
-      return "fa-book"
-    } else {
-      return ""
-    }
-  }
+  // smartIcon(tr) {
+  //   let nom = tr.name.toLowerCase();
+  //   if (nom.indexOf("vol ") > -1 || nom.indexOf("avion") > -1 || nom.indexOf("flight") > -1 || nom.indexOf("plane") > -1) {
+  //     return "fa-plane"
+  //   } else if (nom.indexOf("hairdresser") > -1 || nom.indexOf("coiffeur") > -1) {
+  //     return "fa-scissors"
+  //   } else if (nom.indexOf("taxi") > -1 || nom.indexOf("cab") > -1) {
+  //     return "fa-cab"
+  //   } else if (nom.indexOf("metro") > -1 || nom.indexOf("subway") > -1) {
+  //     return "fa-subway"
+  //   } else if (nom.indexOf("beer") > -1 || nom.indexOf("bière") > -1 || nom.indexOf("biere") > -1 || nom.indexOf("verre") > -1) {
+  //     return "fa-beer"
+  //   } else if (nom.indexOf("hotel") > -1 || nom.indexOf("bnb") > -1) {
+  //     return "fa-bed"
+  //   } else if (nom.indexOf("boat") > -1 || nom.indexOf("bateau") > -1 || nom.indexOf("voile") > -1) {
+  //     return "fa-anchor"
+  //   } else if (nom.indexOf("book") > -1 || nom.indexOf("livre") > -1) {
+  //     return "fa-book"
+  //   } else {
+  //     return ""
+  //   }
+  // }
 
   getCoolDate(d) {
     let moment_d = moment(d);
@@ -82,11 +82,11 @@ export class BudgetLineComponent {
     return res;
   }
 
-  showDetail(transaction) {
-    /*let modal = this.modalCtrl.create(DetailsPage, { transaction: transaction });
-    modal.present();*/
-    alert("TODO.... sorry :-S Mais prie le Seigneur pour que j'aie plus de temps :)")
-  }
+  // showDetail(transaction) {
+  //   /*let modal = this.modalCtrl.create(DetailsPage, { transaction: transaction });
+  //   modal.present();*/
+  //   alert("TODO.... sorry :-S Mais prie le Seigneur pour que j'aie plus de temps :)")
+  // }
 
   delete(e, transaction) {
     e.stopPropagation();

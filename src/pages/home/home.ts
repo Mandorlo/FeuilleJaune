@@ -22,7 +22,11 @@ import _ from 'lodash';
 export class HomePage {
   private transactions;
   private fj_list;
-  private gauges: any = { 'banque': 0, 'caisse': 0, 'pretty_banque': "0 €", "pretty_caisse": "0 €" };
+  private gauges: any = {
+    'banque': 0, 'caisse': 0,
+    'banque_max': 100, 'caisse_max': 100,
+    'pretty_banque': "0 €", "pretty_caisse": "0 €"
+  };
   private init: any = { 'bienvenue_msg': true };
 
   constructor(public navCtrl: NavController,
@@ -80,13 +84,27 @@ export class HomePage {
     let last_month = moment(curr_month).subtract(1, 'months').format("YYYY-MM") + "-01";
 
     let prec_month_fj = _.find(this.fj_list, { 'month': last_month });
+    let this_month_fj = _.find(this.fj_list, { 'month': curr_month });
     let solde = { 'banque': 0, 'caisse': 0 }
+
+    solde["banque_max"] = this.gauges.banque_max;
+    solde["caisse_max"] = this.gauges.caisse_max;
 
     if (prec_month_fj) {
       solde.banque = parseFloat(prec_month_fj.data.solde_banque);
       solde.caisse = parseFloat(prec_month_fj.data.solde_caisse);
+      if (this_month_fj) {
+        let this_m_bank = parseFloat(this_month_fj.data.avance.banque);
+        this_m_bank = (isNaN(this_m_bank)) ? 0 : this_m_bank;
+        let this_m_caisse = parseFloat(this_month_fj.data.avance.caisse);
+        this_m_caisse = (isNaN(this_m_caisse)) ? 0 : this_m_caisse;
+        solde["banque_max"] = Math.max(0, solde.banque + this_m_bank);
+        solde["caisse_max"] = Math.max(0, solde.caisse + this_m_caisse);
+      } else {
+        console.log("Impossible de trouver la fj de ce mois")
+      }
     } else {
-      // console.log("Impossible de trouver la fj du mois précédent")
+      console.log("Impossible de trouver la fj du mois précédent")
     }
 
     // maintenant on calcule le solde du mois courant
