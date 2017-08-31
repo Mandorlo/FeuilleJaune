@@ -7,7 +7,7 @@
 'use strict';
 importScripts('./build/sw-toolbox.js');
 
-let dev_version = "1"
+let dev_version = "2"
 let version = "0.9.1";
 
 self.toolbox.options.cache = {

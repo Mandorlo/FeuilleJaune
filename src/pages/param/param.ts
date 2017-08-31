@@ -15,7 +15,7 @@ import { ExportService } from '../../services/export.service';
   templateUrl: 'param.html',
 })
 export class ParamPage {
-  private version:string = "0.9.0";
+  private version:string = "0.9.1";
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public paramService: ParamService,
