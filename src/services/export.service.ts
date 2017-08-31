@@ -41,67 +41,79 @@ export class ExportService {
   }
 
   exportDB() { // exports all the dbs (param, transaction, fj) in json format
-    this.db2json().then(db => {
-      let data = JSON.stringify(db, null, '\t');
-      this.coolWrite(this.file.dataDirectory, this.dbfilename, data).then(_ => {
-        this.socialSharing.share("", "Export db Feuille Jaune", this.file.dataDirectory + "/" + this.dbfilename).then(e => {
-          this.showToast("Base de données exportée ! Merci Seigneur de prendre soin de nous !");
+    return new Promise((resolve, reject) => {
+      this.db2json().then(db => {
+        let data = JSON.stringify(db, null, '\t');
+        this.coolWrite(this.file.dataDirectory, this.dbfilename, data).then(_ => {
+          this.socialSharing.share("", "Export db Feuille Jaune", this.file.dataDirectory + "/" + this.dbfilename).then(e => {
+            resolve("Base de données exportée ! Merci Seigneur de prendre soin de nous !");
+          }).catch(err => {
+            if (err === false) {
+              resolve("Base de données exportée ! Merci Seigneur de prendre soin de nous !")
+            } else {
+              reject(err)
+            }
+          })
         }).catch(err => {
-          if (err === false) {
-            this.showToast("Base de données exportée ! Merci Seigneur de prendre soin de nous !");
-          } else {
-            console.log("Sharing failed: ", err)
-          }
+          console.log("Error writing db.json: ", err);
+          console.log("Trying to download JSON directly...");
+          // let myurl = URL.createObjectURL(data);
+          this.downloadBrowser(data);
+          resolve("Browser download started...")
         })
       }).catch(err => {
-        console.log("Error writing db.json: ", err);
-        console.log("Trying to download JSON directly...");
-        // let myurl = URL.createObjectURL(data);
-        this.downloadBrowser(data);
-      })
-    }).catch(err => {
-      console.log("Export failed: ", err);
-    });
+        reject(err);
+      });
+    })
   }
 
   importDB() {
     if (this.plt.is('android')) {
-      this.fileChooser.open()
-        .then(uri => {
-          let name = uri.split('/').reverse()[0];
-          let path = uri.substring(0, uri.length - name.length);
-          console.log("uri fichier: ", uri, name, path);
-          this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE).then(
-            success => {
-              console.log('Permission granted');
-              // this.diagnostic.requestExternalStorageAuthorization().then(success => {
-                this.readDB(path, name);
-              // }).catch(err => {
-              //   console.log("unable to get runtime permission external storage", err)
-              // });
-            }, err => {
-              this.androidPermissions.requestPermissions(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE)
-                .then(_ => {
-                  console.log("ok permission");
-                  this.readDB(path, name);
-                }).catch(err => {
-                  console.log("cannot give permission to read sd card", err)
-                })
-            });
-        })
-        .catch(e => console.log(e));
+      return new Promise((resolve, reject) => {
+        this.fileChooser.open()
+          .then(uri => {
+            let name = uri.split('/').reverse()[0];
+            let path = uri.substring(0, uri.length - name.length);
+            console.log("uri fichier: ", uri, name, path);
+            this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE).then(
+              success => {
+                console.log('Permission granted');
+                // this.diagnostic.requestExternalStorageAuthorization().then(success => {
+                this.readDB(path, name).then(res => resolve(res)).catch(err => reject(err));
+                // }).catch(err => {
+                //   console.log("unable to get runtime permission external storage", err)
+                // });
+              }, err => {
+                this.androidPermissions.requestPermissions(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE)
+                  .then(_ => {
+                    console.log("ok permission");
+                    this.readDB(path, name).then(res => resolve(res)).catch(err => reject(err));
+                  }).catch(err => {
+                    console.log("cannot give permission to read sd card", err)
+                    reject(err)
+                  })
+              });
+          })
+          .catch(e => reject(e));
+      })
     } else if (this.plt.is('windows') || this.plt.is('core')) {
-      console.log("It's a browser, not supported directly by export service, only by the calling component")
+      console.log("It's a browser, not supported directly by export service, only by the calling component");
+      return Promise.reject("It's a browser, not supported directly by export service, only by the calling component")
     } else {
       alert("Platform " + JSON.stringify(this.plt.platforms) + " not recognized :(")
+      return Promise.reject("Platform " + JSON.stringify(this.plt.platforms) + " not recognized :(")
     }
   }
 
   readDB(path, name) {
-    this.file.readAsText(path, name).then(data => {
-      this.importDBcore(JSON.parse(data))
-    }).catch(err => {
-      console.log("erreur en lisant le fichier: ", err)
+    return new Promise((resolve, reject) => {
+      this.file.readAsText(path, name).then(data => {
+        this.importDBcore(JSON.parse(data))
+        resolve("ok") // TODO : il faut plutôt resolve à la fin de importDBCore !
+      }).catch(err => {
+        console.log("erreur en lisant le fichier: ", err)
+        reject(err)
+      })
     })
   }
 

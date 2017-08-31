@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform } from 'ionic-angular';
+import { NavController, NavParams, Platform, ToastController } from 'ionic-angular';
 import { AppVersion } from '@ionic-native/app-version';
 
 import { ParamService } from '../../services/param.service';
@@ -16,8 +16,11 @@ import { ExportService } from '../../services/export.service';
 })
 export class ParamPage {
   private version:string = "0.9.2";
+  private loading_export:boolean = false;
+  private loading_import:boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
+    public toastCtrl: ToastController,
     public paramService: ParamService,
     public appVersion: AppVersion,
     public exportService: ExportService,
@@ -41,6 +44,14 @@ export class ParamPage {
     });
   }
 
+  showToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    });
+    toast.present();
+  }
+
   enregistrer() {
     this.paramService.setPersonne(this.paramService.personne).catch(err => console.log("Error setting personne : ", err));
     this.paramService.setMaison(this.paramService.maison).catch(err => console.log("Error setting maison : ", err));
@@ -49,19 +60,32 @@ export class ParamPage {
   }
 
   exporter() {
-    this.exportService.exportDB();
+    this.loading_export = true;
+    this.exportService.exportDB().then(res => {
+      this.showToast("Base de données exportée ! Merci Seigneur de prendre soin de nous !");
+      this.loading_export = false;
+    }).catch(err => {
+      console.log("DB export failed : ", err);
+      this.loading_export = false;
+    });
   }
 
   importer() {
     // todo faire un alert confirmation
+    this.loading_import = true;
     if (this.ptfm.is('mobileweb')) {
       console.log("import from browser", this.ptfm.platforms())
       document.getElementById("file_picker_browser").click();
     } else if (this.ptfm.is('android')) {
       console.log("importing from android", this.ptfm.platforms());
-      this.exportService.importDB();
+      this.exportService.importDB().then(res => {
+        this.loading_import = false;
+      }).catch(err => {
+        this.loading_import = false;
+      });
     } else {
       alert("this platform : " + JSON.stringify(this.ptfm.platforms()) + " is not supported")
+      this.loading_import = false;
     }
   }
 
@@ -81,6 +105,7 @@ export class ParamPage {
       }
     })(file)
     reader.readAsText(file);
+    this.loading_import = false; // TODO le mettre plutôt qd importDBcore a terminé !
   }
 
 }
