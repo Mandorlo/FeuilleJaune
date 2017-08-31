@@ -29,7 +29,8 @@ budget-line {
     background-color: color($colors, light);
   }
   ion-avatar.domaine_retrait {
-    background-color: color($colors, light); //gray;
+    background-color: #EBEBEB; //gray;
+    color: color($colors, lightgray);
   }
   ion-avatar.domaine_depot {
     background-color: color($colors, light);//gray;
@@ -48,4 +49,10 @@ budget-line {
     line-height: 1.1em;
     font-size: 1.1em;
   }
+
+  .category_in {
+    background-color: #cbecd6;
+    color: green;
+  }
+
 }
