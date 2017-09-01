@@ -82,7 +82,7 @@ export class ChartsPage {
       let mycat = _.find(this.paramService.categories, { 'id': tr.category });
       if (mycat && mycat.type) {
         mycat = mycat.type;
-        if (tr.type === 'out' && date_limit_inf.isBefore(tr.date) && moment(tr.date).isBefore(date_limit_sup) && categories.indexOf(mycat) > -1) {
+        if (tr.type === 'out' && date_limit_inf.isSameOrBefore(tr.date) && moment(tr.date).isSameOrBefore(date_limit_sup) && categories.indexOf(mycat) > -1) {
           data[categories.indexOf(mycat)] += parseFloat(tr.montant);
         }
       }

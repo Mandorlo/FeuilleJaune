@@ -111,7 +111,7 @@ export class HomePage {
     if (this.transactions) {
       this.transactions.forEach(tr => {
         let this_month = moment(curr_month);
-        if (this_month.isBefore(moment(tr.date))) {
+        if (this_month.isSameOrBefore(moment(tr.date))) {
           if (tr.type == 'out') {
             solde[tr.moyen] -= parseFloat(tr.montant);
           } else if (tr.type == 'in') {
