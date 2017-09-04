@@ -15,7 +15,7 @@ import { ExportService } from '../../services/export.service';
   templateUrl: 'param.html',
 })
 export class ParamPage {
-  private version:string = "0.9.3";
+  private version:string = "0.9.4";
   private loading_export:boolean = false;
   private loading_import:boolean = false;
 

@@ -29,6 +29,10 @@
     {{nb_tr}} transactions
   </div>
 
+  <div class="filtre_container">
+    
+  </div>
+
   <ion-list>
     <budget-line *ngFor="let tr of transactions | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
   </ion-list>

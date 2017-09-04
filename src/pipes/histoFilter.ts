@@ -6,6 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class HistoFilter implements PipeTransform {
   private diacriticsMap: Object = {};
+  private pre:string = "@";
 
   constructor() {
     this.initDiacritics();
@@ -16,6 +17,23 @@ export class HistoFilter implements PipeTransform {
       return items;
     }
 
+    // on gère le cas spécial des filtres typés
+    let command = filter.match(new RegExp("\\" + this.pre + "([^\\s]+)\\s"));
+    if (command && command.length > 1 && command[1]) {
+      let cmd_arg = filter.substring(this.pre.length + command[1].length + 1).trim();
+      switch (command[1]) {
+
+        case "moyen":
+          cmd_arg = (cmd_arg == 'liquide') ? 'caisse' : cmd_arg;
+          return items.filter((item, i) => {
+            return item.moyen == cmd_arg
+          });
+
+        default:
+          console.log("Impossible de trouver la commande " + filter);
+          return items;
+      }
+    }
 
     // on normalise le filtre
     let myfilter = this.normalize(filter);
