@@ -2,6 +2,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HomePage } from '../pages/home/home';
 import { Ajouter2Page } from '../pages/ajouter2/ajouter2';
@@ -30,6 +31,7 @@ import { ParamService } from '../services/param.service';
 import { PdfService } from '../services/pdf.service';
 import { FjService } from '../services/fj.service';
 import { ExportService } from '../services/export.service';
+import { CurrencyService } from '../services/currency.service';
 
 import { DatePicker } from '@ionic-native/date-picker';
 import { BudgetLineComponent } from '../components/budget-line/budget-line';
@@ -41,6 +43,8 @@ import { RadioSquareComponent } from '../components/radio-square/radio-square';
 import { CurrencyPipe } from '../pipes/currency';
 import { HistoFilter } from '../pipes/histoFilter'
 import { GaugeComponent } from '../components/gauge/gauge';
+import { FilterOptionsComponent } from '../components/filter-options/filter-options';
+import { RevealDivComponent } from '../components/reveal-div/reveal-div';
 
 @NgModule({
   declarations: [
@@ -63,10 +67,13 @@ import { GaugeComponent } from '../components/gauge/gauge';
     CurrencyPipe,
     HistoFilter,
     FjcircleComponent,
-    GaugeComponent
+    GaugeComponent,
+    FilterOptionsComponent,
+    RevealDivComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot()
   ],
@@ -97,6 +104,7 @@ import { GaugeComponent } from '../components/gauge/gauge';
     PdfService,
     FjService,
     ExportService,
+    CurrencyService,
     DatePicker,
     AndroidPermissions,
     Diagnostic,

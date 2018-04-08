@@ -31,12 +31,22 @@ Then add the APK to Github as a release
 * (option) firebase reauth
 * firebase deploy
 
+### Change version number
+* in config.xml
+* in package.json
+* in Page param.ts
+
 ## How does the custom font work ?
 
 I used the fontastic web service to create a custom font and added it, not in /src but in /www/assets/fonts (it's called untitled-font-1). I added also the custom-font.css file in /www/assets/css to use it as font awesome classes, like <span class="my-icon"></span>. I fixed in the custom-font.css file with the right URL to the font files (added "../").
 
 Pour utiliser la custom font, c'est un peu comme font awesome, on ajoute des balises <i></i> avec la bonne classe. Les classes de la custom font sont prefixées par "icon-", typiquement "icon-church". Mais pour que ça ne rentre pas en conflit avec les icones de Ionic, il ne faut pas prefixer avec "icon-" mais avec "myicon-" ou autre. Perso j'ai utilisé "myicon-". Pour cela j'ai édité le fichier custom-font.css.
 
+## Useful things to know while developping
+
+* run `ionic serve` to run the app in the browser with live reload
+* run `ionic cordova run android` to run the app on your usb connected smartphone
+* while developping, in index.html you should comment the service worker lines (other it will cache everything and livereload won't work)
 
 ## What helped me writing this app
 

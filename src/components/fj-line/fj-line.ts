@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 
-import { CurrencyPipe } from '../../pipes/currency';
+// import { CurrencyPipe } from '../../pipes/currency';
 
 
 @Component({

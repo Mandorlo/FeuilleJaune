@@ -4,6 +4,7 @@ import { NavController, NavParams, ToastController, AlertController } from 'ioni
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
 import { FjService } from '../../services/fj.service';
+import { CurrencyService } from '../../services/currency.service';
 
 import { ParamPage } from '../param/param';
 
@@ -35,6 +36,7 @@ export class FjgenPage {
     public navParams: NavParams,
     private paramService: ParamService,
     private trService: TransactionService,
+    private currencyService: CurrencyService,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private fjService: FjService) {
@@ -115,7 +117,8 @@ export class FjgenPage {
       'personne': this.paramService.personne,
       'maison': this.paramService.maison,
       'curr_month': this.curr_month,
-      'already_exists': this.edit_fj
+      'already_exists': this.edit_fj,
+      'currency': this.paramService.currency
     }
 
     if (!opt.personne) {
@@ -205,7 +208,6 @@ export class FjgenPage {
 
   updateSoldeLastMonth() {
     let mois_prec = moment(this.curr_month).subtract(1, 'months').format("YYYY-MM-DD");
-    console.log("fj_list", this.fj_list);
     let fj_mois_prec = _.find(this.fj_list, { "month": mois_prec });
     // console.log("Trying to get fj last month", fj_mois_prec);
     if (fj_mois_prec) {
@@ -240,12 +242,13 @@ export class FjgenPage {
     // maintenant on peut calculer les montants
     for (let i = 0; i < this.transactions.length; i++) {
       let tr = this.transactions[i];
-      if (moment(tr.date) >= date_start && moment(tr.date) <= date_end) {
-        if (typeof tr.montant == 'number') this.fjdata[tr.category][tr.moyen] += tr.montant;
-        else {
+      if (moment(tr.date).isSameOrAfter(date_start) && moment(tr.date).isSameOrBefore(date_end)) {
+        if (typeof tr.montant == 'number') {
+          this.fjdata[tr.category][tr.moyen] += this.convert(tr.montant, tr.currency);
+        } else {
           let res = (tr.montant).toString().match(/\-?\s*[0-9]+[\,\.]?[0-9]*/g);
           if (res && res[0] == tr.montant) {
-            this.fjdata[tr.category][tr.moyen] += parseFloat(tr.montant.replace(',', '.').replace(/\s/g, ''));
+            this.fjdata[tr.category][tr.moyen] += this.convert(tr.montant.replace(',', '.').replace(/\s/g, ''), tr.currency);
           } else {
             console.log("string '" + tr.montant + "' for transaction " + tr._id + " (" + tr.category + ") is not a valid amount")
           }
@@ -259,6 +262,14 @@ export class FjgenPage {
     })
 
     console.log("FJDATA", this.fjdata);
+  }
+
+  convert(montant, currency) {
+    if (!this.paramService.currency) throw {
+      'errnum': 'GLOBAL_CURRENCY_UNDEFINED',
+      'fun': 'fgen.ts > convert'
+    }
+    return this.currencyService.convert(montant, currency, this.paramService.currency)
   }
 
   soustotal1(banque_ou_caisse) {

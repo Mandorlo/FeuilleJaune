@@ -18,6 +18,7 @@ export class BudgetLineComponent {
   private category_icon;
   private category_domain;
   private category_pretty;
+  private default_currency: string;
 
   @Input() tr;
   @Output('onDeleted') onDeleted: EventEmitter<string> = new EventEmitter<string>();
@@ -26,6 +27,7 @@ export class BudgetLineComponent {
               private transactionService: TransactionService,
               private paramService: ParamService) {
     moment.locale('fr');
+    this.default_currency = (paramService.currency) ? paramService.currency : 'EUR';
     // console.log('BudgetLineComponent : Benedetto sei Signore, Dio dell\'universo');
   }
 

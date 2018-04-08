@@ -30,6 +30,7 @@ export class FjService {
       personne: opt.personne,
       maison: opt.maison,
       month: opt.curr_month,
+      currency: opt.currency,
       data: fjdata
     }
 

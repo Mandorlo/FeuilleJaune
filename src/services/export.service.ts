@@ -122,9 +122,31 @@ export class ExportService {
     this.paramService.setMaison(db.param.maison);
     this.paramService.setPersonne(db.param.personne);
     this.paramService.setCurrency(db.param.currency);
-    this.trService.set(db.transaction);
-    this.fjService.setAllFJ(db.fj);
+    this.trService.set(this.fixTransactions(db.transaction));
+    this.fjService.setAllFJ(this.fixFJ(db.fj));
     this.showToast('Base de données chargée, béni soit le nom du Seigneur !')
+  }
+
+  fixTransactions(tr_list) {
+    // convertit les transactions de la version <= 0.9.4 vers la version 0.10.0
+    // la différence est qu'il y a un champs 'currency' en plus à partir de la version 0.10.0
+    // du coup pour convertir on convertit tout en paramService.currency (ou en euros si ce n'ets pas défini)
+    let curr:string = (this.paramService.currency) ? this.paramService.currency : 'EUR';
+    return tr_list.map(tr => {
+      if (!tr.currency) tr.currency = curr;
+      return tr
+    })
+  }
+
+  fixFJ(fj_list) {
+    // convertit les feuilles jaunes de la version <= 0.9.4 vers la version 0.10.0
+    // la différence est qu'il y a un champs 'currency' en plus à partir de la version 0.10.0
+    // du coup pour convertir on convertit tout en paramService.currency (ou en euros si ce n'ets pas défini)
+    let curr:string = (this.paramService.currency) ? this.paramService.currency : 'EUR';
+    return fj_list.map(fj => {
+      if (!fj.currency) fj.currency = curr;
+      return fj
+    })
   }
 
   isValidDB(o) {

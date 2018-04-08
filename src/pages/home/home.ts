@@ -4,6 +4,7 @@ import { App, NavController, ModalController, AlertController } from 'ionic-angu
 import { TransactionService } from '../../services/transaction.service';
 import { FjService } from '../../services/fj.service';
 import { ParamService } from '../../services/param.service';
+import { CurrencyService } from '../../services/currency.service';
 
 import { GaugeComponent } from '../../components/gauge/gauge';
 
@@ -35,6 +36,7 @@ export class HomePage {
     public modalCtrl: ModalController,
     public alertCtrl: AlertController,
     private paramService: ParamService,
+    private currencyService: CurrencyService,
     private appCtrl: App) {
 
     trService.getAll().then(data => {
@@ -70,7 +72,7 @@ export class HomePage {
       this.transactions = tr_list;
       this.fjService.getAllFJ().then(fj_list => {
         this.fj_list = fj_list;
-        this.updateGaugesCore();
+        this.updateGaugesCore().then(r => 1).catch(e => console.log('ERROR in home.ts > updateGauges > updateGaugesCore', e));
       }).catch(err => {
         console.log(err)
       })
@@ -79,7 +81,8 @@ export class HomePage {
     })
   }
 
-  updateGaugesCore() {
+  async updateGaugesCore() {
+    let res = await this.currencyService.init();
     let curr_month = moment().format("YYYY-MM") + "-01";
     let last_month = moment(curr_month).subtract(1, 'months').format("YYYY-MM") + "-01";
 
@@ -91,15 +94,15 @@ export class HomePage {
     solde["caisse_max"] = this.gauges.caisse_max;
 
     if (prec_month_fj) {
-      solde.banque = parseFloat(prec_month_fj.data.solde_banque);
-      solde.caisse = parseFloat(prec_month_fj.data.solde_caisse);
+      solde.banque = this.currencyService.convert(prec_month_fj.data.solde_banque, prec_month_fj.currency);
+      solde.caisse = this.currencyService.convert(prec_month_fj.data.solde_caisse, prec_month_fj.currency);
       if (this_month_fj) {
-        let this_m_bank = parseFloat(this_month_fj.data.avance.banque);
+        let this_m_bank = this.currencyService.convert(this_month_fj.data.avance.banque, this_month_fj.currency);
         this_m_bank = (isNaN(this_m_bank)) ? 0 : this_m_bank;
-        let this_m_caisse = parseFloat(this_month_fj.data.avance.caisse);
+        let this_m_caisse = this.currencyService.convert(this_month_fj.data.avance.caisse, this_month_fj.currency);
         this_m_caisse = (isNaN(this_m_caisse)) ? 0 : this_m_caisse;
-        solde["banque_max"] = Math.max(0, solde.banque + this_m_bank);
-        solde["caisse_max"] = Math.max(0, solde.caisse + this_m_caisse);
+        solde["banque_max"] = Math.max(10, solde.banque + this_m_bank);
+        solde["caisse_max"] = Math.max(10, solde.caisse + this_m_caisse);
       } else {
         console.log("Impossible de trouver la fj de ce mois")
       }
@@ -107,21 +110,22 @@ export class HomePage {
       console.log("Impossible de trouver la fj du mois précédent")
     }
 
+
     // maintenant on calcule le solde du mois courant
     if (this.transactions) {
       this.transactions.forEach(tr => {
         let this_month = moment(curr_month);
         if (this_month.isSameOrBefore(moment(tr.date))) {
           if (tr.type == 'out') {
-            solde[tr.moyen] -= parseFloat(tr.montant);
+            solde[tr.moyen] -= this.convert(tr.montant, tr.currency);
           } else if (tr.type == 'in') {
-            solde[tr.moyen] += parseFloat(tr.montant);
+            solde[tr.moyen] += this.convert(tr.montant, tr.currency);
           } else if (tr.type == 'retrait') {
-            let v = Math.abs(parseFloat(tr.montant));
+            let v = Math.abs(this.convert(tr.montant, tr.currency));
             solde.banque -= v;
             solde.caisse += v;
           } else if (tr.type == 'depot') {
-            let v = Math.abs(parseFloat(tr.montant));
+            let v = Math.abs(this.convert(tr.montant, tr.currency));
             solde.banque += v;
             solde.caisse -= v;
           } else {
@@ -134,6 +138,19 @@ export class HomePage {
     solde["pretty_banque"] = solde.banque.toFixed(2).toString() + " " + this.paramService.symbolCurrency();
     solde["pretty_caisse"] = solde.caisse.toFixed(2).toString() + " " + this.paramService.symbolCurrency();
     this.gauges = solde;
+  }
+
+  // convertit le montant dans la devise courante (définie dans ParamService)
+  convert(montant, currency) {
+    if (!this.paramService.currency) {
+      console.log('WARNING in home.ts > convert : paramService.currency is not defined !')
+      return montant
+    }
+    if (!currency) {
+      console.log(`WARNING in home.ts > convert : transaction currency is not defined ! (montant=${montant}, currency=${currency}, paramService.currency=${this.paramService.currency})`)
+      return montant
+    }
+    return this.currencyService.convert(montant, currency, this.paramService.currency)
   }
 
   showParamPage() {

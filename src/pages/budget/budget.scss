@@ -3,6 +3,12 @@ page-budget {
     color: gray;
     font-style: italic;
     padding-bottom: 1em;
-    border-bottom: 1px solid gray;
+    float: right;
+  }
+
+  .monfiltre {
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid #EFEFEF;
   }
 }

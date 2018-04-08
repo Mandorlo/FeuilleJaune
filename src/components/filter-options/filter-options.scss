@@ -1,0 +1,28 @@
+filter-options {
+  .filtre_container {
+    disaply: flex;
+  }
+
+  .filtre_content {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .opt {
+    border-radius: 25px;
+    background-color: #EFEFEF;
+    padding: 6px;
+    margin: 4px;
+    width: auto;
+    display: inline-block;
+    transition: background-color 0.5s;
+  }
+
+  .opt_checked {
+    background-color: color($colors, primary);
+    color: white;
+    display: inline-block;
+    transition: background-color 0.7s;
+  }
+
+}

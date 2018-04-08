@@ -1,0 +1,20 @@
+reveal-div {
+  .arrow {
+    margin-right: 12px;
+    font-size: 1.2em;
+  }
+
+  .reveal_header {
+    margin-bottom: 1em;
+  }
+
+  .reveal_content {
+    height: 0px;
+    transition: height 0.6s;
+  }
+
+  .open {
+    height: auto;
+    transition: height 0.6s;
+  }
+}

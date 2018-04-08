@@ -24,6 +24,7 @@ export class TransactionService {
   add(tr) {
     return new Promise((resolve, reject) => {
       this.getAll().then(data => {
+        if (!data) data = [];
         tr.id = this.genId(tr);
         tr.icon = this.smartIcon(tr);
         data.push(tr);
@@ -158,6 +159,7 @@ export class TransactionService {
   }
 
   smartIconCore(tr) {
+    // TODO : idées d'icones à ajouter : restaurant, rasoir, confiture, shampooing, hummus, graines/amandes/cachuetes/arachides/...
     let nom = tr.name.toLowerCase();
     if (nom.indexOf("vol ") > -1 || nom.indexOf("avion") > -1 || nom.indexOf("flight") > -1 || nom.indexOf("plane") > -1) {
       return "fa-plane"
@@ -207,7 +209,7 @@ export class TransactionService {
       return "myicon-medicament"
     } else if (nom.match(/(^| )(pansement|bandage|garza|cerott)/g)) {
       return "myicon-bandage"
-    } else if (nom.match(/(^| )(deo($| |dorant)|ddt)/g)) {
+    } else if (nom.match(/(^| )(d[ée]o($| |dorant)|ddt)/g)) {
       return "myicon-deodorant"
     } else if (nom.match(/(^| )(shirt|chemise|camici[ae])/g)) {
       return "myicon-shirt"
@@ -215,7 +217,7 @@ export class TransactionService {
       return "myicon-trousers"
     } else if (nom.match(/(^| )(chaussette|calzett|calzin)/g)) {
       return "myicon-socks"
-    } else if (nom.match(/(^| )(chaussure|shoe|scarp)/g)) {
+    } else if (nom.match(/(^| )(chaussure|shoe|scarp|sandal)/g)) {
       return "myicon-shoe"
     } else if (nom.match(/(^| )(montre|orologio|watch($| ))/g)) {
       return "myicon-watch"

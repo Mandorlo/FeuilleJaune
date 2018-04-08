@@ -8,7 +8,6 @@ import { ParamPage } from '../param/param';
 import { FjgenPage } from '../fjgen/fjgen';
 import { FjactionsPage } from '../fjactions/fjactions';
 
-import moment from 'moment';
 import _ from 'lodash';
 
 

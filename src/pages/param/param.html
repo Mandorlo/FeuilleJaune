@@ -23,8 +23,7 @@
     <ion-item>
       <ion-label>Monnaie</ion-label>
       <ion-select [(ngModel)]="paramService.currency" name="currency">
-        <ion-option value="EUR">Euros €</ion-option>
-        <ion-option value="USD">Dollars $</ion-option>
+        <ion-option *ngFor="let curr of paramService.currencies" [value]="curr.id" [selected]="curr.id == default_currency">{{curr.name}} {{curr.symbol}}</ion-option>
       </ion-select>
     </ion-item>
 

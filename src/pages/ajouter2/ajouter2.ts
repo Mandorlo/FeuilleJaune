@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, Slides, ToastController } from 'ionic-angular';
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
-import { RadioSquareComponent } from '../../components/radio-square/radio-square';
+// import { RadioSquareComponent } from '../../components/radio-square/radio-square';
 import { DatePicker } from '@ionic-native/date-picker';
 import moment from 'moment';
 import _ from 'lodash';
@@ -48,7 +48,7 @@ export class Ajouter2Page {
 
   public transaction_engine_ok: boolean = false;
   public transactions;
-  public data_default = { 'name': '', 'type': 'out', 'moyen': 'banque', 'montant': 0.0, 'date': moment().format('YYYY-MM-DD'), 'category': '', 'comment': '' }
+  public data_default = { 'name': '', 'type': 'out', 'moyen': 'banque', 'montant': 0.0, 'currency': 'EUR', 'date': moment().format('YYYY-MM-DD'), 'category': '', 'comment': '' }
   public data = JSON.parse(JSON.stringify(this.data_default));
 
   constructor(public navCtrl: NavController,
@@ -63,9 +63,12 @@ export class Ajouter2Page {
       return { 'val': el.id, 'title': el.label, 'icon': el.icon }
     });
 
+    // on initialise les currencies et la currency à utiliser lorsqu'on ajoute des transactions
+    this.data.currency = (paramService.currency) ? paramService.currency : 'EUR';
+
     transactionService.getAll().then(data => {
       this.transactions = data;
-      if (typeof data != 'object' || !data.length) this.transactions = [];
+      if (typeof data != 'object' || !data || !data.length) this.transactions = [];
       this.data.name = this.genNewTransactionName();
       this.transaction_engine_ok = true;
     }).catch(err => {
@@ -82,7 +85,7 @@ export class Ajouter2Page {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad Ajouter2Page');
+    console.log('ionViewDidLoad Ajouter2Page. Le Seigneur est mon berger je ne manque de rien !');
   }
 
   enregistrer() {
@@ -95,6 +98,10 @@ export class Ajouter2Page {
 
     // on sauve dans la database
     console.log("tr à enregistrer : ", this.data);
+
+    // on ecrit la devise dans les paramètres si elle n'est pas définie
+    if (!this.paramService.currency && this.data.currency) this.paramService.setCurrency(this.data.currency);
+
     this.transactions.push(this.data);
     this.transactionService.add(this.data)
       .then(d => {
@@ -153,13 +160,11 @@ export class Ajouter2Page {
     } else if (this.slides.getActiveIndex() == 5) {
       // document.getElementById("input_nom").focus();
     } else if (this.slides.getActiveIndex() == 6) {
-      console.log("last slide selected");
       this.last_slide_visited = true;
       this.cool_date = "le " + moment(this.data.date).format("dddd DD MMMM YYYY");
       if (moment(this.data.date).format("DDMMYY") == moment().format("DDMMYY")) this.cool_date = "aujourd'hui";
       this.pretty_moyen = "en liquide";
       if (this.data.category) {
-        console.log("debug: ",this.data.category);
         if (this.data.type == "out") this.pretty_category = _.find(this.paramService.categories, { 'id': this.data.category }).label;
         else if (this.data.type == 'in') this.pretty_category = _.find(this.paramService.categories_in, { 'id': this.data.category }).label;
       } else {

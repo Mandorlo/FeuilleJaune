@@ -15,7 +15,7 @@ import { ExportService } from '../../services/export.service';
   templateUrl: 'param.html',
 })
 export class ParamPage {
-  private version:string = "0.9.4";
+  private version:string = "0.10.0";
   private loading_export:boolean = false;
   private loading_import:boolean = false;
 
@@ -71,9 +71,9 @@ export class ParamPage {
   }
 
   importer() {
-    // todo faire un alert confirmation
+    // TODO faire un alert confirmation
     this.loading_import = true;
-    if (this.ptfm.is('mobileweb')) {
+    if (this.ptfm.is('mobileweb') || this.ptfm.is('core')) {
       console.log("import from browser", this.ptfm.platforms())
       document.getElementById("file_picker_browser").click();
     } else if (this.ptfm.is('android')) {

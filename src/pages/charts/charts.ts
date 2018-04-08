@@ -6,6 +6,7 @@ import { BudgetPage } from '../budget/budget';
 import { FjService } from '../../services/fj.service';
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
+import { CurrencyService } from '../../services/currency.service';
 
 import { Chart } from 'chart.js';
 import moment from 'moment';
@@ -38,6 +39,7 @@ export class ChartsPage {
     public navParams: NavParams,
     private fjService: FjService,
     private paramService: ParamService,
+    private currencyService: CurrencyService,
     private trService: TransactionService) {
 
   }
@@ -83,7 +85,7 @@ export class ChartsPage {
       if (mycat && mycat.type) {
         mycat = mycat.type;
         if (tr.type === 'out' && date_limit_inf.isSameOrBefore(tr.date) && moment(tr.date).isSameOrBefore(date_limit_sup) && categories.indexOf(mycat) > -1) {
-          data[categories.indexOf(mycat)] += parseFloat(tr.montant);
+          data[categories.indexOf(mycat)] += this.currencyService.convert(tr.montant, tr.currency);
         }
       }
     });
@@ -129,12 +131,22 @@ export class ChartsPage {
     let labels = [];
     let data = [];
 
+    // on calcule la prévision de dépenses pour le mois courant si on n'a pas de feuille jaune associée
+    let date_start = moment().startOf('month');
+    let date_end = moment().endOf('month');
+    let currmonth_montant = this.tr_list.map(e => {
+      let m = moment(e.date, 'YYYY-MM-DD');
+      if (m.isSameOrBefore(date_end) && m.isSameOrAfter(date_start)) return this.currencyService.convert(e.montant, e.currency);
+      return 0;
+    }).reduce((a,b) => a+b, 0)
+
     this.fjService.getAllFJ().then(fj_list => {
       for (let i = 0; i < 7; i++) {
         let mydate = moment().subtract(i, 'months');
         labels.push(mydate.format('MMM YY'));
         let res = _.find(fj_list, { 'month': mydate.format("YYYY-MM") + "-01" });
-        if (res) data.push(parseFloat(res.data.total_bc));
+        if (res) data.push(this.currencyService.convert(res.data.total_bc, res.currency));
+        else if (!res && i == 0) data.push(currmonth_montant);
         else data.push(0)
       }
       labels = labels.reverse();
@@ -155,22 +167,24 @@ export class ChartsPage {
         datasets: [{
           label: this.paramService.currency,
           data: data,
-          // backgroundColor: [
-          //   'rgba(255, 99, 132, 0.2)',
-          //   'rgba(54, 162, 235, 0.2)',
-          //   'rgba(255, 206, 86, 0.2)',
-          //   'rgba(75, 192, 192, 0.2)',
-          //   'rgba(153, 102, 255, 0.2)',
-          //   'rgba(255, 159, 64, 0.2)'
-          // ],
-          // borderColor: [
-          //   'rgba(255,99,132,1)',
-          //   'rgba(54, 162, 235, 1)',
-          //   'rgba(255, 206, 86, 1)',
-          //   'rgba(75, 192, 192, 1)',
-          //   'rgba(153, 102, 255, 1)',
-          //   'rgba(255, 159, 64, 1)'
-          // ],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(54, 162, 235, 0.8)'
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(54, 162, 235, 1)'
+          ],
           borderWidth: 1
         }]
       },

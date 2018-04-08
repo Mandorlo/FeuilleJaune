@@ -29,12 +29,14 @@
     {{nb_tr}} transactions
   </div>
 
-  <div class="filtre_container">
-    
+  <div class="monfiltre">
+    <reveal-div title="Filtrer">
+      <filter-options title="Moyen de paiement" [options]="filtre_moyen_opt" [(selected)]="filtre_moyen_sel" (click)="onFilterMoyenChange($event)"></filter-options>
+    </reveal-div>
   </div>
 
   <ion-list>
-    <budget-line *ngFor="let tr of transactions | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
+    <budget-line *ngFor="let tr of transactions | histoFilter:filtre_moyen_sel2 | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
   </ion-list>
 
   <ion-fab right bottom>

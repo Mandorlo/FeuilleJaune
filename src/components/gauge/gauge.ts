@@ -21,9 +21,10 @@ export class GaugeComponent {
   }
 
   ngOnChanges(...args: any[]) {
+    console.log('GAUGE', args)
     if (args[0].min) this.min = args[0].min.currentValue;
     if (args[0].max) this.max = args[0].max.currentValue;
-    this.level = args[0].level.currentValue;
+    if (args[0].level && args[0].level.currentValue) this.level = args[0].level.currentValue;
     this.updateGauge();
   }
 

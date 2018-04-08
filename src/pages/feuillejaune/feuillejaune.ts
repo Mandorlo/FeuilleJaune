@@ -42,7 +42,7 @@ export class FeuillejaunePage {
     this.reload();
 
     // on récupère la liste des last months
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       let mydate = moment(this.curr_month).subtract(i, 'months');
       this.last_months.push({ 'date': mydate.format("YYYY-MM-DD"), 'label': mydate.format('MMMM YYYY') })
     }

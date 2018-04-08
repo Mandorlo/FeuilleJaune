@@ -1,0 +1,8 @@
+<div class="reveal_container">
+  <div class="reveal_header" (click)="toggle()"><i class="fa fa-angle-right arrow" [ngClass]="{'fa-rotate-90': show}" aria-hidden="true"></i>{{title}}</div>
+  <!-- <div [ngClass]="{'reveal_content': !show, 'open': show}"> -->
+  <!-- <div *ngIf="show"> -->
+  <div [@contentState]="contentActive">
+    <ng-content></ng-content>
+  </div>
+</div>

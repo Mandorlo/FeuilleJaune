@@ -32,11 +32,9 @@ export class PdfService {
     console.log("Lodato sia il Signore !")
   }
 
-  private prettyEuros(amount) {
+  private prettyCurrency(amount) {
     if (amount == "" || amount == 0) return "";
-    let symbol = "€";
-    if (this.paramService.currency == "USD") symbol = "$";
-    return amount + " " + symbol;
+    return amount + " " + this.paramService.symbolCurrency();
   }
 
   private manageDefaults(opt) {
@@ -217,57 +215,57 @@ export class PdfService {
     // ENTREES
     body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { 'text': 'ENTRÉES', style: ["header"] }, '', '', { text: 'Maison: ' + opt.maison, margin: [0, 0, 0, 0], fontSize: 9 }]);
     ['salaire', 'allocation', 'don'].forEach((el, i) => {
-      body.push([{ text: (i + 2).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 2).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '5', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOUS-TOTAL', style: ['section'] }, { text: this.prettyEuros(fjdata.soustotal1_banque), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.soustotal1_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '5', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOUS-TOTAL', style: ['section'] }, { text: this.prettyCurrency(fjdata.soustotal1_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal1_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
     line_nums = ['6', '7', '8', '9', '10', '12', '13'];
     ['dime', 'autre', 'remboursement_sante', 'remboursement_pro', 'remboursement_autre'].forEach((el, i) => {
-      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '12', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'REPORT DU MOIS PRÉCÉDENT', style: 'report' }, { text: this.prettyEuros(fjdata.report_mois_precedent.banque), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.report_mois_precedent.caisse), style: 'montant_imp' }, { text: fjdata.report_mois_precedent.observations, style: 'observation' }])
-    body.push([{ text: '13', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance demandée à la MM ou à la Cté', style: ['categorie'] }, { text: this.prettyEuros(fjdata.avance.banque), style: 'montant' }, { text: this.prettyEuros(fjdata.avance.caisse), style: 'montant' }, { text: fjdata.avance.observations, style: 'observation' }]);
+    body.push([{ text: '12', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'REPORT DU MOIS PRÉCÉDENT', style: 'report' }, { text: this.prettyCurrency(fjdata.report_mois_precedent.banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.report_mois_precedent.caisse), style: 'montant_imp' }, { text: fjdata.report_mois_precedent.observations, style: 'observation' }])
+    body.push([{ text: '13', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance demandée à la MM ou à la Cté', style: ['categorie'] }, { text: this.prettyCurrency(fjdata.avance.banque), style: 'montant' }, { text: this.prettyCurrency(fjdata.avance.caisse), style: 'montant' }, { text: fjdata.avance.observations, style: 'observation' }]);
     body.push([{ text: '14', style: 'line_num' }, { text: '', style: 'col_space' }, { text: '', style: ['categorie'] }, { text: '', style: 'montant' }, { text: '', style: 'montant' }, { text: '', style: 'observation' }]);
     line_nums = ['15', '16'];
     ['epargne', 'transfert'].forEach((el, i) => {
-      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '17', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'I - DISPONIBILITÉS DU MOIS', style: ['subsection'] }, { text: this.prettyEuros(fjdata.soustotal_I_banque), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.soustotal_I_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '17', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'I - DISPONIBILITÉS DU MOIS', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_I_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_I_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SORTIES
     // SOUS-TOTAL MAISON
     body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { 'text': 'SORTIES', style: ["header"] }, '', '', { text: '', margin: [0, 5, 0, 5] }]);
     line_nums = ['18', '19', '21', '22', '23', '24', '25', '29', '30'];
     this.liste_maison.forEach((el, i) => {
-      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'II - TOTAL MAISON', style: ['subsection'] }, { text: this.prettyEuros(fjdata.soustotal_II_banque), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.soustotal_II_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'II - TOTAL MAISON', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_II_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_II_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL VIE COURANTE
     this.liste_viecourante.forEach((el, i) => {
-      body.push([{ text: (i + 32).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 32).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '44', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'III - TOTAL VIE COURANTE', style: ['subsection'] }, { text: this.prettyEuros(fjdata.soustotal_III_banque), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.soustotal_III_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '44', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'III - TOTAL VIE COURANTE', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_III_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_III_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL TRANSPORT
     this.liste_transport.forEach((el, i) => {
-      body.push([{ text: (i + 45).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 45).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '52', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'IV - TOTAL TRANSPORT', style: ['subsection'] }, { text: this.prettyEuros(fjdata.soustotal_IV_banque), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.soustotal_IV_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '52', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'IV - TOTAL TRANSPORT', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_IV_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_IV_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL SECRETARIAT
     this.liste_secretariat.forEach((el, i) => {
-      body.push([{ text: (i + 54).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 54).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '57', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'V - TOTAL SECRÉTARIAT', style: ['subsection'] }, { text: this.prettyEuros(fjdata.soustotal_V_banque), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.soustotal_V_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '57', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'V - TOTAL SECRÉTARIAT', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_V_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_V_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // BANQUE
     ['perte', 'frais_banque'].forEach((el, i) => {
-      body.push([{ text: (i + 58).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyEuros(fjdata[el].banque), style: 'montant' }, { text: this.prettyEuros(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 58).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '61', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance retournée ou solde feuille jaune', style: ['categorie'] }, { text: this.prettyEuros(fjdata.avance_retournee.banque), style: 'montant' }, { text: this.prettyEuros(fjdata.avance_retournee.caisse), style: 'montant' }, { text: 'TOTAL BANQUE + CAISSE', style: 'total_banque_caisse' }]);
+    body.push([{ text: '61', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance retournée ou solde feuille jaune', style: ['categorie'] }, { text: this.prettyCurrency(fjdata.avance_retournee.banque), style: 'montant' }, { text: this.prettyCurrency(fjdata.avance_retournee.caisse), style: 'montant' }, { text: 'TOTAL BANQUE + CAISSE', style: 'total_banque_caisse' }]);
 
-    body.push([{ text: '62', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'TOTAL DES SORTIES', style: 'total_sorties' }, { text: this.prettyEuros(fjdata.total_banque), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.total_caisse), style: 'montant_imp' }, { text: this.prettyEuros(fjdata.total_bc), style: 'montant_imp' }]);
-    body.push([{ text: '63', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOLDE (à reporter le mois suivant ligne 12)', style: 'solde' }, { text: this.prettyEuros(fjdata.solde_banque), style: 'montant' }, { text: this.prettyEuros(fjdata.solde_caisse), style: 'montant' }, { text: this.prettyEuros(fjdata.solde_bc), style: 'montant' }]);
+    body.push([{ text: '62', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'TOTAL DES SORTIES', style: 'total_sorties' }, { text: this.prettyCurrency(fjdata.total_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.total_caisse), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.total_bc), style: 'montant_imp' }]);
+    body.push([{ text: '63', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOLDE (à reporter le mois suivant ligne 12)', style: 'solde' }, { text: this.prettyCurrency(fjdata.solde_banque), style: 'montant' }, { text: this.prettyCurrency(fjdata.solde_caisse), style: 'montant' }, { text: this.prettyCurrency(fjdata.solde_bc), style: 'montant' }]);
 
     return body
   }

@@ -58,6 +58,24 @@ export class ParamService {
   public liste_secretariat = _.map(_.filter(this.categories, ['type', 'secretariat']), 'id');
   public liste_banque = _.map(_.filter(this.categories, ['type', 'banque']), 'id');
 
+  public currencies = [{
+    id: 'EUR',
+    name: 'Euros',
+    symbol: '€'
+  }, {
+    id: 'USD',
+    name: 'Dollars',
+    symbol: '$'
+  }, {
+    id: 'ILS',
+    name: 'Sheqels',
+    symbol: '\u20AA'
+  }, {
+    id: 'BRL',
+    name: 'Réal Brésilien',
+    symbol: 'R$'
+  }]
+
   public init:any;
   public gauges:any; // min/max values for the gauges on home screen
 
@@ -124,10 +142,11 @@ export class ParamService {
     return this.storage.get(key)
   }
 
-  symbolCurrency() {
-    if (this.currency == "EUR") return "€";
-    else if (this.currency == "USD") return "$";
-    else return "."
+  symbolCurrency(devise = null) {
+    if (devise === null) devise = this.currency;
+    let res = this.currencies.filter(el => el.id == devise);
+    if (res && res.length && res[0] && res[0].symbol) return res[0].symbol;
+    else return '.'
   }
 
 

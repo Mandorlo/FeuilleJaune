@@ -19,6 +19,10 @@ export class BudgetPage {
   private modalAddTr;
   public searchText:string = "";
 
+  public filtre_moyen_opt = [{'title': 'Carte bleue', 'val': 'banque'}, {'title': 'Liquide', 'val': 'caisse'}];
+  public filtre_moyen_sel = ['banque', 'caisse'];
+  public filtre_moyen_sel2:string = "";
+
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public modalCtrl: ModalController,
@@ -68,7 +72,13 @@ export class BudgetPage {
   }
 
   onInputSearch(e) {
-    let text = e.data;
+    // let text = e.data;
+  }
+
+  onFilterMoyenChange(e) {
+    if (this.filtre_moyen_sel.length > 1) this.filtre_moyen_sel2 = "";
+    else if (this.filtre_moyen_sel.length) this.filtre_moyen_sel2 = "@moyen " + this.filtre_moyen_sel[0];
+    else this.filtre_moyen_sel2 = "@moyen azeraef";
   }
 
 }

@@ -1,0 +1,8 @@
+<div class="filtre_container">
+  <div class="filtre">
+    <div class="filtre_header">{{title}}</div>
+    <div class="filtre_content">
+      <div *ngFor="let e of options" class="opt" (click)="handleChange(e.val)" [ngClass]="{'opt_checked': (selected && selected.indexOf(e.val) > -1)}">{{e.title}}</div>
+    </div>
+  </div>
+</div>
