@@ -52,6 +52,198 @@ export class ParamService {
     { 'id': 'epargne', 'label': 'Pour les fraternités de quartier : Epargne', 'icon': 'myicon-pig' },
     { 'id': 'transfert', 'label': 'Transfert banque/caisse', 'icon': 'fa-exchange' }];
 
+  public smart_categories = [
+    {
+      category: 'loisir',
+      regex: /(^| )(vol|avion|flight|plane|aereo)/gi,
+      icon: 'fa-plane'
+    }, {
+      category: 'loisir',
+      regex: /(^| )(train|treno)/gi,
+      icon: 'fa-train'
+    }, {
+      category: '',
+      regex: /(^| )(foto|photo)/gi,
+      icon: 'fa-camera'
+    }, {
+      category: 'hygiene',
+      regex: /(^| )(hairdresser|coiffeur|parr?ucc?hiere)/gi,
+      icon: 'fa-scissors'
+    }, {
+      category: 'loisir',
+      regex: /(^| )(taxi|cab|uber|blablacar)/gi,
+      icon: 'fa-cab'
+    }, {
+      category: 'transport_commun',
+      regex: /(^| )(metro|subway|rer($|\s))/gi,
+      icon: 'fa-subway'
+    }, {
+      category: 'loisir',
+      regex: /(^| )(beer|bi[eè]re|birra|verre|bar)/gi,
+      icon: 'fa-beer'
+    }, {
+      category: 'loisir',
+      regex: /(^| )(h[oô]tel|bnb|auberge|albergo)/gi,
+      icon: 'fa-bed'
+    }, {
+      category: 'loisir',
+      regex: /(^| )(boat|bateau|battello|voile)/gi,
+      icon: 'fa-anchor'
+    }, {
+      category: 'livre',
+      regex: /(^| )(book|livre|libro)/gi,
+      icon: 'fa-book'
+    }, {
+      category: 'loisir',
+      regex: /(^| )(pizza)/gi,
+      icon: 'myicon-pizza'
+    }, {
+      category: 'livre',
+      regex: /(^| )(bible|bibbia)/gi,
+      icon: 'myicon-bible'
+    }, {
+      category: 'liturgie',
+      regex: /(^| )(magnificat|prions en [eé]glise)/gi,
+      icon: 'myicon-bible'
+    }, {
+      category: 'liturgie',
+      regex: /(^| )(messe)/gi,
+      icon: ''
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(biscuit|biscott)/gi,
+      icon: 'myicon-biscuit'
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(eau|water|acqua|milk|lait|latte|coca|sprite|jus|succo)/gi,
+      icon: 'myicon-bottle'
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(brioche|dolc[ei]|gateau|torta|cake|muffin|tarte)/gi,
+      icon: 'myicon-muffin'
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(croissant|viennoiserie|pain|bread|pane|bageutte)/gi,
+      icon: 'myicon-croissant'
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(coffee|caff?[eéè]|th?[eéè]($| ))/gi,
+      icon: 'myicon-coffee'
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(choco|ciocco)/gi,
+      icon: 'myicon-chocolate'
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(panin|sandwich|hamburger)/gi,
+      icon: 'myicon-hamburger'
+    }, {
+      category: 'hygiene',
+      regex: /(^| )(dentifric|brosse [aà] dent|spazzolin|toothpaste|toothbrush)/gi,
+      icon: 'myicon-toothpaste'
+    }, {
+      category: 'habillement',
+      regex: /(^| )(slip|cale[cç]on|culotte)/gi,
+      icon: 'myicon-underpants'
+    }, {
+      category: 'sante',
+      regex: /(^| )(medicament|medicin|antibio)/gi,
+      icon: 'myicon-medicament'
+    }, {
+      category: 'sante',
+      regex: /(^| )(pansement|bandage|garza|cerott)/gi,
+      icon: 'myicon-bandage'
+    }, {
+      category: 'hygiene',
+      regex: /(^| )(d[ée]o($| |dorant)|ddt)/gi,
+      icon: 'myicon-deodorant'
+    }, {
+      category: 'habillement',
+      regex: /(^| )(shirt|chemis|camic[ei])/gi,
+      icon: 'myicon-shirt'
+    }, {
+      category: 'habillement',
+      regex: /(^| )(pantalon|trouser)/gi,
+      icon: 'myicon-trousers'
+    }, {
+      category: 'habillement',
+      regex: /(^| )(chaussette|calzett|calzin)/gi,
+      icon: 'myicon-socks'
+    }, {
+      category: 'habillement',
+      regex: /(^| )(chaussure|scarp|shoe|sandal)/gi,
+      icon: 'myicon-shoe'
+    }, {
+      category: 'habillement',
+      regex: /(^| )(montre|orologio|watch($| ))/gi,
+      icon: 'myicon-watch'
+    }, {
+      category: 'loisir',
+      regex: /(^| )(r[ei]st(au|o)rant)/gi,
+      icon: ''
+    }, {
+      category: 'hygiene',
+      regex: /(^| )(rasoir|rasoi)/gi,
+      icon: ''
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(confiture|marmelade|marmellata)/gi,
+      icon: ''
+    }, {
+      category: 'hygiene',
+      regex: /(^| )(shampoo)/gi,
+      icon: ''
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(h[uo]mm?[uo]s)/gi,
+      icon: ''
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(graine|mandorl|amande|arachide|noix|noci|cachu[eè]te|peanut)/gi,
+      icon: ''
+    }, {
+      category: 'transport_commun',
+      regex: /(^| )(v[eé]lib|v[ée]lo\'?v|v[ée]lhop)/gi,
+      icon: 'fa-bicycle'
+    }, {
+      category: 'divers_vie',
+      regex: /(^| )(ordi|laptop|computer)/gi,
+      icon: 'fa-laptop'
+    }, {
+      category: 'divers_vie',
+      regex: /(^| )(smartphone|iphone|portable)/gi,
+      icon: 'fa-mobile'
+    }, {
+      category: 'energie',
+      regex: /(^| )([ée]l[ée]ctricit[eé]|gaz|electricity|gas($| )|elettricit)/gi,
+      icon: ''
+    }, {
+      category: 'carburant',
+      regex: /(^| )(essence|benzin|diesel|carburant)/gi,
+      icon: ''
+    }, {
+      category: 'divers_vie',
+      regex: /(^| )(cart[ea] d?\'? ?identit|id card|pass[ae]?port|driver license|permis de conduire|patent)/gi,
+      icon: 'fa-id-card'
+    }, {
+      category: 'divers_vie',
+      regex: /(^| )(disque dur|hdd)/gi,
+      icon: 'fa-hdd-o'
+    }, {
+      category: 'sante',
+      regex: /(^| )(h[oô]pital|m[eé]decin|docteur|medico|cardiolog)/gi,
+      icon: 'fa-heartbeat'
+    }, {
+      category: 'divers_vie',
+      regex: /(^| )([ée]lectroni)/gi,
+      icon: 'fa-microchip'
+    }, {
+      category: 'frais_banque',
+      regex: /(^| )(carte (CB|d?e? ?cr[ée]dit|bancaire)|carta (di )?credito)/gi,
+      icon: 'fa-credit-card'
+    }
+  ];
+
   public liste_maison = _.map(_.filter(this.categories, ['type', 'maison']), 'id');
   public liste_viecourante = _.map(_.filter(this.categories, ['type', 'vie courante']), 'id');
   public liste_transport = _.map(_.filter(this.categories, ['type', 'transport']), 'id');
@@ -149,5 +341,18 @@ export class ParamService {
     else return '.'
   }
 
+  guessCategory(nom) {
+    for (let i = 0; i < this.smart_categories.length; i++) {
+      if (nom.match(this.smart_categories[i].regex)) return this.smart_categories[i].category;
+    }
+    return ''
+  }
+
+  guessIcon(nom) {
+    for (let i = 0; i < this.smart_categories.length; i++) {
+      if (nom.match(this.smart_categories[i].regex)) return this.smart_categories[i].icon;
+    }
+    return ''
+  }
 
 }

@@ -15,6 +15,7 @@ export class Ajouter2Page {
 
   @ViewChild(Slides) slides: Slides;
   @ViewChild('inputmontant') myInput; // sert pour pouvoir mettre le focus automatiquement sur un input et afficher le clavier
+  @ViewChild('categoryList') categoryList;
 
   private today: string = "";
   private cool_date: string = "";
@@ -157,8 +158,11 @@ export class Ajouter2Page {
           this.categories_options = [];
         }
       }
-    } else if (this.slides.getActiveIndex() == 5) {
-      // document.getElementById("input_nom").focus();
+    } else if (this.slides.getActiveIndex() == 5) { // category list
+      if (this.data.category != '') {
+        let ind = this.categories_options.findIndex(e => e.val == this.data.category)
+        if (ind > 4) this.categoryList._scrollContent.nativeElement.scrollTop = ind * 61;
+      }
     } else if (this.slides.getActiveIndex() == 6) {
       this.last_slide_visited = true;
       this.cool_date = "le " + moment(this.data.date).format("dddd DD MMMM YYYY");
@@ -237,7 +241,8 @@ export class Ajouter2Page {
       }
 
     } else if (n == 3) {
-      // 4eme phase : la catégorie
+      // 4eme phase : le nom et le commentaire
+      this.data.category = this.paramService.guessCategory(this.data.name) // on essaie de deviner la catégorie à partir du nom rentré
       if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
 
     } else if (n == 4) {
@@ -245,7 +250,7 @@ export class Ajouter2Page {
       if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
 
     } else if (n == 5) {
-      // 6eme phase : le nom et le commentaire
+      // 6eme phase : la catégorie
       if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
 
     } else {

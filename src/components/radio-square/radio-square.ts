@@ -19,7 +19,6 @@ export class RadioSquareComponent {
   }
 
   ngOnChanges(...args: any[]) {
-    // console.log("Args", args);
     this.optionsValue = args[0].options;
     this.ui_fit = (this.options.length > 4);
   }

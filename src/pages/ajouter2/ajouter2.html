@@ -54,26 +54,6 @@
       </ion-card>
     </ion-slide>
 
-    <ion-slide style="overflow-y: scroll;display: block;">
-      <ion-card class="rounded">
-        <ion-card-content>
-          <ion-card-title>Catégorie</ion-card-title>
-          <hr>
-          <radio-square [options]='categories_options' [(choice)]="data.category" (click)="donePhase(3)"></radio-square>
-        </ion-card-content>
-      </ion-card>
-    </ion-slide>
-
-    <ion-slide>
-      <ion-card class="rounded">
-        <ion-card-content>
-          <ion-card-title><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;&nbsp;Date</ion-card-title>
-          <ion-datetime displayFormat="DD MMM YYYY" doneText="Ok" [(ngModel)]="data.date" monthNames="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre" monthShortNames="Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc"></ion-datetime>
-          <button ion-button color="light" (click)="donePhase(4)" small><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-        </ion-card-content>
-      </ion-card>
-    </ion-slide>
-
     <ion-slide>
       <ion-card class="rounded">
         <ion-card-content>
@@ -89,9 +69,31 @@
               <textarea class="comment_textarea" rows="5" [(ngModel)]="data.comment" name="comment"></textarea>
             </ion-item>
             <ion-item>
-              <button ion-button (click)="donePhase(5)" block>Vérifier les infos</button>
+              <button ion-button (click)="donePhase(3)" block>Suivant</button>
             </ion-item>
           </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+
+    <ion-slide>
+      <ion-card class="rounded">
+        <ion-card-content>
+          <ion-card-title><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;&nbsp;Date</ion-card-title>
+          <ion-datetime displayFormat="DD MMM YYYY" doneText="Ok" [(ngModel)]="data.date" monthNames="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Septembre, Octobre, Novembre, Décembre" monthShortNames="Jan, Fév, Mar, Avr, Mai, Juin, Juil, Aoû, Sep, Oct, Nov, Déc"></ion-datetime>
+          <button ion-button color="light" (click)="donePhase(4)" small><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+
+    <ion-slide><!-- style="overflow-y: scroll;display: block;" -->
+      <ion-card class="rounded">
+        <ion-card-content>
+          <ion-scroll #categoryList scrollY="true" style="height:80vh">
+            <ion-card-title>Catégorie</ion-card-title>
+            <hr>
+            <radio-square [options]='categories_options' [(choice)]="data.category" (click)="donePhase(5)"></radio-square>
+          </ion-scroll>
         </ion-card-content>
       </ion-card>
     </ion-slide>

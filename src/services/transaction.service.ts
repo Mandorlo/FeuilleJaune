@@ -145,7 +145,7 @@ export class TransactionService {
     let el = _.find(cat_list, { 'id': curr_tr.category });
     if (el) {
       myicon = el.icon;
-      let smart_icon = this.smartIconCore(curr_tr);
+      let smart_icon = this.paramService.guessIcon(curr_tr.name);
       if (smart_icon.length) myicon = smart_icon;
     }
 
@@ -158,71 +158,4 @@ export class TransactionService {
     return myicon
   }
 
-  smartIconCore(tr) {
-    // TODO : idées d'icones à ajouter : restaurant, rasoir, confiture, shampooing, hummus, graines/amandes/cachuetes/arachides/...
-    let nom = tr.name.toLowerCase();
-    if (nom.indexOf("vol ") > -1 || nom.indexOf("avion") > -1 || nom.indexOf("flight") > -1 || nom.indexOf("plane") > -1) {
-      return "fa-plane"
-    } else if (nom.indexOf("train") > -1) {
-      return "fa-train"
-    } else if (nom.indexOf("bus") > -1) {
-      return "fa-bus"
-    } else if (nom.indexOf("photo") > -1) {
-      return "fa-camera"
-    } else if (nom.indexOf("hairdresser") > -1 || nom.indexOf("coiffeur") > -1) {
-      return "fa-scissors"
-    } else if (nom.indexOf("taxi") > -1 || nom.indexOf("cab") > -1 || nom.indexOf("uber") > -1 || nom.indexOf("blablacar") > -1) {
-      return "fa-cab"
-    } else if (nom.indexOf("metro") > -1 || nom.indexOf("subway") > -1) {
-      return "fa-subway"
-    } else if (nom.indexOf("beer") > -1 || nom.match(/bi[èe]re/) || nom.indexOf("verre") > -1) {
-      return "fa-beer"
-    } else if (nom.indexOf("hotel") > -1 || nom.indexOf("bnb") > -1) {
-      return "fa-bed"
-    } else if (nom.indexOf("boat") > -1 || nom.indexOf("bateau") > -1 || nom.indexOf("voile") > -1) {
-      return "fa-anchor"
-    } else if (nom.indexOf("book") > -1 || nom.indexOf("livre") > -1) {
-      return "fa-book"
-    } else if (nom.indexOf("pizza") > -1) {
-      return "myicon-pizza"
-    } else if (nom.indexOf("bible") > -1) {
-      return "myicon-bible"
-    } else if (nom.match(/(^| )(biscuit|biscott)/g)) {
-      return "myicon-biscuit"
-    } else if (nom.match(/(^| )(eau|water|acqua)/g) || nom.match(/(^| )(coca|milk|lait|latte)/g)) {
-      return "myicon-bottle"
-    } else if (nom.match(/(^| )(brioche|dolc[ei]|gateau|cake|muffin)/g)) {
-      return "myicon-muffin"
-    } else if (nom.match(/(^| )(croissant|viennoiserie|pain|bread|baguette|pane)/g)) {
-      return "myicon-croissant"
-    } else if (nom.match(/(^| )(coffee|caf[ée]|caff[eèé]|th?[éèe]($| ))/g)) {
-      return "myicon-coffee"
-    } else if (nom.match(/(^| )(choco|ciocco)/g)) {
-      return "myicon-chocolate"
-    } else if (nom.match(/(^| )(panin[oi]|hamburger|sandwich)/g)) {
-      return "myicon-hamburger"
-    } else if (nom.match(/(^| )(dentifric|brosse [àa] dent|spazzolin|toothpaste|toothbrush)/g)) {
-      return "myicon-toothpaste"
-    } else if (nom.match(/(^| )(slip|cale[çc]on|culotte)/g)) {
-      return "myicon-underpants"
-    } else if (nom.match(/(^| )(medicament|medicine)/g)) {
-      return "myicon-medicament"
-    } else if (nom.match(/(^| )(pansement|bandage|garza|cerott)/g)) {
-      return "myicon-bandage"
-    } else if (nom.match(/(^| )(d[ée]o($| |dorant)|ddt)/g)) {
-      return "myicon-deodorant"
-    } else if (nom.match(/(^| )(shirt|chemise|camici[ae])/g)) {
-      return "myicon-shirt"
-    } else if (nom.match(/(^| )(pantalon|trouser)/g)) {
-      return "myicon-trousers"
-    } else if (nom.match(/(^| )(chaussette|calzett|calzin)/g)) {
-      return "myicon-socks"
-    } else if (nom.match(/(^| )(chaussure|shoe|scarp|sandal)/g)) {
-      return "myicon-shoe"
-    } else if (nom.match(/(^| )(montre|orologio|watch($| ))/g)) {
-      return "myicon-watch"
-    } else {
-      return ""
-    }
-  }
 }
