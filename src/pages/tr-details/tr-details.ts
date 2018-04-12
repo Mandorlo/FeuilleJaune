@@ -1,8 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
+import { DomSanitizer} from '@angular/platform-browser'
 import { NavController, NavParams, AlertController, ToastController } from 'ionic-angular';
 
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
+import { PhotoService } from '../../services/photo.service';
 
 import { DatePicker } from '@ionic-native/date-picker';
 
@@ -19,6 +21,7 @@ import _ from 'lodash';
 })
 export class TrDetailsPage {
   @ViewChild('myPicker') mypicker;
+  @ViewChild('bigBack') bigBack;
   private pickerObject: any;
 
   private processing: boolean = false;
@@ -43,15 +46,19 @@ export class TrDetailsPage {
   private show_choixCategory: boolean = false;
   private moyen_options = [];
   private show_choixMoyen: boolean = false;
+  private photo:any = {urlcss: ``};
 
 
   constructor(public navCtrl: NavController,
-    public navParams: NavParams,
-    public alertCtrl: AlertController,
-    public toastCtrl: ToastController,
-    private datePicker: DatePicker,
-    public paramService: ParamService,
-    public trService: TransactionService) {
+              public navParams: NavParams,
+              public alertCtrl: AlertController,
+              public toastCtrl: ToastController,
+              private datePicker: DatePicker,
+              public paramService: ParamService,
+              public photoService: PhotoService,
+              private sanitizer: DomSanitizer,
+              public trService: TransactionService) {
+
     this.curr_tr = navParams.get("tr");
     this.orig_tr = JSON.parse(JSON.stringify(this.curr_tr));
     this.icon = ('icon' in this.curr_tr) ? this.curr_tr['icon'] : this.trService.smartIcon(this.curr_tr);
@@ -69,6 +76,15 @@ export class TrDetailsPage {
       this.moyen_options = [{ 'val': 'banque', 'title': 'J\'ai reçu de l\'argent en banque', 'icon': 'fa-credit-card' },
       { 'val': 'caisse', 'title': 'J\'ai reçu de l\'argent liquide', 'icon': 'fa-money' }]
     }
+
+    // on récupère une photo de bing pour illustrer
+    this.photoService.randPhoto(this.curr_tr['name']).then(o => {
+      console.log('GOT PHOTO', o)
+      this.photo = o
+      this.photo.urlcss =  sanitizer.bypassSecurityTrustStyle('url(' + this.photo.url + ')');
+    }).catch(e => {
+      console.log('ERROR PHOTO', e)
+    })
   }
 
   ionViewDidLoad() {
@@ -171,7 +187,6 @@ export class TrDetailsPage {
 
   setupDatePicker() {
     let field: HTMLDivElement = this.mypicker.nativeElement;
-    console.log("pik", field, this.mypicker);
     let mythis = this;
     this.pickerObject = new pik({
       field: this.mypicker.nativeElement,

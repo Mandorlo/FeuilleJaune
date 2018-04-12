@@ -37,7 +37,6 @@
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-compat": "^1.0.0",
-    "cordova-plugin-console": "^1.0.5",
     "cordova-plugin-datepicker": "^0.9.3",
     "cordova-plugin-device": "^1.1.4",
     "cordova-plugin-file": "^4.3.3",
@@ -59,6 +58,7 @@
     "node-rest-client-promise": "^3.1.0",
     "pdfmake": "^0.1.31",
     "pikaday": "^1.6.1",
+    "request": "^2.85.0",
     "rxjs": "5.4.0",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.12"
@@ -73,7 +73,6 @@
   "cordova": {
     "plugins": {
       "cordova-sqlite-storage": {},
-      "cordova-plugin-console": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-statusbar": {},

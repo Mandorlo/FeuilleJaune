@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="io.shaqed.feuillejaune" version="0.10.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Feuille Jaune</name>
-    <description>Remplir et envoyer la "Feuille Jaune" chaque mois</description>
-    <author email="shaqed@outlook.fr" href="">Carlo Baugé</author>
+    <description>Une app pour faire sa feuille jaune dans la communauté du Chemin Neuf :)</description>
+    <author email="shaqed@outlook.fr" href="">Mandorlo</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
@@ -78,11 +78,8 @@
         <splash height="960" src="resources/ios/splash/Default@2x~iphone.png" width="640" />
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
     </platform>
-    <engine name="android" spec="^6.2.3" />
-    <engine name="windows" spec="^5.0.0" />
     <plugin name="cordova-plugin-android-permissions" spec="^1.0.0" />
     <plugin name="cordova-plugin-app-version" spec="^0.1.9" />
-    <plugin name="cordova-plugin-console" spec="^1.0.5" />
     <plugin name="cordova-plugin-datepicker" spec="^0.9.3" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-file" spec="^4.3.3" />
@@ -95,4 +92,6 @@
     <plugin name="cordova.plugins.diagnostic" spec="^3.6.6" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <allow-navigation href="http://10.70.10.65:8100" />
+    <engine name="android" spec="^6.2.3" />
+    <engine name="windows" spec="^5.0.0" />
 </widget>

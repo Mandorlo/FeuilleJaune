@@ -5,6 +5,11 @@ page-tr-details {
 
   .big_back {
     text-align: center;
+    width: 100%;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
   }
 
    h4 {
@@ -26,7 +31,7 @@ page-tr-details {
   }
 
   .container {
-    padding: 2rem;
+    padding: 0 2rem 2rem 2rem;
   }
 
   .nom {
@@ -47,7 +52,7 @@ page-tr-details {
     font-size: 1.4em;
     float: right;
     position: relative;
-    top: -1em;
+    top: -3em;
     padding: 7px 12px 7px 21px;
     margin: 0;
     background: black;

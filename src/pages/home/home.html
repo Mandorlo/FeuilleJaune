@@ -18,7 +18,7 @@
   <gauge [level]="gauges.banque" min="0" [max]="gauges.banque_max" text="" style="float:left;width:50%;margin-top:-5px">{{gauges.pretty_banque}}</gauge>
   <gauge [level]="gauges.caisse" min="0" [max]="gauges.caisse_max" text="" style="float:right;width:50%;margin-top:-5px">{{gauges.pretty_caisse}}</gauge>
 
-  <ion-card *ngIf="init.bienvenue_msg">
+  <ion-card *ngIf="init.bienvenue_msg" color="light">
     <ion-card-header>
       <ion-icon name="close" style="float:right" (click)="closeBienvenue()"></ion-icon>
       <p><b>Bienvenue dans l'appli Feuille Jaune !</b></p>

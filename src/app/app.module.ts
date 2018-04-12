@@ -32,6 +32,7 @@ import { PdfService } from '../services/pdf.service';
 import { FjService } from '../services/fj.service';
 import { ExportService } from '../services/export.service';
 import { CurrencyService } from '../services/currency.service';
+import { PhotoService } from '../services/photo.service';
 
 import { DatePicker } from '@ionic-native/date-picker';
 import { BudgetLineComponent } from '../components/budget-line/budget-line';
@@ -105,6 +106,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     FjService,
     ExportService,
     CurrencyService,
+    PhotoService,
     DatePicker,
     AndroidPermissions,
     Diagnostic,

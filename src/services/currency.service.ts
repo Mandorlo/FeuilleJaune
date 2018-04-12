@@ -70,6 +70,6 @@ export class CurrencyService {
     }
 
     let base_montant = montant / this.conversions[from]
-    return (base_montant * this.conversions[to])
+    return Math.round(base_montant * this.conversions[to] * 100) / 100
   }
 }

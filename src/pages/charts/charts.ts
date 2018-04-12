@@ -136,7 +136,7 @@ export class ChartsPage {
     let date_end = moment().endOf('month');
     let currmonth_montant = this.tr_list.map(e => {
       let m = moment(e.date, 'YYYY-MM-DD');
-      if (m.isSameOrBefore(date_end) && m.isSameOrAfter(date_start)) return this.currencyService.convert(e.montant, e.currency);
+      if (e.type == 'out' && m.isSameOrBefore(date_end) && m.isSameOrAfter(date_start)) return this.currencyService.convert(e.montant, e.currency);
       return 0;
     }).reduce((a,b) => a+b, 0)
 

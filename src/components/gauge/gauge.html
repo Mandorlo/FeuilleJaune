@@ -1,8 +1,15 @@
 <div id="wrapper" (click)="changeLimits()">
   <svg id="meter">
-    <circle class="circle" id="low" r="60" cx="50%" cy="50%" stroke="#EEEEEE" stroke-width="10" stroke-dasharray="275, 500" fill="none"></circle>
+    <defs>
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#C1573C;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#FCDFC9;stop-opacity:1" />
+      </linearGradient>
+    </defs>
 
-    <circle class="circle" #levelCircle r="60" cx="50%" cy="50%" stroke="#FFB219" stroke-width="10" [attr.stroke-dasharray]="strokeDash" fill="none"></circle>
+    <circle class="circle" id="low" r="60" cx="50%" cy="50%" stroke="#FCDFC9" stroke-width="10" stroke-dasharray="275, 500" fill="none"></circle>
+
+    <circle class="circle" #levelCircle r="60" cx="50%" cy="50%" stroke="url(#grad1)" stroke-width="10" [attr.stroke-dasharray]="strokeDash" fill="none"></circle>
   </svg>
   <div class="text">
     <!-- {{text}} -->
