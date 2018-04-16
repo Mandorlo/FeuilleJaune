@@ -49,7 +49,7 @@ Pour utiliser la custom font, c'est un peu comme font awesome, on ajoute des bal
 
 * run `ionic serve` to run the app in the browser with live reload
 * run `ionic cordova run android` to run the app on your usb connected smartphone
-* while developping, in index.html you should comment the service worker lines (other it will cache everything and livereload won't work)
+* while developping, in index.html you should comment the service worker lines (otherwise it will cache everything and livereload won't work)
 
 ## What helped me writing this app
 

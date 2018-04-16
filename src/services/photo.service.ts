@@ -6,6 +6,7 @@ import { ParamService } from './param.service';
 @Injectable()
 export class PhotoService {
   private subscriptionKey = '2b60f1faee594490b70e478468625756';
+  private pexel_apikey = '563492ad6f9170000100000134220e6df7ba49b2ba8a9ae937eac8e8';
   private paramService;
   private cache = [];
   private cache_keys = [];
