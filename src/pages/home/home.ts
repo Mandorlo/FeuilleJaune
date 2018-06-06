@@ -39,7 +39,7 @@ export class HomePage {
     private currencyService: CurrencyService,
     private appCtrl: App) {
 
-    trService.getAll().then(data => {
+    /* trService.getAll().then(data => {
       this.transactions = data;
     }).catch(err => {
       console.log(err)
@@ -50,7 +50,9 @@ export class HomePage {
       this.updateGauges();
     }).catch(err => {
       console.log(err)
-    });
+    }); */
+
+    this.updateGauges();
 
     paramService.get("init").then(v => {
       if (v) this.init = v;
@@ -84,9 +86,9 @@ export class HomePage {
   async updateGaugesCore() {
     let res = await this.currencyService.init();
     let curr_month = moment().format("YYYY-MM") + "-01";
-    let last_month = moment(curr_month).subtract(1, 'months').format("YYYY-MM") + "-01";
+    //let last_month = moment(curr_month).subtract(1, 'months').format("YYYY-MM") + "-01";
 
-    let prec_month_fj = _.find(this.fj_list, { 'month': last_month });
+    let prec_month_fj = await this.fjService.getFjLastMonth(curr_month);
     let this_month_fj = _.find(this.fj_list, { 'month': curr_month });
     let solde = { 'banque': 0, 'caisse': 0 }
 
@@ -94,13 +96,15 @@ export class HomePage {
     solde["caisse_max"] = this.gauges.caisse_max;
 
     if (prec_month_fj) {
-      solde.banque = this.currencyService.convert(prec_month_fj.data.solde_banque, prec_month_fj.currency);
-      solde.caisse = this.currencyService.convert(prec_month_fj.data.solde_caisse, prec_month_fj.currency);
+      let solde_prec_month_fj = this.fjService.getSoldeFJ(prec_month_fj)
+      solde.banque = solde_prec_month_fj.banque
+      solde.caisse = solde_prec_month_fj.caisse
+      
       if (this_month_fj) {
-        let this_m_bank = this.currencyService.convert(this_month_fj.data.avance.banque, this_month_fj.currency);
-        this_m_bank = (isNaN(this_m_bank)) ? 0 : this_m_bank;
-        let this_m_caisse = this.currencyService.convert(this_month_fj.data.avance.caisse, this_month_fj.currency);
-        this_m_caisse = (isNaN(this_m_caisse)) ? 0 : this_m_caisse;
+        let solde_this_month_fj = this.fjService.getSoldeFJ(this_month_fj)
+        let this_m_bank = (isNaN(solde_this_month_fj.banque)) ? 0 : solde_this_month_fj.banque;
+        let this_m_caisse = (isNaN(solde_this_month_fj.caisse)) ? 0 : solde_this_month_fj.caisse;
+                
         solde["banque_max"] = Math.max(10, solde.banque + this_m_bank);
         solde["caisse_max"] = Math.max(10, solde.caisse + this_m_caisse);
       } else {

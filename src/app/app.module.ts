@@ -12,6 +12,7 @@ import { ChartsPage } from '../pages/charts/charts';
 import { ParamPage } from '../pages/param/param';
 import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
 import { FjgenPage } from '../pages/fjgen/fjgen';
+import { FjDetailsPage } from '../pages/fj-details/fj-details';
 import { FjmgmtPage } from '../pages/fjmgmt/fjmgmt';
 import { FjactionsPage } from '../pages/fjactions/fjactions';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -58,6 +59,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     ParamPage,
     FeuillejaunePage,
     FjgenPage,
+    FjDetailsPage,
     FjmgmtPage,
     FjactionsPage,
     TabsPage,
@@ -89,6 +91,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     ParamPage,
     FeuillejaunePage,
     FjgenPage,
+    FjDetailsPage,
     FjmgmtPage,
     FjactionsPage,
     TabsPage

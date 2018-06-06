@@ -62,7 +62,7 @@ export class TrDetailsPage {
     this.curr_tr = navParams.get("tr");
     this.orig_tr = JSON.parse(JSON.stringify(this.curr_tr));
     this.icon = ('icon' in this.curr_tr) ? this.curr_tr['icon'] : this.trService.smartIcon(this.curr_tr);
-    this.pretty['montant'] = this.curr_tr['montant'].toString() + " " + this.paramService.symbolCurrency();
+    this.pretty['montant'] = this.curr_tr['montant'].toString() + " " + this.paramService.symbolCurrency(this.curr_tr['currency']);
     this.pretty['date'] = moment(this.curr_tr["date"]).fromNow();
     this.pretty['date2'] = moment(this.curr_tr['date']).format("ddd D MMM YYYY");
     this.pretty['category'] = this.trService.categoryLabel(this.curr_tr);
@@ -79,7 +79,6 @@ export class TrDetailsPage {
 
     // on récupère une photo de bing pour illustrer
     this.photoService.randPhoto(this.curr_tr['name']).then(o => {
-      console.log('GOT PHOTO', o)
       this.photo = o
       this.photo.urlcss =  sanitizer.bypassSecurityTrustStyle('url(' + this.photo.url + ')');
     }).catch(e => {

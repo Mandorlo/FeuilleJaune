@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 
 import { ParamService } from './param.service';
+import { CurrencyService } from './currency.service';
 
 import _ from 'lodash';
 import moment from 'moment';
@@ -15,7 +16,8 @@ export class TransactionService {
   private cat_lists = { 'in': [], 'out': [] };
 
   constructor(private storage: Storage,
-    private paramService: ParamService) { }
+    private paramService: ParamService,
+    private currencyService: CurrencyService) { }
 
   set(tr_list) {
     return this.storage.set(this.key, tr_list);
@@ -109,7 +111,39 @@ export class TransactionService {
   }
 
   getAll() {
-    return this.storage.get(this.key)
+    return this.storage.get(this.key) // this is a promise
+  }
+
+  async getTransactions(month = null, currency = null) {
+    let tr_list = await this.getAll()
+    if (month) {
+      month = this.paramService.toMoment(month)
+      let mymonth = month.month()
+      let myyear = month.year()
+      tr_list = tr_list.filter(tr => moment(tr.date, 'YYYY-MM-DD').month() == mymonth && moment(tr.date, 'YYYY-MM-DD').year() == myyear)
+    }
+    if (currency) { // 'EUR', 'ILS', ...
+      tr_list = tr_list.filter(tr => tr.currency == currency)
+    }
+    return tr_list
+  }
+
+  // renvoie la liste des devises du mois, basée sur les transactions (pas sur les fj)
+  // e.g. ['EUR', 'ILS']
+  async getMonthCurrencies(month) {
+    month = this.paramService.toMoment(month)
+    let tr_list = await this.getTransactions(month);
+    return _.uniq(tr_list.map(tr => tr.currency))
+  }
+
+  async getTotalDepensesMonth(month, devise = null, tr_list = null) {
+    if (!devise) devise = this.paramService.currency
+    month = this.paramService.toMoment(month)
+    let mymonth = month.month()
+    let myyear = month.year()
+    if (!tr_list) tr_list = await this.getAll()
+    let month_tr_list = tr_list.filter(tr => moment(tr.date, 'YYYY-MM-DD').month() == mymonth && moment(tr.date, 'YYYY-MM-DD').year() == myyear)
+    return _.sum(month_tr_list.map(tr => this.currencyService.convert(tr.montant, devise)))
   }
 
 

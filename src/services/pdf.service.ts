@@ -15,11 +15,6 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 @Injectable()
 export class PdfService {
   public pdf_url;
-  public liste_maison = _.map(_.filter(this.paramService.categories, ['type', 'maison']), 'id');
-  public liste_viecourante = _.map(_.filter(this.paramService.categories, ['type', 'vie courante']), 'id');
-  public liste_transport = _.map(_.filter(this.paramService.categories, ['type', 'transport']), 'id');
-  public liste_secretariat = _.map(_.filter(this.paramService.categories, ['type', 'secretariat']), 'id');
-  public liste_banque = _.map(_.filter(this.paramService.categories, ['type', 'banque']), 'id');
 
   constructor(private paramService: ParamService,
     public toastCtrl: ToastController,
@@ -52,7 +47,7 @@ export class PdfService {
       this.file.checkFile(path, filename).then(exists => {
         if (exists) {
           this.file.removeFile(path, filename).then(res => {
-            this.file.writeFile(path, filename, blob, true).then(res => {
+            this.file.writeFile(path, filename, blob, {replace:true}).then(res => {
               resolve(res)
             }).catch(err => {
               reject(err)
@@ -62,7 +57,7 @@ export class PdfService {
             reject(err)
           })
         } else {
-          this.file.writeFile(path, filename, blob, true).then(res => {
+          this.file.writeFile(path, filename, blob, {replace:true}).then(res => {
             resolve(res)
           }).catch(err => {
             reject(err)
@@ -70,7 +65,7 @@ export class PdfService {
         }
       }).catch(err => {
         console.log("Impossible de vérifier l'existence du fichier " + path + "/" + filename)
-        this.file.writeFile(path, filename, blob, true).then(res => {
+        this.file.writeFile(path, filename, blob, {replace:true}).then(res => {
           resolve(res)
         }).catch(err => {
           reject(err)
@@ -79,7 +74,32 @@ export class PdfService {
     });
   }
 
-  createFJ(fjdata, opt) {
+  async createFJ(fjdata, opt) {
+    // TODO opt.path et opt.filename doivent bouger selon la devise
+    for (let currency in fjdata.data) {
+      let pdf_data = await this.createPdf(fjdata.data[currency], opt)
+      let blob = new Blob([pdf_data], { type: 'application/pdf' });
+      
+      let file_exists = false
+      try {
+        file_exists = await this.file.checkFile(opt.path, opt.filename);
+      } catch(e) {
+        if (e.code == 1) {
+          let res_write = await this.coolWrite(opt.path, opt.filename, blob)
+        } else {
+          console.log("Impossible checkFile of " + opt.path + "/" + opt.filename + ", trying direct download...", e);
+        }
+      }
+      
+      if (file_exists) {
+        let res_remove = await this.file.removeFile(opt.path, opt.filename)
+      }
+      let res_write = await this.coolWrite(opt.path, opt.filename, blob)
+    }
+  }
+
+  createFJ_old(fjdata, opt) {
+    // TODO remove this function
     // on gère les paramètres par défaut
     opt = this.manageDefaults(opt);
 
@@ -235,25 +255,25 @@ export class PdfService {
     // SOUS-TOTAL MAISON
     body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { 'text': 'SORTIES', style: ["header"] }, '', '', { text: '', margin: [0, 5, 0, 5] }]);
     line_nums = ['18', '19', '21', '22', '23', '24', '25', '29', '30'];
-    this.liste_maison.forEach((el, i) => {
+    this.paramService.liste_maison.forEach((el, i) => {
       body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
     body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'II - TOTAL MAISON', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_II_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_II_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL VIE COURANTE
-    this.liste_viecourante.forEach((el, i) => {
+    this.paramService.liste_viecourante.forEach((el, i) => {
       body.push([{ text: (i + 32).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
     body.push([{ text: '44', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'III - TOTAL VIE COURANTE', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_III_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_III_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL TRANSPORT
-    this.liste_transport.forEach((el, i) => {
+    this.paramService.liste_transport.forEach((el, i) => {
       body.push([{ text: (i + 45).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
     body.push([{ text: '52', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'IV - TOTAL TRANSPORT', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_IV_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_IV_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL SECRETARIAT
-    this.liste_secretariat.forEach((el, i) => {
+    this.paramService.liste_secretariat.forEach((el, i) => {
       body.push([{ text: (i + 54).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
     });
     body.push([{ text: '57', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'V - TOTAL SECRÉTARIAT', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_V_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_V_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);

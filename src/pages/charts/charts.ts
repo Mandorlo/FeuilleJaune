@@ -145,9 +145,15 @@ export class ChartsPage {
         let mydate = moment().subtract(i, 'months');
         labels.push(mydate.format('MMM YY'));
         let res = _.find(fj_list, { 'month': mydate.format("YYYY-MM") + "-01" });
-        if (res) data.push(this.currencyService.convert(res.data.total_bc, res.currency));
-        else if (!res && i == 0) data.push(currmonth_montant);
-        else data.push(0)
+        if (res) {
+          let total = this.fjService.getTotalFJ(res)
+          data.push(total.bc);
+        } else if (!res && i == 0) {
+          data.push(currmonth_montant)
+        } else {
+          // TODO renvoyer this.trService.getTotalDepensesMonth(mydate) au lieu de 0, (but first, I have to transform this fun in an async fun)
+          data.push(0)
+        }
       }
       labels = labels.reverse();
       data = data.reverse();

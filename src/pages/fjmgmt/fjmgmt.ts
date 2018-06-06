@@ -7,6 +7,7 @@ import { FjService } from '../../services/fj.service';
 import { ParamPage } from '../param/param';
 import { FjgenPage } from '../fjgen/fjgen';
 import { FjactionsPage } from '../fjactions/fjactions';
+import { FjDetailsPage } from '../fj-details/fj-details';
 
 import _ from 'lodash';
 
@@ -128,11 +129,12 @@ export class FjmgmtPage {
   }
 
   showFJActions(fj) { // montre la modal window pour choisir une action relative à la feuille jaune cliquée
-    let modalActions = this.modalCtrl.create(FjactionsPage, { "fj": fj });
+    /* let modalActions = this.modalCtrl.create(FjactionsPage, { "fj": fj });
     modalActions.onDidDismiss(data => {
       this.reload();
     });
-    modalActions.present();
+    modalActions.present(); */
+    this.navCtrl.push(FjDetailsPage, {"fj": fj});
   }
 
   showParamPage() {

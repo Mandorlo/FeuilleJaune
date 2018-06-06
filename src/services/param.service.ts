@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 
 import _ from 'lodash';
+import moment from 'moment';
 
 @Injectable()
 export class ParamService {
@@ -68,13 +69,21 @@ export class ParamService {
       regex: /(^| )(scolarit|scolaire|[ée]cole)/gi,
       photo: '@google:backtoschool'
     }, {
+      category: 'cadeau',
+      regex: /(^| )(cadeau|regalo)/gi
+    }, {
       category: 'divers_maison',
       regex: /(^| )(r[iée]para[tz]ion|r[ée]pare|repair|plombier|[ée]lectricien)/gi,
       icon: 'fa-wrench',
       photo: '@google:repair'
     }, {
-      category: 'loisir',
-      regex: /(^| )(vol|avion|flight|plane|aereo)/gi,
+      category: 'livre',
+      regex: /(^| )(book|livre|libro|ebook|epub)/gi,
+      icon: 'fa-book',
+      photo: '@google:read'
+    }, {
+      category: 'transport_commun',
+      regex: /(^| )(vol( |$)|avion|flight|plane|aereo)/gi,
       icon: 'fa-plane',
       photo: 'flight plane'
     }, {
@@ -84,7 +93,7 @@ export class ParamService {
       photo: '@google:art'
     }, {
       category: 'loisir',
-      regex: /(^| )(cin[eé]ma|movie|film)/gi,
+      regex: /(^| )(cin[eé](ma| |$)|movie|film)/gi,
       icon: 'fa-film',
       photo: '@google:cinema'
     }, {
@@ -160,11 +169,6 @@ export class ParamService {
       regex: /(^| )(op[ée]ra|th?[ée][aâ]tr)/gi,
       photo: '@google:theatreopera'
     }, {
-      category: 'livre',
-      regex: /(^| )(book|livre|libro)/gi,
-      icon: 'fa-book',
-      photo: '@google:read'
-    }, {
       category: 'loisir',
       regex: /(^| )(pizza)/gi,
       icon: 'myicon-pizza',
@@ -206,7 +210,7 @@ export class ParamService {
       photo: 'chocolate cake'
     }, {
       category: 'alimentation',
-      regex: /(^| )(croissant|viennoiserie|pain|bread|pane|bageutte)/gi,
+      regex: /(^| )(croissant|viennoiserie|pain|bread|pane|baguette)/gi,
       icon: 'myicon-croissant',
       photo: 'croissant baguette bakery'
     }, {
@@ -224,6 +228,9 @@ export class ParamService {
       regex: /(^| )(panin|sandwich|hamburger)/gi,
       icon: 'myicon-hamburger',
       photo: '$'
+    }, {
+      category: 'alimentation',
+      regex: /(^| )(fromage|formaggi|jambon|prosciutt)/gi
     }, {
       category: 'hygiene',
       regex: /(^| )(dentifric|brosse [aà] dent|spazzolin|toothpaste|toothbrush)/gi,
@@ -313,7 +320,7 @@ export class ParamService {
       photo: 'velib'
     }, {
       category: 'transport_commun',
-      regex: /(^| )(bus)/gi,
+      regex: /(^| )(ouibus|flixbus|bus|tram( |$)|tramway)/gi,
       icon: 'fa-bus',
       photo: '$'
     }, {
@@ -363,7 +370,7 @@ export class ParamService {
       icon: 'fa-microchip'
     }, {
       category: 'frais_banque',
-      regex: /(^| )(carte (CB|d?e? ?cr[ée]dit|bancaire)|carta (di )?credito)/gi,
+      regex: /(^| )(carte (CB|d?e? ?cr[ée]dit|bancaire|bleu|visa)|carta (di )?credito)/gi,
       icon: 'fa-credit-card',
       photo: 'credit card'
     }, {
@@ -467,6 +474,15 @@ export class ParamService {
     return this.storage.get(key)
   }
 
+  // renvoie 1 si @s est un trigramme de devise (genre 'EUR'), 
+  // 2 si c'est un symbole de devise
+  // -1 sinon
+  isCurrency(s) {
+    if (this.currencies.map(c => c.id).indexOf(s) >= 0) return 1
+    if (this.currencies.map(c => c.symbol).indexOf(s) >= 0) return 2
+    return -1
+  }
+
   symbolCurrency(devise = null) {
     if (devise === null) devise = this.currency;
     let res = this.currencies.filter(el => el.id == devise);
@@ -490,6 +506,23 @@ export class ParamService {
       }
     }
     return ''
+  }
+
+  // transforme @month en objet moment
+  toMoment(month) {
+    if (moment.isMoment(month)) return month;
+    if (typeof month == 'string') return moment(month, 'YYYY-MM-DD')
+    else throw "Error in paramService.toMoment : Not valid month " + month
+  }
+
+  // renvoie le label de la categorie @cat_id
+  getCatLabel(cat_id) {
+    let cat = this.categories.find(c => c.id == cat_id)
+    if (cat) return cat.label;
+    let cat_in = this.categories_in.find(c => c.id == cat_id)
+    if (cat_in) return cat_in.label;
+    console.log('Error in getting category label for ', cat_id)
+    return 'UNKNOWN ' + cat_id
   }
 
 }

@@ -5,7 +5,7 @@ import { ParamService } from './param.service';
 
 @Injectable()
 export class PhotoService {
-  private subscriptionKey = '2b60f1faee594490b70e478468625756';
+  private subscriptionKey = 'AIzaSyDgR7geKq0faSort2zVVFyxgHTIPsIZL34';
   private pexel_apikey = '563492ad6f9170000100000134220e6df7ba49b2ba8a9ae937eac8e8';
   private paramService;
   private cache = [];
@@ -29,7 +29,7 @@ export class PhotoService {
     if (s.substr(0, 4) == 'http') return Promise.resolve({url: s})
 
     let options = {
-      url: 'https://api.cognitive.microsoft.com/bing/v7.0/images/search?q=' + encodeURIComponent(s),
+      url: `https://www.googleapis.com/customsearch/v1?searchType=image&q=${encodeURIComponent(s)}&cx=004323286901162026581:48ky0dcc9as&key=${this.subscriptionKey}`,
       headers: {
         'Ocp-Apim-Subscription-Key': this.subscriptionKey
       }
@@ -41,16 +41,17 @@ export class PhotoService {
         else {
           try {
             let o = JSON.parse(body)
-            if (!o.value || !o.value.length) reject('invalid body in randPhoto result for ' + s);
+            console.log('photo search got : ', o)
+            if (!o.items || !o.items.length) reject('invalid body in randPhoto result for ' + s);
             else {
-              console.log('photo search ' + s + ' got ' + o.value.length + ' results')
-              let l = (this.severe) ? 2: o.value.length;
+              console.log('photo search ' + s + ' got ' + o.items.length + ' results')
+              let l = (this.severe) ? 4: o.items.length;
               let rand_int: number = Math.round(Math.random() * l);
-              let rand_photo = o.value[rand_int];
+              let rand_photo = o.items[rand_int];
               let myPhoto = {
-                url: rand_photo.thumbnailUrl,
-                width: rand_photo.thumbnail.width,
-                height: rand_photo.thumbnail.height
+                url: rand_photo.link,
+                width: rand_photo.image.width,
+                height: rand_photo.image.height
               }
               this.setCache(s, myPhoto);
               resolve(myPhoto)

@@ -2,7 +2,7 @@
 
   <ion-navbar color="primary">
     <ion-title *ngIf="!edit_fj">Nouvelle Feuille Jaune</ion-title>
-    <ion-title *ngIf="edit_fj"><ion-icon class="back_fa" name="arrow-back" (click)="this.navCtrl.pop()"></ion-icon>Editer FJ de {{curr_month_pretty}}</ion-title>
+    <ion-title *ngIf="edit_fj">Editer FJ de {{curr_month_pretty}}</ion-title>
 
     <ion-buttons end>
       <button ion-button icon-only class="button_fa" (click)="createFJ()">
@@ -26,52 +26,60 @@
 <ion-content padding>
   <ion-list>
     <ion-item *ngIf="!edit_fj">
-      <ion-label>Mois</ion-label>
-      <ion-select name="mois" [(ngModel)]="curr_month" (ionChange)="computeAmounts()">
+      <ion-label>Nouvelle Feuille Jaune pour {{curr_month_pretty}}</ion-label>
+      <!-- <ion-select name="mois" [(ngModel)]="curr_month" (ionChange)="reloadcore()">
         <ion-option *ngFor="let m of last_months" [value]="m.date">{{m.label}}</ion-option>
+      </ion-select> -->
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Devise</ion-label>
+      <ion-select name="fj_curr_currency" [(ngModel)]="curr_currency">
+        <ion-option *ngFor="let c of fj_currencies" [value]="c.val">{{c.label}}</ion-option>
       </ion-select>
     </ion-item>
 
-    <ion-item-group>
+    <ion-item-group *ngIf="tr_engine_ready">
       <ion-item-divider color="light" sticky>Entrées<span style='float:right;width:20%;text-align:center'>CAISSE</span><span style='float:right;width:20%;text-align:center'>BANQUE</span></ion-item-divider>
-      <fj-line [line]="2" [label]="fjdata.salaire.label" [(banque)]="fjdata.salaire.banque" [(caisse)]="fjdata.salaire.caisse" [(observations)]="fjdata.salaire.observations"></fj-line>
-      <fj-line [line]="3" [label]="fjdata.allocation.label" [(banque)]="fjdata.allocation.banque" [(caisse)]="fjdata.allocation.caisse" [(observations)]="fjdata.allocation.observations"></fj-line>
-      <fj-line [line]="4" [label]="fjdata.don.label" [(banque)]="fjdata.don.banque" [(caisse)]="fjdata.don.caisse" [(observations)]="fjdata.don.observations"></fj-line>
+      <fj-line [line]="2" [label]="paramService.getCatLabel('salaire')" [(banque)]="curr_fj.data[curr_currency].salaire.banque" [(caisse)]="curr_fj.data[curr_currency].salaire.caisse" [(observations)]="curr_fj.data[curr_currency].salaire.observations"></fj-line>
+      <fj-line [line]="3" [label]="paramService.getCatLabel('allocation')" [(banque)]="curr_fj.data[curr_currency].allocation.banque" [(caisse)]="curr_fj.data[curr_currency].allocation.caisse" [(observations)]="curr_fj.data[curr_currency].allocation.observations"></fj-line>
+      <fj-line [line]="4" [label]="paramService.getCatLabel('don')" [(banque)]="curr_fj.data[curr_currency].don.banque" [(caisse)]="curr_fj.data[curr_currency].don.caisse" [(observations)]="curr_fj.data[curr_currency].don.observations"></fj-line>
       <fj-line line="5" label="SOUS-TOTAL" [banque]="soustotal1('banque')" [caisse]="soustotal1('caisse')"></fj-line>
-      <fj-line [line]="6" [label]="fjdata.dime.label" [(banque)]="fjdata.dime.banque" [(caisse)]="fjdata.dime.caisse" [(observations)]="fjdata.dime.observations"></fj-line>
-      <fj-line [line]="7" [label]="fjdata.autre.label" [(banque)]="fjdata.autre.banque" [(caisse)]="fjdata.autre.caisse" [(observations)]="fjdata.autre.observations"></fj-line>
-      <fj-line [line]="8" [label]="fjdata.remboursement_sante.label" [(banque)]="fjdata.remboursement_sante.banque" [(caisse)]="fjdata.remboursement_sante.caisse" [(observations)]="fjdata.remboursement_sante.observations"></fj-line>
-      <fj-line [line]="9" [label]="fjdata.remboursement_pro.label" [(banque)]="fjdata.remboursement_pro.banque" [(caisse)]="fjdata.remboursement_pro.caisse" [(observations)]="fjdata.remboursement_pro.observations"></fj-line>
-      <fj-line [line]="10" [label]="fjdata.remboursement_autre.label" [(banque)]="fjdata.remboursement_autre.banque" [(caisse)]="fjdata.remboursement_autre.caisse" [(observations)]="fjdata.remboursement_autre.observations"></fj-line>
-      <fj-line line="12" label="REPORT DU MOIS PRECEDENT" [(banque)]="fjdata.report_mois_precedent.banque" [(caisse)]="fjdata.report_mois_precedent.caisse"></fj-line>
-      <fj-line [line]="13" [label]="fjdata.avance.label" [(banque)]="fjdata.avance.banque" [(caisse)]="fjdata.avance.caisse" [(observations)]="fjdata.avance.observations"></fj-line>
-      <fj-line [line]="15" [label]="fjdata.epargne.label" [(banque)]="fjdata.epargne.banque" [(caisse)]="fjdata.epargne.caisse" [(observations)]="fjdata.epargne.observations"></fj-line>
-      <fj-line [line]="16" [label]="fjdata.transfert.label" [(banque)]="fjdata.transfert.banque" [(caisse)]="-fjdata.transfert.banque" [(observations)]="fjdata.transfert.observations"></fj-line>
+      <fj-line [line]="6" [label]="paramService.getCatLabel('dime')" [(banque)]="curr_fj.data[curr_currency].dime.banque" [(caisse)]="curr_fj.data[curr_currency].dime.caisse" [(observations)]="curr_fj.data[curr_currency].dime.observations"></fj-line>
+      <fj-line [line]="7" [label]="paramService.getCatLabel('autre')" [(banque)]="curr_fj.data[curr_currency].autre.banque" [(caisse)]="curr_fj.data[curr_currency].autre.caisse" [(observations)]="curr_fj.data[curr_currency].autre.observations"></fj-line>
+      <fj-line [line]="8" [label]="paramService.getCatLabel('remboursement_sante')" [(banque)]="curr_fj.data[curr_currency].remboursement_sante.banque" [(caisse)]="curr_fj.data[curr_currency].remboursement_sante.caisse" [(observations)]="curr_fj.data[curr_currency].remboursement_sante.observations"></fj-line>
+      <fj-line [line]="9" [label]="paramService.getCatLabel('remboursement_pro')" [(banque)]="curr_fj.data[curr_currency].remboursement_pro.banque" [(caisse)]="curr_fj.data[curr_currency].remboursement_pro.caisse" [(observations)]="curr_fj.data[curr_currency].remboursement_pro.observations"></fj-line>
+      <fj-line [line]="10" [label]="paramService.getCatLabel('remboursement_autre')" [(banque)]="curr_fj.data[curr_currency].remboursement_autre.banque" [(caisse)]="curr_fj.data[curr_currency].remboursement_autre.caisse" [(observations)]="curr_fj.data[curr_currency].remboursement_autre.observations"></fj-line>
+      <fj-line line="12" label="REPORT DU MOIS PRECEDENT" [(banque)]="curr_fj.data[curr_currency].report_mois_precedent.banque" [(caisse)]="curr_fj.data[curr_currency].report_mois_precedent.caisse"></fj-line>
+      <fj-line [line]="13" [label]="paramService.getCatLabel('avance')" [(banque)]="curr_fj.data[curr_currency].avance.banque" [(caisse)]="curr_fj.data[curr_currency].avance.caisse" [(observations)]="curr_fj.data[curr_currency].avance.observations"></fj-line>
+      <fj-line [line]="15" [label]="paramService.getCatLabel('epargne')" [(banque)]="curr_fj.data[curr_currency].epargne.banque" [(caisse)]="curr_fj.data[curr_currency].epargne.caisse" [(observations)]="curr_fj.data[curr_currency].epargne.observations"></fj-line>
+      <fj-line [line]="16" [label]="paramService.getCatLabel('transfert')" [(banque)]="curr_fj.data[curr_currency].transfert.banque" [(caisse)]="-curr_fj.data[curr_currency].transfert.banque" [(observations)]="curr_fj.data[curr_currency].transfert.observations"></fj-line>
       <fj-line line="17" label="I - DISPONIBILITES DU MOIS" [banque]="soustotal_I('banque')" [caisse]="soustotal_I('caisse')"></fj-line>
     </ion-item-group>
 
-    <ion-item-group>
+    <ion-item-group *ngIf="tr_engine_ready">
       <ion-item-divider color="light" sticky>Sorties<span style='float:right;width:20%;text-align:center'>CAISSE</span><span style='float:right;width:20%;text-align:center'>BANQUE</span></ion-item-divider>
       <fj-line banque="BANQUE" caisse='CAISSE'></fj-line>
-      <fj-line [line]="18" [label]="fjdata.alimentation.label" [(banque)]="fjdata.alimentation.banque" [(caisse)]="fjdata.alimentation.caisse" [(observations)]="fjdata.alimentation.observations"></fj-line>
-      <fj-line [line]="19" [label]="fjdata.energie.label" [(banque)]="fjdata.energie.banque" [(caisse)]="fjdata.energie.caisse" [(observations)]="fjdata.energie.observations"></fj-line>
-      <fj-line [line]="21" [label]="fjdata.eau.label" [(banque)]="fjdata.eau.banque" [(caisse)]="fjdata.eau.caisse" [(observations)]="fjdata.eau.observations"></fj-line>
-      <fj-line [line]="22" [label]="fjdata.loyer.label" [(banque)]="fjdata.loyer.banque" [(caisse)]="fjdata.loyer.caisse" [(observations)]="fjdata.loyer.observations"></fj-line>
-      <fj-line [line]="23" [label]="fjdata.impot_maison.label" [(banque)]="fjdata.impot_maison.banque" [(caisse)]="fjdata.impot_maison.caisse" [(observations)]="fjdata.impot_maison.observations"></fj-line>
-      <fj-line [line]="24" [label]="fjdata.assurance_maison.label" [(banque)]="fjdata.assurance_maison.banque" [(caisse)]="fjdata.assurance_maison.caisse" [(observations)]="fjdata.assurance_maison.observations"></fj-line>
-      <fj-line line="25" [label]="fjdata.entretien_maison.label" [(banque)]="fjdata.entretien_maison.banque" [(caisse)]="fjdata.entretien_maison.caisse" [(observations)]="fjdata.entretien_maison.observations"></fj-line>
-      <fj-line line="29" [label]="fjdata.travaux.label" [(banque)]="fjdata.travaux.banque" [(caisse)]="fjdata.travaux.caisse" [(observations)]="fjdata.travaux.observations"></fj-line>
-      <fj-line line="30" [label]="fjdata.divers_maison.label" [(banque)]="fjdata.divers_maison.banque" [(caisse)]="fjdata.divers_maison.caisse" [(observations)]="fjdata.divers_maison.observations"></fj-line>
+      <fj-line [line]="18" [label]="paramService.getCatLabel('alimentation')" [(banque)]="curr_fj.data[curr_currency].alimentation.banque" [(caisse)]="curr_fj.data[curr_currency].alimentation.caisse" [(observations)]="curr_fj.data[curr_currency].alimentation.observations"></fj-line>
+      <fj-line [line]="19" [label]="paramService.getCatLabel('energie')" [(banque)]="curr_fj.data[curr_currency].energie.banque" [(caisse)]="curr_fj.data[curr_currency].energie.caisse" [(observations)]="curr_fj.data[curr_currency].energie.observations"></fj-line>
+      <fj-line [line]="21" [label]="paramService.getCatLabel('eau')" [(banque)]="curr_fj.data[curr_currency].eau.banque" [(caisse)]="curr_fj.data[curr_currency].eau.caisse" [(observations)]="curr_fj.data[curr_currency].eau.observations"></fj-line>
+      <fj-line [line]="22" [label]="paramService.getCatLabel('loyer')" [(banque)]="curr_fj.data[curr_currency].loyer.banque" [(caisse)]="curr_fj.data[curr_currency].loyer.caisse" [(observations)]="curr_fj.data[curr_currency].loyer.observations"></fj-line>
+      <fj-line [line]="23" [label]="paramService.getCatLabel('impot_maison')" [(banque)]="curr_fj.data[curr_currency].impot_maison.banque" [(caisse)]="curr_fj.data[curr_currency].impot_maison.caisse" [(observations)]="curr_fj.data[curr_currency].impot_maison.observations"></fj-line>
+      <fj-line [line]="24" [label]="paramService.getCatLabel('assurance_maison')" [(banque)]="curr_fj.data[curr_currency].assurance_maison.banque" [(caisse)]="curr_fj.data[curr_currency].assurance_maison.caisse" [(observations)]="curr_fj.data[curr_currency].assurance_maison.observations"></fj-line>
+      <fj-line line="25" [label]="paramService.getCatLabel('entretien_maison')" [(banque)]="curr_fj.data[curr_currency].entretien_maison.banque" [(caisse)]="curr_fj.data[curr_currency].entretien_maison.caisse" [(observations)]="curr_fj.data[curr_currency].entretien_maison.observations"></fj-line>
+      <fj-line line="29" [label]="paramService.getCatLabel('travaux')" [(banque)]="curr_fj.data[curr_currency].travaux.banque" [(caisse)]="curr_fj.data[curr_currency].travaux.caisse" [(observations)]="curr_fj.data[curr_currency].travaux.observations"></fj-line>
+      <fj-line line="30" [label]="paramService.getCatLabel('divers_maison')" [(banque)]="curr_fj.data[curr_currency].divers_maison.banque" [(caisse)]="curr_fj.data[curr_currency].divers_maison.caisse" [(observations)]="curr_fj.data[curr_currency].divers_maison.observations"></fj-line>
       <fj-line line="17" label="II - TOTAL MAISON" [banque]="soustotal_II('banque')" [caisse]="soustotal_II('caisse')"></fj-line>
-      <fj-line *ngFor="let id of paramService.liste_viecourante" [label]="fjdata[id].label" [(banque)]="fjdata[id].banque" [(caisse)]="fjdata[id].caisse" [(observations)]="fjdata[id].observations"></fj-line>
+      <fj-line *ngFor="let id of paramService.liste_viecourante" [label]="paramService.getCatLabel(id)" [(banque)]="curr_fj.data[curr_currency][id].banque" [(caisse)]="curr_fj.data[curr_currency][id].caisse" [(observations)]="curr_fj.data[curr_currency][id].observations"></fj-line>
       <fj-line line="44" label="III - TOTAL VIE COURANTE" [banque]="soustotal_III('banque')" [caisse]="soustotal_III('caisse')"></fj-line>
-      <fj-line *ngFor="let id of paramService.liste_transport" [label]="fjdata[id].label" [(banque)]="fjdata[id].banque" [(caisse)]="fjdata[id].caisse" [(observations)]="fjdata[id].observations"></fj-line>
+      <fj-line *ngFor="let id of paramService.liste_transport" [label]="paramService.getCatLabel(id)" [(banque)]="curr_fj.data[curr_currency][id].banque" [(caisse)]="curr_fj.data[curr_currency][id].caisse" [(observations)]="curr_fj.data[curr_currency][id].observations"></fj-line>
       <fj-line line="52" label="IV - TOTAL TRANSPORT" [banque]="soustotal_IV('banque')" [caisse]="soustotal_IV('caisse')"></fj-line>
-      <fj-line *ngFor="let id of paramService.liste_secretariat" [label]="fjdata[id].label" [(banque)]="fjdata[id].banque" [(caisse)]="fjdata[id].caisse" [(observations)]="fjdata[id].observations"></fj-line>
+      <fj-line *ngFor="let id of paramService.liste_secretariat" [label]="paramService.getCatLabel(id)" [(banque)]="curr_fj.data[curr_currency][id].banque" [(caisse)]="curr_fj.data[curr_currency][id].caisse" [(observations)]="curr_fj.data[curr_currency][id].observations"></fj-line>
       <fj-line line="57" label="V - TOTAL SECRETARIAT" [banque]="soustotal_V('banque')" [caisse]="soustotal_V('caisse')"></fj-line>
-      <fj-line *ngFor="let id of paramService.liste_banque" [label]="fjdata[id].label" [(banque)]="fjdata[id].banque" [(caisse)]="fjdata[id].caisse" [(observations)]="fjdata[id].observations"></fj-line>
+      <fj-line *ngFor="let id of paramService.liste_banque" [label]="paramService.getCatLabel(id)" [(banque)]="curr_fj.data[curr_currency][id].banque" [(caisse)]="curr_fj.data[curr_currency][id].caisse" [(observations)]="curr_fj.data[curr_currency][id].observations"></fj-line>
     </ion-item-group>
-    <ion-item-group>
+
+    <ion-item-group *ngIf="tr_engine_ready">
       <ion-item-divider color="light">TOTAL DES SORTIES<span style='float:right;width:20%;text-align:center'>{{total('caisse')}}</span><span style='float:right;width:20%;text-align:center'>{{total('banque')}}</span></ion-item-divider>
       <ion-item>
         SOLDE à reporter<br/>le mois suivant
