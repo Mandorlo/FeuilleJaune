@@ -27,4 +27,9 @@ fj-line {
     margin-left: 4px;
     color: color($colors, primary);
   }
+
+  tr.important {
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+  }
 }

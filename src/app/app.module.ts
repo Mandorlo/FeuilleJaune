@@ -12,6 +12,7 @@ import { ChartsPage } from '../pages/charts/charts';
 import { ParamPage } from '../pages/param/param';
 import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
 import { FjgenPage } from '../pages/fjgen/fjgen';
+import { FjObservationsPage } from '../pages/fj-observations/fj-observations';
 import { FjDetailsPage } from '../pages/fj-details/fj-details';
 import { FjmgmtPage } from '../pages/fjmgmt/fjmgmt';
 import { FjactionsPage } from '../pages/fjactions/fjactions';
@@ -59,6 +60,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     ParamPage,
     FeuillejaunePage,
     FjgenPage,
+    FjObservationsPage,
     FjDetailsPage,
     FjmgmtPage,
     FjactionsPage,
@@ -91,6 +93,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     ParamPage,
     FeuillejaunePage,
     FjgenPage,
+    FjObservationsPage,
     FjDetailsPage,
     FjmgmtPage,
     FjactionsPage,
@@ -113,7 +116,8 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     DatePicker,
     AndroidPermissions,
     Diagnostic,
-    AppVersion
+    AppVersion,
+    FjObservationsPage
   ]
 })
 export class AppModule {}

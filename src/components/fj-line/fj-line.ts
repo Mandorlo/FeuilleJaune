@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { AlertController } from 'ionic-angular';
+import { AlertController, ModalController } from 'ionic-angular';
+import { FjObservationsPage } from '../../pages/fj-observations/fj-observations';
 
+import { ParamService } from '../../services/param.service';
 // import { CurrencyPipe } from '../../pipes/currency';
 
 
@@ -12,9 +14,12 @@ export class FjLineComponent {
 
   banqueValue: string;
   caisseValue: string;
+  label: string;
 
+  @Input('info') info:Object;
+  @Input('important') important: boolean;
   @Input('line') line_num;
-  @Input('label') label: string;
+  @Input('category') category: string;
   @Input('banque') banque: string;
   @Output() banqueChange: EventEmitter<string> = new EventEmitter<string>();
   @Input('caisse') caisse: string;
@@ -22,7 +27,16 @@ export class FjLineComponent {
   @Input() observations: string;
   @Output() observationsChange: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor(public alertCtrl: AlertController) { }
+  constructor(public alertCtrl: AlertController, 
+              private modalCtrl: ModalController,
+              private paramService: ParamService) {
+  }
+
+  ngOnInit() {
+    this.label = this.paramService.getCatLabel(this.category)
+    if (!this.label) this.label = this.category
+    //console.log('important', this.important, typeof this.important)
+  }
 
   isMontantNonNul(m) {
     return (typeof m === "number" && m != 0 || typeof m === "string" && !isNaN(parseFloat(m)))
@@ -33,7 +47,28 @@ export class FjLineComponent {
     return n
   }
 
-  addComment(titre) {
+  addComment(title) {
+    if (!this.info) {
+      console.log('les infos nécessaires n\'ont pas été récupérées ! : ', this.info)
+      return
+    }
+    console.log('INFO', this.info)
+    let opt = { 
+      title, 
+      category: this.category,
+      currency: this.info['currency'],
+      month: this.info['month'], 
+      comments: this.observations 
+    }
+    let modalObservations = this.modalCtrl.create(FjObservationsPage, opt);
+    modalObservations.onDidDismiss(data => {
+      console.log("modal data = ", data);
+      if (data !== undefined && data !== null) this.observationsChange.emit(data)
+    });
+    modalObservations.present();
+  }
+
+  addComment2(titre) {
     let prompt = this.alertCtrl.create({
       title: titre,
       message: "",

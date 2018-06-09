@@ -104,13 +104,13 @@ export class FeuillejaunePage {
       return
     }
 
-    this.pdfService.createFJ(this.fjdata, opt).then(res => {
+    /* this.fjService.createFJ(this.fjdata, opt).then(res => {
       this.pdf_export_ongoing = false;
       console.log(res)
     }).catch(err => {
       this.pdf_export_ongoing = false;
       console.log(err)
-    });
+    }); */
   }
 
   reload() {

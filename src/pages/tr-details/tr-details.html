@@ -18,7 +18,7 @@
 
 
 <ion-content>
-  <div class="big_back" [style.background-image]="photo.urlcss">
+  <div class="big_back" #bigBack> <!-- [style.background-image]="photo.urlcss" -->
     <i class="myicon fa" [ngClass]="icon" [hidden]="photo.url != ''"></i>
   </div>
   <div class="montant" (click)="changeMontant()">{{pretty.montant}}</div>

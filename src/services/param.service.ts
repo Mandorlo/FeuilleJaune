@@ -100,7 +100,7 @@ export class ParamService {
       category: 'loisir',
       regex: /(^| )(train|treno)/gi,
       icon: 'fa-train',
-      photo: 'train tgv'
+      photo: '$'
     }, {
       category: 'loisir',
       regex: /(^| )(concert)/gi,
@@ -148,7 +148,7 @@ export class ParamService {
       category: 'transport_commun',
       regex: /(^| )(metro|subway|rer($|\s))/gi,
       icon: 'fa-subway',
-      photo: 'metro train'
+      photo: '$'
     }, {
       category: 'loisir',
       regex: /(^| )(beer|bi[eè]re|birra|verre|bar)/gi,
@@ -187,7 +187,7 @@ export class ParamService {
       category: 'liturgie',
       regex: /(^| )(messe)/gi,
       icon: '',
-      photo: 'cathedral'
+      photo: '$'
     }, {
       category: 'alimentation',
       regex: /(^| )(biscuit|biscott)/gi,
@@ -298,7 +298,8 @@ export class ParamService {
     }, {
       category: 'hygiene',
       regex: /(^| )(shampoo)/gi,
-      icon: ''
+      icon: '',
+      photo: 'shampoo'
     }, {
       category: 'alimentation',
       regex: /(^| )(h[uo]+mm?[uo]+s)/gi,
@@ -320,7 +321,7 @@ export class ParamService {
       photo: 'velib'
     }, {
       category: 'transport_commun',
-      regex: /(^| )(ouibus|flixbus|bus|tram( |$)|tramway)/gi,
+      regex: /(^| )(ouibus|flixbus|bus( |$)|tram( |$)|tramway)/gi,
       icon: 'fa-bus',
       photo: '$'
     }, {
@@ -393,19 +394,89 @@ export class ParamService {
   public currencies = [{
     id: 'EUR',
     name: 'Euros',
-    symbol: '€'
+    symbol: '€',
+    country: ['DEU', 'FRA', 'ITA', 'ESP', 'PRT', 'NLD', 'IRL', 'AUT', 'BEL', 'LTU', 'EST', 'CYP', 'MLT', 'FIN', 'SVK', 'LVA', 'LUX', 'SVN', 'REU', 'GLP', 'MTQ', 'MYT', 'GUF'],
+    default_rate_eur: 1
   }, {
     id: 'USD',
     name: 'Dollars',
-    symbol: '$'
+    symbol: '$',
+    country: ['USA', 'NLD'],
+    default_rate_eur: 1.177019
+  }, {
+    id: 'GBP',
+    name: 'Livre sterling',
+    symbol: '£',
+    country: 'GBR',
+    default_rate_eur: 0.878103
+  }, {
+    id: 'CHF',
+    name: 'Franc Suisse',
+    symbol: 'FrS',
+    country: 'CHE',
+    default_rate_eur: 1.158898
+  }, {
+    id: 'PLN',
+    name: 'Złoty',
+    symbol: 'zł',
+    country: 'POL',
+    default_rate_eur: 4.27835
+  }, {
+    id: 'HUF',
+    name: 'Forint', // hongrie
+    symbol: 'Ft',
+    country: 'HUN',
+    default_rate_eur: 319.348748
+  }, {
+    id: 'CZK',
+    name: 'Couronne tchèque',
+    symbol: 'Kč',
+    country: 'CZE',
+    default_rate_eur: 25.735564
   }, {
     id: 'ILS',
     name: 'Sheqels',
-    symbol: '\u20AA'
+    symbol: '\u20AA',
+    country: 'ISR',
+    default_rate_eur: 4.194942
+  }, {
+    id: 'LBP',
+    name: 'Livre libanaise',
+    symbol: 'ل.ل',
+    country: 'LBN',
+    default_rate_eur: 1772.237141
   }, {
     id: 'BRL',
     name: 'Réal Brésilien',
-    symbol: 'R$'
+    symbol: 'R$',
+    country: 'BRA',
+    default_rate_eur: 4.354268
+  }, {
+    id: 'MUR',
+    name: 'Roupie mauricienne',
+    symbol: 'Rs',
+    country: 'MUS',
+    default_rate_eur: 39.783234
+  }, {
+    id: 'MGA',
+    name: 'Ariary malgache',
+    symbol: 'Ariary',
+    country: 'MDG',
+    default_rate_eur: 3848.851867
+  }]
+
+  public maisons = [{
+    regex: /(hautecombe|htc)/gi,
+    photo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Hautecombe.jpg'
+  }, {
+    regex: /(marie.+nazaret|cimdn)/gi,
+    photo: 'http://pp.mariedenazareth.com/sites/default/files/styles/actus/public/mav-cimn.jpg'
+  }, {
+    regex: /(ecce\s+homo|jerusalem)/gi,
+    photo: 'https://media-cdn.tripadvisor.com/media/photo-s/03/2d/fe/57/ecce-homo-convent.jpg'
+  }, {
+    regex: /abuna\s+faraj/gi,
+    photo: 'https://il.chemin-neuf.org/dam?media-id=58c677a0245640d7008b77fd'
   }]
 
   public init: any;
@@ -416,6 +487,7 @@ export class ParamService {
   public currency: string;
 
   constructor(private storage: Storage) {
+
     // on récupère les variables d'initialisation
     this.storage.get("init").then(res => {
       this.init = res;
@@ -483,11 +555,31 @@ export class ParamService {
     return -1
   }
 
+  // renvoie un objet correspondant à la devise
+  getCurrencyObj(devise_id) {
+    if (devise_id === null) devise_id = this.currency;
+    let c = this.currencies.find(curr => curr.id == devise_id)
+    if (c) {
+      c['label'] = `${c.name} ${c.symbol}`
+      return c
+    }
+    return {}
+  }
+
   symbolCurrency(devise = null) {
+    // TODO delete this and use getCurrencyObj(...).symbol instead
     if (devise === null) devise = this.currency;
     let res = this.currencies.filter(el => el.id == devise);
     if (res && res.length && res[0] && res[0].symbol) return res[0].symbol;
     else return '.'
+  }
+
+  // recherche une photo pour la maison renseignée
+  getPhotoMaison(maison) {
+    for (let m of this.maisons) {
+      if (m.regex.test(maison)) return m.photo
+    }
+    return ''
   }
 
   guessCategory(nom) {
@@ -521,8 +613,19 @@ export class ParamService {
     if (cat) return cat.label;
     let cat_in = this.categories_in.find(c => c.id == cat_id)
     if (cat_in) return cat_in.label;
-    console.log('Error in getting category label for ', cat_id)
-    return 'UNKNOWN ' + cat_id
+    //console.log('Error in getting category label for ', cat_id)
+    return cat_id
+  }
+
+  // un peu comme _.values mais avec un champ id optionnel
+  values(obj, show_id = false) {
+    let arr = []
+    for (let id in obj) {
+      let o = JSON.parse(JSON.stringify(obj[id]))
+      if (show_id) o.id = id;
+      arr.push(o)
+    }
+    return arr
   }
 
 }

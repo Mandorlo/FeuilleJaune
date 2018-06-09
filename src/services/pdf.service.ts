@@ -14,8 +14,6 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Injectable()
 export class PdfService {
-  public pdf_url;
-
   constructor(private paramService: ParamService,
     public toastCtrl: ToastController,
     private file: File,
@@ -32,17 +30,31 @@ export class PdfService {
     return amount + " " + this.paramService.symbolCurrency();
   }
 
-  private manageDefaults(opt) {
-    if (!opt) opt = {};
-    if (!opt.personne) opt.personne = 'Carlo';
-    if (!opt.path) opt.path = this.file.dataDirectory;
-    if (!opt.filename) opt.filename = 'FeuilleJaune.pdf';
-    if (!opt.curr_month) opt.curr_month = moment().format("YYYY-MM-DD");
-    if (!opt.maison) opt.maison = "HTC";
-    return opt;
+  // génère le nom du fichier feuille jaune dans la devise @devise
+  private createFJName(fj_o, devise) {
+    let initiales = fj_o.personne.split(' ').map(mot => mot[0].toUpperCase()).join('')
+    let date = moment(fj_o.month, 'YYYY-MM-DD').format('YYMM')
+    return `FeuilleJaune_${initiales}_${date}_${devise}.pdf`
   }
 
-  coolWrite(path, filename, blob) {
+  async coolWrite(path, filename, blob) {
+    let exists = false
+    try {
+      exists = await this.file.checkFile(path, filename)
+    } catch(e) {
+      console.log("Impossible de vérifier l'existence du fichier " + path + "/" + filename)
+      return this.file.writeFile(path, filename, blob, {replace:true})
+    }
+    
+    if (exists) {
+      await this.file.removeFile(path, filename)
+      return this.file.writeFile(path, filename, blob, {replace:true})
+    }
+    return this.file.writeFile(path, filename, blob, {replace:true})
+  }
+
+  coolWrite_old(path, filename, blob) {
+    /* // TODO remove this function
     return new Promise((resolve, reject) => {
       this.file.checkFile(path, filename).then(exists => {
         if (exists) {
@@ -71,35 +83,39 @@ export class PdfService {
           reject(err)
         });
       });
-    });
+    }); */
   }
 
-  async createFJ(fjdata, opt) {
-    // TODO opt.path et opt.filename doivent bouger selon la devise
-    for (let currency in fjdata.data) {
-      let pdf_data = await this.createPdf(fjdata.data[currency], opt)
-      let blob = new Blob([pdf_data], { type: 'application/pdf' });
-      
-      let file_exists = false
+  async createFJPDF(fj_o) {
+    let dir_path = this.file.dataDirectory;
+    let results = {
+      personne: fj_o.personne,
+      month: fj_o.month,
+      dir: dir_path,
+      files: []
+    }
+    
+    for (let currency in fj_o.data) {
+      let filename = this.createFJName(fj_o, currency)
+
+      let pdf_data = null
       try {
-        file_exists = await this.file.checkFile(opt.path, opt.filename);
+        pdf_data = await this.createPdf(fj_o, currency)
       } catch(e) {
-        if (e.code == 1) {
-          let res_write = await this.coolWrite(opt.path, opt.filename, blob)
-        } else {
-          console.log("Impossible checkFile of " + opt.path + "/" + opt.filename + ", trying direct download...", e);
+        throw {
+          fun: 'ERROR in pdf.service > createFJPDF > createPdf',
+          e
         }
       }
+      let blob = new Blob([pdf_data], { type: 'application/pdf' });
       
-      if (file_exists) {
-        let res_remove = await this.file.removeFile(opt.path, opt.filename)
-      }
-      let res_write = await this.coolWrite(opt.path, opt.filename, blob)
+      results.files.push({filename, blob})
     }
+    return results
   }
 
   createFJ_old(fjdata, opt) {
-    // TODO remove this function
+    /* // TODO remove this function
     // on gère les paramètres par défaut
     opt = this.manageDefaults(opt);
 
@@ -143,12 +159,60 @@ export class PdfService {
       }).catch(err => {
         console.log("Error creating pdf blob : ", err);
       })
-    })
+    }) */
   }
 
-  public shareFJ(blob, opt) {
+  // pdf_paths_o est un objet retourné par createFJPDF
+  async shareFJ(pdf_paths_o) {
+    let sujet = "Feuille Jaune - " + pdf_paths_o.personne + " - mois de " + moment(pdf_paths_o.month).format("MMMM - YYYY");
+    console.log('pdf.service > shareFJ', pdf_paths_o)
+
+    if (this.weAreInBrowser()) {
+      console.log("Trying to download PDF directly...");
+      for (let file_o of pdf_paths_o.files) {
+        let pdf_url = URL.createObjectURL(file_o.blob);
+        this.downloadBrowser(pdf_url, file_o);
+        return `Trying to download PDF ${file_o.filename} directly...`
+      }
+    } else {
+      let paths = []
+      for (let file_o of pdf_paths_o.files) {
+        await this.coolWrite(pdf_paths_o.dir, file_o.filename, file_o.blob)
+        paths.push(pdf_paths_o.dir + "/" + file_o.filename)
+      }
+
+      try {
+        await this.socialSharing.share("", sujet, paths)
+      } catch(err) {
+        if (err === false) {
+          let toast = this.toastCtrl.create({
+            message: "Feuille Jaune exportée ! Merci Seigneur de prendre soin de nous !",
+            duration: 2000
+          });
+          toast.present();
+          return 2
+        } else {
+          console.log('ERROR in pdf.service > shareFJ > socialSharing.share', err)
+          let toast = this.toastCtrl.create({
+            message: "Erreur pendant l'export de la Feuille Jaune : " + JSON.stringify(err),
+            duration: 2000
+          });
+          toast.present();
+          throw "Erreur pendant l'export de la Feuille Jaune : " + JSON.stringify(err)
+        }
+      }
+    }
+  }
+
+  weAreInBrowser() {
+    // TODO à compléter TBD
+    return true
+  }
+
+  public shareFJ_old(blob, opt) {
+    // TODO delete this function
     // on gère les paramètres par défaut
-    opt = this.manageDefaults(opt);
+    /* opt = this.manageDefaults(opt);
 
     return new Promise((resolve, reject) => {
       // this.file.writeFile(opt.path, opt.filename, blob, true).then(_ => {
@@ -183,12 +247,12 @@ export class PdfService {
         this.downloadBrowser(this.pdf_url, opt);
         resolve("Trying to download PDF directly...")
       })
-    })
+    }) */
   }
 
-  public createPdf(fjdata, opt) {
+  public createPdf(fjdata, currency) {
     return new Promise((resolve, reject) => {
-      let dd = this.createDocumentDefinition(fjdata, opt);
+      let dd = this.createDocumentDefinition(fjdata, currency);
       let pdf = pdfMake.createPdf(dd);
 
       pdf.getBase64((output) => {
@@ -198,14 +262,12 @@ export class PdfService {
     })
   }
 
-  downloadBrowser(data, opt) {
-    // on gère les paramètres par défaut
-    opt = this.manageDefaults(opt);
+  downloadBrowser(data, file_o) {
 
     var element = document.createElement('a');
     // element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
     element.setAttribute('href', data);
-    element.setAttribute('download', opt.filename);
+    element.setAttribute('download', file_o.filename);
 
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -224,73 +286,102 @@ export class PdfService {
     return uint8Array;
   }
 
-  private createDDBody(fjdata, opt) {
+  private createDDBody(fj_o, currency) {
     // important : on définit fjdata.transfert.caisse uniquement maintenant, pour la génération du pdf
-    fjdata.transfert.caisse = -fjdata.transfert.banque;
+    fj_o.data[currency].transfert.caisse = -fj_o.data[currency].transfert.banque;
+
+    // on prépare les données
+    let data = {}
+    for (let categorie in fj_o.data[currency]) {
+      if (categorie != 'soustotaux') {
+        data[categorie] = {
+          label: this.paramService.getCatLabel(categorie),
+          banque: this.prettyCurrency(fj_o.data[currency][categorie].banque),
+          caisse: this.prettyCurrency(fj_o.data[currency][categorie].caisse),
+          observations: fj_o.data[currency][categorie].observations
+        }
+      } else {
+        data[categorie] = JSON.parse(JSON.stringify(fj_o.data[currency][categorie]))
+      }
+    }
+
+    data['soustotaux']['total']['bc'] = this.prettyCurrency(fj_o.data[currency]['soustotaux']['total'].banque + fj_o.data[currency]['soustotaux']['total'].caisse)
+    data['soustotaux']['solde']['bc'] = this.prettyCurrency(fj_o.data[currency]['soustotaux']['solde'].banque + fj_o.data[currency]['soustotaux']['solde'].caisse)
 
     let line_nums = [];
     let body = [];
-    body.push([{ text: '1', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'NOM: ' + opt.personne + '  -  MOIS: ' + moment(opt.curr_month).format('MM-YYYY'), style: "defaultStyle" }, { text: 'BANQUE', alignment: 'center', style: "defaultStyle" }, { text: 'CAISSE', alignment: 'center', style: 'defaultStyle' }, { text: 'OBSERVATIONS', style: 'defaultStyle' }]);
+    body.push([{ text: '1', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'NOM: ' + fj_o.personne + '  -  MOIS: ' + moment(fj_o.month, 'YYYY-MM-DD').format('MM-YYYY'), style: "defaultStyle" }, { text: 'BANQUE', alignment: 'center', style: "defaultStyle" }, { text: 'CAISSE', alignment: 'center', style: 'defaultStyle' }, { text: 'OBSERVATIONS', style: 'defaultStyle' }]);
 
     // ENTREES
-    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { 'text': 'ENTRÉES', style: ["header"] }, '', '', { text: 'Maison: ' + opt.maison, margin: [0, 0, 0, 0], fontSize: 9 }]);
+    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { 'text': 'ENTRÉES', style: ["header"] }, '', '', { text: 'Maison: ' + fj_o.maison, margin: [0, 0, 0, 0], fontSize: 9 }]);
     ['salaire', 'allocation', 'don'].forEach((el, i) => {
-      body.push([{ text: (i + 2).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 2).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: data[el].label, style: ['categorie'] }, { text: data[el].banque, style: 'montant' }, { text: data[el].caisse, style: 'montant' }, { text: data[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '5', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOUS-TOTAL', style: ['section'] }, { text: this.prettyCurrency(fjdata.soustotal1_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal1_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '5', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOUS-TOTAL', style: ['section'] }, { text: data['soustotaux'].revenus.banque, style: ['montantImp'] }, { text: data['soustotaux'].revenus.caisse, style: ['montantImp'] }, { text: '', style: 'observation' }]);
     line_nums = ['6', '7', '8', '9', '10', '12', '13'];
     ['dime', 'autre', 'remboursement_sante', 'remboursement_pro', 'remboursement_autre'].forEach((el, i) => {
-      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: data[el].label, style: ['categorie'] }, { text: data[el].banque, style: 'montant' }, { text: data[el].caisse, style: 'montant' }, { text: data[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '12', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'REPORT DU MOIS PRÉCÉDENT', style: 'report' }, { text: this.prettyCurrency(fjdata.report_mois_precedent.banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.report_mois_precedent.caisse), style: 'montant_imp' }, { text: fjdata.report_mois_precedent.observations, style: 'observation' }])
-    body.push([{ text: '13', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance demandée à la MM ou à la Cté', style: ['categorie'] }, { text: this.prettyCurrency(fjdata.avance.banque), style: 'montant' }, { text: this.prettyCurrency(fjdata.avance.caisse), style: 'montant' }, { text: fjdata.avance.observations, style: 'observation' }]);
+    body.push([{ text: '12', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'REPORT DU MOIS PRÉCÉDENT', style: 'report' }, { text: data['report_mois_precedent'].banque, style: 'montantImp' }, { text: data['report_mois_precedent'].caisse, style: 'montantImp' }, { text: data['report_mois_precedent'].observations, style: 'observation' }])
+    body.push([{ text: '13', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance demandée à la MM ou à la Cté', style: ['categorie'] }, { text: data['avance'].banque, style: 'montant' }, { text: data['avance'].caisse, style: 'montant' }, { text: data['avance'].observations, style: 'observation' }]);
     body.push([{ text: '14', style: 'line_num' }, { text: '', style: 'col_space' }, { text: '', style: ['categorie'] }, { text: '', style: 'montant' }, { text: '', style: 'montant' }, { text: '', style: 'observation' }]);
     line_nums = ['15', '16'];
     ['epargne', 'transfert'].forEach((el, i) => {
-      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: data[el].label, style: ['categorie'] }, { text: data[el].banque, style: 'montant' }, { text: data[el].caisse, style: 'montant' }, { text: data[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '17', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'I - DISPONIBILITÉS DU MOIS', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_I_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_I_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '17', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'I - DISPONIBILITÉS DU MOIS', style: ['subsection'] }, { text: data['soustotaux']['dispos_mois'].banque, style: 'montantImp' }, { text: data['soustotaux']['dispos_mois'].caisse, style: 'montantImp' }, { text: '', style: 'observation' }]);
 
     // SORTIES
     // SOUS-TOTAL MAISON
     body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { 'text': 'SORTIES', style: ["header"] }, '', '', { text: '', margin: [0, 5, 0, 5] }]);
     line_nums = ['18', '19', '21', '22', '23', '24', '25', '29', '30'];
     this.paramService.liste_maison.forEach((el, i) => {
-      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: line_nums[i], style: 'line_num' }, { text: '', style: 'col_space' }, { text: data[el].label, style: ['categorie'] }, { text: data[el].banque, style: 'montant' }, { text: data[el].caisse, style: 'montant' }, { text: data[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'II - TOTAL MAISON', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_II_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_II_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'II - TOTAL MAISON', style: ['subsection'] }, { text: data['soustotaux']['maison'].banque, style: 'montantImp' }, { text: data['soustotaux']['maison'].caisse, style: 'montantImp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL VIE COURANTE
     this.paramService.liste_viecourante.forEach((el, i) => {
-      body.push([{ text: (i + 32).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 32).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: data[el].label, style: ['categorie'] }, { text: data[el].banque, style: 'montant' }, { text: data[el].caisse, style: 'montant' }, { text: data[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '44', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'III - TOTAL VIE COURANTE', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_III_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_III_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '44', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'III - TOTAL VIE COURANTE', style: ['subsection'] }, { text: data['soustotaux']['vie_courante'].banque, style: 'montantImp' }, { text: data['soustotaux']['vie_courante'].caisse, style: 'montantImp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL TRANSPORT
     this.paramService.liste_transport.forEach((el, i) => {
-      body.push([{ text: (i + 45).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 45).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: data[el].label, style: ['categorie'] }, { text: data[el].banque, style: 'montant' }, { text: data[el].caisse, style: 'montant' }, { text: data[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '52', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'IV - TOTAL TRANSPORT', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_IV_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_IV_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '52', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'IV - TOTAL TRANSPORT', style: ['subsection'] }, { text: data['soustotaux']['transport'].banque, style: 'montantImp' }, { text: data['soustotaux']['transport'].caisse, style: 'montantImp' }, { text: '', style: 'observation' }]);
 
     // SOUS-TOTAL SECRETARIAT
     this.paramService.liste_secretariat.forEach((el, i) => {
-      body.push([{ text: (i + 54).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 54).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: data[el].label, style: ['categorie'] }, { text: data[el].banque, style: 'montant' }, { text: data[el].caisse, style: 'montant' }, { text: data[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '57', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'V - TOTAL SECRÉTARIAT', style: ['subsection'] }, { text: this.prettyCurrency(fjdata.soustotal_V_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.soustotal_V_caisse), style: 'montant_imp' }, { text: '', style: 'observation' }]);
+    body.push([{ text: '57', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'V - TOTAL SECRÉTARIAT', style: ['subsection'] }, { text: data['soustotaux']['secretariat'].banque, style: 'montantImp' }, { text: data['soustotaux']['secretariat'].caisse, style: 'montantImp' }, { text: '', style: 'observation' }]);
 
     // BANQUE
     ['perte', 'frais_banque'].forEach((el, i) => {
-      body.push([{ text: (i + 58).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: fjdata[el].label, style: ['categorie'] }, { text: this.prettyCurrency(fjdata[el].banque), style: 'montant' }, { text: this.prettyCurrency(fjdata[el].caisse), style: 'montant' }, { text: fjdata[el].observations, style: 'observation' }])
+      body.push([{ text: (i + 58).toString(), style: 'line_num' }, { text: '', style: 'col_space' }, { text: data[el].label, style: ['categorie'] }, { text: data[el].banque, style: 'montant' }, { text: data[el].caisse, style: 'montant' }, { text: data[el].observations, style: 'observation' }])
     });
-    body.push([{ text: '61', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance retournée ou solde feuille jaune', style: ['categorie'] }, { text: this.prettyCurrency(fjdata.avance_retournee.banque), style: 'montant' }, { text: this.prettyCurrency(fjdata.avance_retournee.caisse), style: 'montant' }, { text: 'TOTAL BANQUE + CAISSE', style: 'total_banque_caisse' }]);
+    body.push([{ text: '61', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'Avance retournée ou solde feuille jaune', style: ['categorie'] }, { text: data['avance_retournee'].banque, style: 'montant' }, { text: data['avance_retournee'].caisse, style: 'montant' }, { text: 'TOTAL BANQUE + CAISSE', style: 'total_banque_caisse' }]);
 
-    body.push([{ text: '62', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'TOTAL DES SORTIES', style: 'total_sorties' }, { text: this.prettyCurrency(fjdata.total_banque), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.total_caisse), style: 'montant_imp' }, { text: this.prettyCurrency(fjdata.total_bc), style: 'montant_imp' }]);
-    body.push([{ text: '63', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOLDE (à reporter le mois suivant ligne 12)', style: 'solde' }, { text: this.prettyCurrency(fjdata.solde_banque), style: 'montant' }, { text: this.prettyCurrency(fjdata.solde_caisse), style: 'montant' }, { text: this.prettyCurrency(fjdata.solde_bc), style: 'montant' }]);
-
+    body.push([{ text: '62', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'TOTAL DES SORTIES', style: 'total_sorties' }, { text: data['soustotaux']['total'].banque, style: 'montantImp' }, { text: data['soustotaux']['total'].caisse, style: 'montantImp' }, { text: data['soustotaux']['total'].bc, style: 'montantImp' }]);
+    body.push([{ text: '63', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOLDE (à reporter le mois suivant ligne 12)', style: 'solde' }, { text: data['soustotaux']['solde'].banque, style: 'montant' }, { text: data['soustotaux']['solde'].caisse, style: 'montant' }, { text: data['soustotaux']['solde'].bc, style: 'montant' }]);
+ 
+    console.log("BODY PDF", body)
     return body
   }
 
-  private createDocumentDefinition(fjdata, opt) {
+  private createDocumentDefinition(fjdata, currency) {
+    let body = {}
+    try {
+      body = this.createDDBody(fjdata, currency)
+    } catch(e) {
+      throw {
+        fun: 'ERROR in pdf.service > createDDBody',
+        err: e
+      }
+    }
+
     let dd = {
       pageSize: 'A4',
       info: {
@@ -305,7 +396,7 @@ export class PdfService {
             headerRows: 0,
             widths: [14, 2, '*', 60, 60, 120],
 
-            body: this.createDDBody(fjdata, opt)
+            body,
           },
           layout: {
             hLineWidth: function(i, node) {
@@ -356,7 +447,7 @@ export class PdfService {
           alignment: 'right',
           fontSize: 7
         },
-        montant_imp: {
+        montantImp: {
           fillColor: '#DDDDDD',
           alignment: 'right',
           fontSize: 7

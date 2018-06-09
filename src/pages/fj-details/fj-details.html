@@ -6,17 +6,52 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>Feuille Jaune de {{pretty_month}} <i *ngIf="loading" class="fa fa-circle-o-notch fa-spin spinner" aria-hidden="true"></i></ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
-  <div>{{curr_fj.personne}}</div>
-  <div>{{curr_fj.month}}</div>
-  <div (click)="editFJ()">Éditer</div>
-  <div (click)="shareFJ()">Partager la Feuille Jaune</div>
-  <div (click)="supprFJ()">Supprimer</div>
+<ion-content>
+  <div class="maison" #maison> <!-- [style.background-image]="photoMaisonUrl" -->
+    <div>{{curr_fj.maison}} - {{pretty_month}}</div>
+  </div>
+
+  <div class="details" *ngFor="let currency of fj_currencies">
+    <div class="detail_item" (click)="editFJ(currency.id)">
+      <i class="fa fa-pencil-square-o"></i>
+      <div>Éditer<br>en {{currency.label}}</div>
+    </div>
+
+    <div class="detail_item" (click)="shareFJ()">
+      <i class="fa fa-share-alt"></i>
+      <div>Partager</div>
+    </div>
+
+    <div class="detail_item" (click)="supprFJ()">
+      <i class="fa fa-trash-o"></i>
+      <div>Supprimer</div>
+    </div>
+  </div>
+
+  <ion-list>
+    <ion-item-group>
+
+      <ion-item-divider color="secondary">
+        Stats dépenses
+      </ion-item-divider>
+      <ion-item>
+        Coco
+      </ion-item>
+    </ion-item-group>
+
+    <ng-container *ngIf="fj_currencies.length > 1">
+      <ion-item-group *ngFor="let currency of fj_currencies">
+        <ion-item-divider color="secondary">
+          Stats en {{currency.label}}
+        </ion-item-divider>
+      </ion-item-group>
+  </ng-container>
+  </ion-list>
 </ion-content>

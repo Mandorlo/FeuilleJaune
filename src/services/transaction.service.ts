@@ -136,6 +136,7 @@ export class TransactionService {
     return _.uniq(tr_list.map(tr => tr.currency))
   }
 
+  // renvoie le total des dépenses du mois en convertissant dans la devise @devise
   async getTotalDepensesMonth(month, devise = null, tr_list = null) {
     if (!devise) devise = this.paramService.currency
     month = this.paramService.toMoment(month)
@@ -144,6 +145,17 @@ export class TransactionService {
     if (!tr_list) tr_list = await this.getAll()
     let month_tr_list = tr_list.filter(tr => moment(tr.date, 'YYYY-MM-DD').month() == mymonth && moment(tr.date, 'YYYY-MM-DD').year() == myyear)
     return _.sum(month_tr_list.map(tr => this.currencyService.convert(tr.montant, devise)))
+  }
+
+  // renvoie la liste des transactions du mois @month
+  // si currency != null, renvoie uniquement les transactions en devise @currency
+  async getTrMonthCurrency(month, currency = null, tr_list = null) {
+    console.log('getting transactions with these parameters : ', month, currency)
+    month = this.paramService.toMoment(month)
+    if (!tr_list || !tr_list.length) tr_list = await this.getAll()
+    let tr_list_filtered = tr_list.filter(tr => moment(tr.date, 'YYYY-MM-DD').month() == month.month() && moment(tr.date, 'YYYY-MM-DD').year() == month.year())
+    if (currency) tr_list_filtered = tr_list_filtered.filter(tr => tr.currency == currency)
+    return tr_list_filtered
   }
 
 

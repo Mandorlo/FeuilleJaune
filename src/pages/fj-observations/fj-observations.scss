@@ -1,0 +1,30 @@
+page-fj-observations {
+    .transparent_back {
+        background-color: rgba(40,40,40,0.8);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        //resize: vertical;
+    }
+    
+    .opt_icon {
+        margin-right: 14px;
+    }
+    
+    h3 {
+        color: white;
+        margin-top: 50%;
+    }
+    
+    .spinner_container {
+        width: 100%;
+        text-align: center;
+        margin-top: 40vh;
+    }
+    
+    .spinner {
+        color: white;
+        font-size: 10vh;
+    }
+}

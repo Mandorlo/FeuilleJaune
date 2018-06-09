@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController, ToastController } from 'ionic-angular';
 
 import { FjgenPage } from '../fjgen/fjgen';
 
 import { FjService } from '../../services/fj.service';
+import { ParamService } from '../../services/param.service';
 
 import moment from 'moment';
 
@@ -19,23 +20,38 @@ import moment from 'moment';
   templateUrl: 'fj-details.html',
 })
 export class FjDetailsPage {
+  @ViewChild('maison') maison;
+
   private curr_fj: Object;
+  private fj_currencies: Array<Object>;
   private loading: boolean = false;
-  private pretty_month: string;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
-              private fjService: FjService) {
+              private fjService: FjService,
+              private paramService: ParamService) {
 
     this.curr_fj = navParams.get("fj");
-    this.pretty_month = moment(this.curr_fj['month']).format('MMMM YYYY')
+    this.fj_currencies = Object.getOwnPropertyNames(this.curr_fj['data']).map(c => this.paramService.getCurrencyObj(c))
     console.log('THIS FJ : ', this.curr_fj)
+  }
+
+  get pretty_month() {
+    return moment(this.curr_fj['month'], 'YYYY-MM-DD').format('MMMM YYYY')
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad FjDetailsPage Lodato sia il Signore !');
+  }
+
+  ngAfterViewInit() {
+    let bg_img = this.paramService.getPhotoMaison(this.curr_fj['maison'])
+    if (!bg_img) {
+      bg_img = this.paramService.getPhotoMaison(this.curr_fj['maison'])
+    }
+    this.maison.nativeElement.style.backgroundImage = 'url(' + bg_img + ')';
   }
 
   presentToast(msg, temps = 2000) {
@@ -47,9 +63,12 @@ export class FjDetailsPage {
   }
 
   // ouvre la page pour éditer cette Feuile Jaune
-  editFJ() {
-    console.log('edit fj', this.curr_fj['month'])
-    this.navCtrl.push(FjgenPage, {"month": this.curr_fj['month']})
+  editFJ(currency) {
+    console.log('edit fj', this.curr_fj['month'], currency)
+    this.navCtrl.push(FjgenPage, {
+      "month": this.curr_fj['month'],
+      currency
+    })
   }
 
   shareFJ() {
@@ -101,5 +120,4 @@ export class FjDetailsPage {
       this.loading = false
     });
   }
-
 }

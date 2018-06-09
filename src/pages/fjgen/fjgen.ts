@@ -1,17 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 
-import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
 import { FjService } from '../../services/fj.service';
 import { CurrencyService } from '../../services/currency.service';
 
-import { ParamPage } from '../param/param';
-
 import moment from 'moment';
-import _ from 'lodash';
-
-
 
 
 @Component({
@@ -24,7 +18,6 @@ export class FjgenPage {
 
   public transactions = [];
   public curr_month = moment().format("YYYY-MM") + "-01";
-  public curr_month_pretty: string = moment().format("MMM YYYY");
   public fj_currencies: Array<Object> = [];
   public curr_currency: string;
   public solde_mois_prec: any = { 'banque': 0, 'caisse': 0 };
@@ -37,32 +30,42 @@ export class FjgenPage {
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private paramService: ParamService,
-    private trService: TransactionService,
     private currencyService: CurrencyService,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private fjService: FjService) {
       
-    let i = 0
-    let curr_month_param = navParams.get("month");
+    let curr_month_param = this.navParams.get("month");
+    this.curr_currency = this.navParams.get("currency");
+    console.log('curr_currency', this.curr_currency)
+
     if (curr_month_param) {
       console.log("editing fj: ", curr_month_param);
       this.edit_fj = true;
       this.fjService.getFjData(curr_month_param).then(fj => {
-        console.log('FJDATA EDITION', fj)
+        console.log('FJDATA EDITION', this.curr_currency, fj)
         this.curr_fj = fj
-        this.fj_currencies = Object.getOwnPropertyNames(fj.data).map(c => {return {val: c, label:this.paramService.symbolCurrency(c)}})
-        this.curr_currency = this.fj_currencies[0]['val']
-        i++
         this.tr_engine_ready = true;
       })
       this.curr_month = moment(curr_month_param).format("YYYY-MM") + "-01";
-      this.curr_month_pretty = moment(curr_month_param).format("MMM YYYY");
     } else {
       this.setupNewFJ().catch(err => {
         console.log('ERROR in setting up new FJ : ', err)
       })
     }
+  }
+
+  get curr_currency_label() {
+    return this.paramService.getCurrencyObj(this.curr_currency)['label']
+  }
+
+  get curr_month_pretty() {
+    let pretty = moment(this.curr_month).format("MMMM YYYY");
+    return pretty[0].toUpperCase() + pretty.substr(1)
+  }
+
+  get info() {
+    return {currency:this.curr_currency, month:this.curr_month}
   }
 
   ionViewDidLoad() {
@@ -74,15 +77,14 @@ export class FjgenPage {
     let lastmonth = await this.fjService.getMonthOfNewFJ();
     this.last_months = [lastmonth]
     this.curr_month = lastmonth.date
-    this.curr_month_pretty = lastmonth.label
 
     console.log("creating new FJ");
     this.edit_fj = false;
     let fj = await this.fjService.genFjData(this.curr_month)
-    console.log('FJDATA', fj)
+    this.fj_currencies = Object.getOwnPropertyNames(fj.data).map(c => this.paramService.getCurrencyObj(c))
+    console.log('FJDATA', this.fj_currencies, fj)
     this.curr_fj = fj
-    this.fj_currencies = Object.getOwnPropertyNames(fj.data).map(c => {return {val: c, label:this.paramService.symbolCurrency(c)}})
-    this.curr_currency = this.fj_currencies[0]['val']
+    this.curr_currency = this.fj_currencies[0]['id']
     this.tr_engine_ready = true;
     return true
   }
@@ -97,26 +99,7 @@ export class FjgenPage {
 
   createFJ() { // le bouton sauver fj
     this.saving_ongoing = true;
-    // on complète fjdata avec les différents totaux
-    this.curr_fj['data'][this.curr_currency].soustotaux.revenus.banque = this.soustotal1('banque');
-    this.curr_fj['data'][this.curr_currency].soustotaux.revenus.caisse = this.soustotal1('caisse');
-    this.curr_fj['data'][this.curr_currency].soustotal_I_banque = this.soustotal_I('banque');
-    this.curr_fj['data'][this.curr_currency].soustotal_I_caisse = this.soustotal_I('caisse');
-    this.curr_fj['data'][this.curr_currency].soustotal_II_banque = this.soustotal_II('banque');
-    this.curr_fj['data'][this.curr_currency].soustotal_II_caisse = this.soustotal_II('caisse');
-    this.curr_fj['data'][this.curr_currency].soustotal_III_banque = this.soustotal_III('banque');
-    this.curr_fj['data'][this.curr_currency].soustotal_III_caisse = this.soustotal_III('caisse');
-    this.curr_fj['data'][this.curr_currency].soustotal_IV_banque = this.soustotal_IV('banque');
-    this.curr_fj['data'][this.curr_currency].soustotal_IV_caisse = this.soustotal_IV('caisse');
-    this.curr_fj['data'][this.curr_currency].soustotal_V_banque = this.soustotal_V('banque');
-    this.curr_fj['data'][this.curr_currency].soustotal_V_caisse = this.soustotal_V('caisse');
-    this.curr_fj['data'][this.curr_currency].total_banque = this.total('banque');
-    this.curr_fj['data'][this.curr_currency].total_caisse = this.total('caisse');
-    this.curr_fj['data'][this.curr_currency].total_bc = (parseFloat(this.curr_fj['data'][this.curr_currency].total_banque) + parseFloat(this.curr_fj['data'][this.curr_currency].total_caisse)).toFixed(2);
-    this.curr_fj['data'][this.curr_currency].solde_banque = this.solde('banque');
-    this.curr_fj['data'][this.curr_currency].solde_caisse = this.solde("caisse");
-    this.curr_fj['data'][this.curr_currency].solde_bc = (parseFloat(this.curr_fj['data'][this.curr_currency].solde_banque) + parseFloat(this.curr_fj['data'][this.curr_currency].solde_caisse)).toFixed(2);
-
+    
     // on prépare les options
     let opt = {
       'personne': this.paramService.personne,
@@ -238,48 +221,7 @@ export class FjgenPage {
     return this.currencyService.convert(montant, currency, this.paramService.currency)
   }
 
-  soustotal1(banque_ou_caisse) {
-    let type_list = this.fjService.category_types['revenus']
-    return _.sum(type_list.map(cat => this.curr_fj['data'][this.curr_currency][cat][banque_ou_caisse]))
-    /* return this.curr_fj['data'][this.curr_currency].salaire[banque_ou_caisse] 
-            + this.curr_fj['data'][this.curr_currency].allocation[banque_ou_caisse] 
-            + this.curr_fj['data'][this.curr_currency].don[banque_ou_caisse]; */
+  soustotal(cat_type) {
+    return this.fjService.soustotal(this.curr_fj, this.curr_currency, cat_type)
   }
-  soustotal_I(b_or_c) {
-    let total = this.soustotal(b_or_c, ['salaire', 'allocation', 'don', 'dime', 'autre', 'remboursement_sante', 'remboursement_pro',
-      'remboursement_autre', 'report_mois_precedent', 'avance', 'epargne', 'transfert']);
-    // pour le cas de caisse, il ne faut pas compter this.fjdata.transfert.caisse, qui n'est pas défini, il faut compter -this.fjdata.transfert.banque
-    if (b_or_c == 'caisse') return (parseFloat(total) - this.curr_fj['data'][this.curr_currency].transfert.banque).toString();
-    return total;
-  }
-  soustotal_II(b_or_c) {
-    return this.soustotal(b_or_c, this.paramService.liste_maison)
-  }
-  soustotal_III(b_or_c) {
-    if (!this.paramService.liste_viecourante) this.paramService.liste_viecourante = _.map(_.filter(this.paramService.categories, ['type', 'vie courante']), 'id');
-    return this.soustotal(b_or_c, this.paramService.liste_viecourante)
-  }
-  soustotal_IV(b_or_c) {
-    if (!this.paramService.liste_transport) this.paramService.liste_transport = _.map(_.filter(this.paramService.categories, ['type', 'transport']), 'id');
-    return this.soustotal(b_or_c, this.paramService.liste_transport)
-  }
-  soustotal_V(b_or_c) {
-    // if (!this.liste_secretariat) this.liste_secretariat = _.map(_.filter(this.transactionService.categories, ['type', 'secretariat']), 'id');
-    return this.soustotal(b_or_c, this.paramService.liste_secretariat)
-  }
-  total(b_or_c) {
-    return this.soustotal(b_or_c, _.map(this.paramService.categories, 'id'))
-  }
-  soustotal(b_or_c, liste) {
-    var soustotal = 0.0;
-    for (let i = 0; i < liste.length; i++) {
-      if (this.curr_fj['data'][this.curr_currency][liste[i]][b_or_c] == "") this.curr_fj['data'][this.curr_currency][liste[i]][b_or_c] = 0;
-      soustotal += parseFloat(this.curr_fj['data'][this.curr_currency][liste[i]][b_or_c])
-    }
-    return soustotal.toFixed(2);
-  }
-  solde(b_or_c) {
-    return (parseFloat(this.soustotal_I(b_or_c)) - parseFloat(this.total(b_or_c))).toFixed(2)
-  }
-
 }

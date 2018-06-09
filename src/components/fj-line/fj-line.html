@@ -2,7 +2,7 @@
   <ion-col col-12>
     <table>
       <tbody>
-        <tr>
+        <tr [class.important]="important !== undefined">
           <td class='label' (click)="addComment(label)">{{label}}<i *ngIf="observations" class="fa fa-comment icon_comment" aria-hidden="true"></i></td>
           <td class='montant'><input class='invisible montant' [ngClass]="{'montantSup': isMontantNonNul(banque)}" type="number" step='0.01' name="banque" [(ngModel)]="banque" (input)="banqueChange.emit(parseDecimal(banque))"/></td>
           <td class='montant'><input class='invisible montant' [ngClass]="{'montantSup': isMontantNonNul(caisse)}" type="number" step='0.01' name="caisse" [(ngModel)]="caisse" (input)="caisseChange.emit(parseDecimal(caisse))"/></td>

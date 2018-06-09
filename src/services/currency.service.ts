@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-// import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage';
 import { ParamService } from './param.service';
 import client from 'node-rest-client-promise';
 
@@ -9,35 +9,58 @@ export class CurrencyService {
   public url = `http://data.fixer.io/api/latest?access_key=${this.APIKEY}&base=EUR&symbols=@sym`
   public conversions;
 
-  constructor(private paramService: ParamService) {
+  constructor(private paramService: ParamService, private storage: Storage) {
     let symbols = paramService.currencies.map(c => c.id).join(',')
     this.url = this.url.replace('@sym', symbols)
 
-    this.init()
+    this.init().catch(e => {
+      console.log('ERROR in currency.service : ', e)
+    })
   }
 
-  public init() {
-    if (this.conversions) return Promise.resolve(1);
-    return new Promise((resolve, reject) => {
-      client.Client({}).getPromise(this.url).catch(e => {
-        reject({
-          'errnum': 'HTTP_REQUEST_FAILED',
-          'fun': 'CurrencyService constructor',
-          'descr': `GET ${this.url} request failed : ${JSON.stringify(e)}`
-        })
-      }).then(r => {
-        if (r.data.success) {
-          this.conversions = r.data.rates
-          resolve(1)
-        } else {
-          reject({
-            'errnum': 'HTTP_RESULT_FAILED',
-            'fun': 'CurrencyService constructor',
-            'descr': `GET ${this.url} returned success=false because : ${JSON.stringify(r)}`
-          })
-        }
-      })
-    })
+  public async init() {
+    if (this.conversions) return 1;
+    let http_result = null;
+    try {
+      http_result = await client.Client({}).getPromise(this.url)
+    } catch(err) {
+      console.log('WARNING : Failed to contact currency API, getting local currency conversion rates')
+      this.conversions = await this.getLocalConversions()
+      return 2
+      /* throw {
+        'errnum': 'HTTP_REQUEST_FAILED',
+        'fun': 'CurrencyService constructor',
+        'descr': this.url,
+        err
+      } */
+    }
+
+    if (http_result && http_result.data.success) {
+      this.conversions = http_result.data.rates
+      this.storage.set('currency_conversion', this.conversions)
+      return 1
+    } else {
+      console.log('WARNING : failed to contact currency API, getting local currency conversion rates')
+      this.conversions = await this.getLocalConversions()
+      return 3
+      /* throw {
+        'errnum': 'HTTP_RESULT_FAILED',
+        'fun': 'CurrencyService constructor',
+        'descr': `GET ${this.url} returned success=false because : ${JSON.stringify(r)}`
+      } */
+    }
+  }
+
+  // récupère des taux de change locaux si l'API est injoignable
+  async getLocalConversions() {
+    this.conversions = await this.storage.get('currency_conversion')
+    if (this.conversions === null) {
+      this.conversions = {}
+      for (let c of this.paramService.currencies) {
+        this.conversions[c.id] = c.default_rate_eur
+      }
+    }
+    return this.conversions
   }
 
   // e.g. : convert(123.45, 'USD', 'EUR') => convertit 123.45 USD en EUR

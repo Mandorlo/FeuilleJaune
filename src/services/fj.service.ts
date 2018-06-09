@@ -14,11 +14,14 @@ export class FjService {
   private db_fj = "dbfj";
   public category_types = {
     'revenus': ['salaire', 'allocation', 'don'],
+    'in': [], // all categories_in
     'maison': [],
     'vie_courante': [],
     'transport': [],
     'secretariat': [],
-    'total': []
+    'dispos_mois': ['salaire', 'allocation', 'don', 'dime', 'autre', 'remboursement_sante', 'remboursement_pro',
+                    'remboursement_autre', 'report_mois_precedent', 'avance', 'epargne', 'transfert'],
+    'total': [] // total c'est total des sorties
   }
 
   constructor(private storage: Storage,
@@ -32,11 +35,12 @@ export class FjService {
       this.category_types.transport = paramService.categories.filter(cat => cat.type == 'transport').map(cat => cat.id)
       this.category_types.secretariat = paramService.categories.filter(cat => cat.type == 'secretariat').map(cat => cat.id)
       this.category_types.total = paramService.categories.map(cat => cat.id)
+      this.category_types.in = paramService.categories_in.map(cat => cat.id).concat(['report_mois_precedent'])
   }
 
   setAllFJ(fj_list) {
     // /!\ be careful using this
-    this.storage.set(this.db_fj, fj_list);
+    return this.storage.set(this.db_fj, fj_list);
   }
 
   async getAllFJ() { // renvoie tous les json + metadata de feuilles faunes
@@ -44,12 +48,37 @@ export class FjService {
     if (!fj_list || !fj_list.length) return []
     // on convertit les anciennes FJ dans le nouveau format
     let new_fj_list = this.convertOldfFJ(fj_list)
-    console.log("FJ LIST", new_fj_list)
     return new_fj_list
   }
 
-  saveFJ(fjdata, opt) {
-    return new Promise((resolve, reject) => {
+  async saveFJ(fj_o, opt) {
+    // on récupère toutes les FJ existantes
+    let fj_list = await this.getAllFJ()
+    console.log("going to save fjdata_plus: ",fj_o)
+    console.log("already existing FJs: ", fj_list)
+
+    // on ajoute la nouvelle FJ à la liste (en remplaçant éventuellement si déjà existante)
+    let already_exists = _.find(fj_list, { 'month': fj_o.month })
+    if (already_exists) {
+      if (opt.already_exists) {
+        console.log("une feuille jaune du mois de " + fj_o.month + " existe déjà, on overwrite ")
+        fj_list = _.reject(fj_list, {'month': fj_o.month})
+        fj_list.push(fj_o)
+      } else { // TODO gérer de manière plus cool avec un prompt
+        console.log("une feuille jaune du mois de " + fj_o.month + " existe déjà : ", already_exists);
+        throw {err: "une feuille jaune du mois de " + fj_o.month + " existe déjà"}
+      }
+    } else { // si la feuille jaune n'existe pas déjà
+      fj_list.push(fj_o)
+    }
+
+    // on écrit la nouvelle liste de FJ sur disque
+    return this.setAllFJ(fj_list)
+  }
+
+  saveFJ_old(fjdata, opt) {
+    // TODO delete this function
+    /* return new Promise((resolve, reject) => {
       this.getAllFJ().then(data => {
         console.log("going to save fjdata_plus: ",fjdata);
         console.log("already existing FJs: ", data);
@@ -75,11 +104,21 @@ export class FjService {
       }).catch(err => {
         reject(err)
       })
-    })
+    }) */
   }
 
-  deleteFJ(fj_list) { // array des objets fj
-    let list_months = _.map(fj_list, 'month');
+  async deleteFJ(fj_list_tobedel) {
+    let list_months = _.map(fj_list_tobedel, 'month');
+    let fj_list = await this.getAllFJ()
+    if (!fj_list || !fj_list.length) return "ok";
+    let newdata = _.reject(fj_list, (o) => (list_months.indexOf(o.month) > -1))
+    console.log("new fj_list will be: ", newdata);
+    return this.setAllFJ(newdata)
+  }
+
+  deleteFJ_old(fj_list) { // array des objets fj
+    // TODO delete this function
+    /* let list_months = _.map(fj_list, 'month');
 
     return new Promise((resolve, reject) => {
       this.getAllFJ().then(data => {
@@ -98,11 +137,31 @@ export class FjService {
       }).catch(err => {
         reject(err)
       })
-    })
+    }) */
   }
 
-  shareFJ(month) { // month should have format YYYY-MM
-    let opt = {
+  async shareFJ(month) {
+    // on récupère les données de la feuille jaune
+    let fj_o = await this.getFjData(month)
+    if (!fj_o) return
+
+    // on calcule les totaux et on les stocke dans fj_o
+    let totaux = this.genSousTotaux(fj_o)
+    console.log('totaux = ', totaux)
+    for (let curr in totaux) {
+      fj_o.data[curr]['soustotaux'] = totaux[curr]
+    }
+
+    // on crée le(s) PDF(s)
+    let pdf_paths = await this.pdfService.createFJPDF(fj_o)
+
+    // on les partage
+    let res = await this.pdfService.shareFJ(pdf_paths)
+    return res
+  }
+
+  shareFJ_old(month) { // month should have format YYYY-MM
+    /* let opt = {
       'personne': this.paramService.personne,
       'maison': this.paramService.maison,
       'curr_month': month,
@@ -130,7 +189,7 @@ export class FjService {
         console.log("Error retrieving all fj from db : ", err);
         reject(err)
       })
-    })
+    }) */
   }
 
   // renvoie le mois pour lequel doit être émise la prochaine nouvelle FJ
@@ -146,7 +205,9 @@ export class FjService {
         if (moment(d1, 'YYYY-MM-DD').isBefore(moment(d2, 'YYYY-MM-DD'))) return -1;
         return 1
       })
-      return {date: moment(date_list[0]).format('YYYY-MM') + '-01', label: moment(date_list[0]).format('MMMM YYYY')}
+      let label = moment(date_list[0]).format('MMMM YYYY')
+      label = label[0].toUpperCase() + label.substr(1)
+      return {date: moment(date_list[0]).format('YYYY-MM') + '-01', label}
     }
 
     // sinon on renvoie le mois qui suit la fj plus récente
@@ -155,7 +216,9 @@ export class FjService {
       return -1
     }).map(fj => fj.month)
     let madate = moment(date_list[0]).add(1, 'months')
-    return {date: madate.format('YYYY-MM') + '-01', label: madate.format('MMMM YYYY')}
+    let label = madate.format('MMMM YYYY')
+    label = label[0].toUpperCase() + label.substr(1)
+    return {date: madate.format('YYYY-MM') + '-01', label}
   }
 
   // ===================================================================
@@ -234,28 +297,61 @@ export class FjService {
     for (let cat of Object.getOwnPropertyNames(fj_curr)) {
       let tr_list_cat = tr_list.filter(tr => tr.category == cat)
       if (tr_list_cat && tr_list_cat.length) {
-        fj_curr[cat].banque = _.sum(tr_list_cat.filter(tr => tr.moyen == 'banque').map(tr => tr.montant))
-        fj_curr[cat].caisse = _.sum(tr_list_cat.filter(tr => tr.moyen == 'caisse').map(tr => tr.montant))
+        fj_curr[cat].banque = _.sum(tr_list_cat.filter(tr => tr.moyen == 'banque').map(tr => tr.montant*100))/100
+        fj_curr[cat].caisse = _.sum(tr_list_cat.filter(tr => tr.moyen == 'caisse').map(tr => tr.montant*100))/100
       }
     }
-    
-    // 3. on calcule les totaux
-    for (let cat_type in this.category_types) {
-      let type_list = this.category_types[cat_type]
-      let tr_list_metacat = tr_list.filter(tr => type_list.includes(tr.type))
-      if (fj_curr['soustotaux'][cat_type]) {
-        fj_curr['soustotaux'][cat_type].banque = _.sum(tr_list_metacat.filter(tr => tr.moyen == 'banque').map(tr => tr.montant))
-        fj_curr['soustotaux'][cat_type].caisse = _.sum(tr_list_metacat.filter(tr => tr.moyen == 'caisse').map(tr => tr.montant))
-      }
-    }
-    fj_curr['total'].banque = _.sum(tr_list.filter(tr => tr.moyen == 'banque').map(tr => tr.montant))
-    fj_curr['total'].caisse = _.sum(tr_list.filter(tr => tr.moyen == 'caisse').map(tr => tr.montant))
-    fj_curr['total'].bc = fj_curr['total'].banque + fj_curr['total'].caisse
-    fj_curr['solde'].banque = fj_curr['soustotaux']['revenus'].banque - fj_curr['total'].banque
-    fj_curr['solde'].caisse = fj_curr['soustotaux']['revenus'].caisse - fj_curr['total'].caisse
-    fj_curr['solde'].bc = fj_curr['solde'].banque + fj_curr['solde'].caisse
 
     return fj_curr
+  }
+
+  genSousTotaux(fj_o, currency = null) {
+    if (currency === null) {
+      let o = {}
+      for (let curr in fj_o.data) {
+        let t = this.genSousTotaux(fj_o, curr)
+        o[curr] = t
+      }
+      return o
+    }
+
+    let totaux = {}
+    for (let cat_type in this.category_types) {
+      let somme = this.soustotal(fj_o, currency, cat_type)
+      totaux[cat_type] = {
+        banque: somme.banque,
+        caisse: somme.caisse
+      }
+    }
+    totaux['solde'] = this.soustotal(fj_o, currency, 'solde')
+    return totaux
+  }
+
+  // renvoie le soustotal de la meta-catégorie @cat_type uniquement dans la @currency (pas de conversion s'il y a d'autres devises dans la FJ)
+  soustotal(fj_o, currency, cat_type = null) {
+    fj_o.data[currency].transfert.caisse = -fj_o.data[currency].transfert.banque
+
+    // cas spécial du solde
+    if (cat_type == 'solde') {
+      let somme_in = this.soustotal(fj_o, currency, 'in')
+      let somme_total = this.soustotal(fj_o, currency, 'total')
+      return {
+        banque: (somme_in.banque - somme_total.banque).toFixed(2),
+        caisse: (somme_in.caisse - somme_total.caisse).toFixed(2)
+      }
+    }
+
+    // tous les autres cas
+    let filtered_values = this.paramService.values(fj_o.data[currency], true)
+    if (cat_type && this.category_types[cat_type]) {
+      let type_list = this.category_types[cat_type]
+      filtered_values = filtered_values.filter(el => type_list.includes(el.id))
+    }
+    let somme = {
+      banque: _.sum(filtered_values.map(el => el.banque*100))/100,
+      caisse: _.sum(filtered_values.map(el => el.caisse*100))/100
+    }
+    return somme
   }
 
   // renvoie la feuille jaune du mois juste avant curr_month si elle existe
@@ -289,51 +385,17 @@ export class FjService {
 
     for (let cat of this.paramService.categories) {
       category_list[cat.id] = {
-        banque: (old_fj_data) ? old_fj_data[cat.id].banque :0,
-        caisse: (old_fj_data) ? old_fj_data[cat.id].caisse :0,
+        banque: (old_fj_data) ? parseFloat(old_fj_data[cat.id].banque) :0,
+        caisse: (old_fj_data) ? parseFloat(old_fj_data[cat.id].caisse) :0,
         observations: (old_fj_data) ? old_fj_data[cat.id].observations :''
       }
     }
     for (let cat of this.paramService.categories_in) {
       category_list[cat.id] = {
-        banque: (old_fj_data) ? old_fj_data[cat.id].banque :0,
-        caisse: (old_fj_data) ? old_fj_data[cat.id].caisse :0,
+        banque: (old_fj_data) ? parseFloat(old_fj_data[cat.id].banque) :0,
+        caisse: (old_fj_data) ? parseFloat(old_fj_data[cat.id].caisse) :0,
         observations: (old_fj_data) ? old_fj_data[cat.id].observations :''
       }
-    }
-
-    category_list['soustotaux'] = {
-      'revenus': {
-        banque: (old_fj_data) ? old_fj_data.soustotal1_banque :0,
-        caisse: (old_fj_data) ? old_fj_data.soustotal1_caisse :0,
-        observations: ''
-      }, 'maison': {
-        banque: (old_fj_data) ? old_fj_data.soustotal_II_banque :0,  
-        caisse: (old_fj_data) ? old_fj_data.soustotal_II_caisse :0,
-        observations: ''
-      }, 'vie_courante': {
-        banque: (old_fj_data) ? old_fj_data.soustotal_III_banque :0,
-        caisse: (old_fj_data) ? old_fj_data.soustotal_III_caisse :0,
-        observations: ''
-      }, 'transport': {
-        banque: (old_fj_data) ? old_fj_data.soustotal_IV_banque :0, 
-        caisse: (old_fj_data) ? old_fj_data.soustotal_IV_caisse :0,
-        observations: ''
-      }, 'secretariat': {
-        banque: (old_fj_data) ? old_fj_data.soustotal_V_banque :0,
-        caisse: (old_fj_data) ? old_fj_data.soustotal_V_caisse :0,
-        observations: ''
-      }
-    }
-    category_list['total'] = {
-      banque: (old_fj_data) ? old_fj_data.total_banque :0, 
-      caisse: (old_fj_data) ? old_fj_data.total_caisse :0, 
-      bc: (old_fj_data) ? old_fj_data.total_bc :0, 
-    }
-    category_list['solde'] = {
-      banque: (old_fj_data) ? parseFloat(old_fj_data.solde_banque) :0,  
-      caisse: (old_fj_data) ? parseFloat(old_fj_data.solde_caisse) :0,
-      bc: (old_fj_data) ? parseFloat(old_fj_data.solde_bc) :0
     }
 
     return category_list
@@ -343,24 +405,37 @@ export class FjService {
   //            HELPER FUNCTIONS
   // ===================================================================
 
-  // renvoie le solde total de la feuille jaune fj dans la devise @devise
+  // renvoie le solde archi-total de la feuille jaune fj dans la devise @devise (en convertissant si besoin les autres devises)
   getSoldeFJ(fj, devise = null) {
     if (!devise) devise = this.paramService.currency
     return this.getMontantFJCore(fj, devise, 'solde')
   }
-  // renvoie le total total :) de la feuille jaune fj dans la devise @devise
+  // renvoie le total archi-total :) des dépenses de la feuille jaune fj dans la devise @devise (en convertissant si besoin les autres devises)
   getTotalFJ(fj, devise = null) {
     if (!devise) devise = this.paramService.currency
     return this.getMontantFJCore(fj, devise, 'total')
   }
   getMontantFJCore(fj, devise, field) {
-    let banque = _.sum(Object.getOwnPropertyNames(fj.data).map(curr => {
-      return this.currencyService.convert(fj.data[curr][field].banque, devise)
-    }))
-    let caisse = _.sum(Object.getOwnPropertyNames(fj.data).map(curr => {
-      return this.currencyService.convert(fj.data[curr][field].caisse, devise)
-    }))
-    return {banque, caisse, bc: banque+caisse}
+    try {
+      let totaux = this.genSousTotaux(fj)
+      let somme = {
+        banque: 0,
+        caisse: 0,
+        bc: 0
+      }
+      for (let currency in totaux) {
+        somme.banque += this.currencyService.convert(totaux[currency][field].banque, currency, devise)
+        somme.caisse += this.currencyService.convert(totaux[currency][field].caisse, currency, devise)
+      }
+      somme.bc = somme.banque + somme.caisse
+      return somme
+    } catch(e) {
+      throw {
+        fun: `in fj.service > getMontantFJCore`,
+        param: {fj, devise, field},
+        err: e
+      }
+    }
   }
 
   // ===================================================================

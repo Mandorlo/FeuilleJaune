@@ -77,18 +77,31 @@ export class TrDetailsPage {
       { 'val': 'caisse', 'title': 'J\'ai reçu de l\'argent liquide', 'icon': 'fa-money' }]
     }
 
-    // on récupère une photo de bing pour illustrer
-    this.photoService.randPhoto(this.curr_tr['name']).then(o => {
-      this.photo = o
-      this.photo.urlcss =  sanitizer.bypassSecurityTrustStyle('url(' + this.photo.url + ')');
-    }).catch(e => {
-      console.log('ERROR PHOTO', e)
-    })
   }
 
   ionViewDidLoad() {
     console.log('TrDetailsPage : Signore, tu solo hai parole di vita eterna');
     this.setupDatePicker();
+  }
+
+  ngAfterViewInit() {
+    this.getPhotoBg()
+  }
+
+  getPhotoBg(n = 3) {
+    if (n < 0) return
+    // on récupère une photo pour illustrer
+    this.photoService.randPhoto(this.curr_tr['name']).then(o => {
+      this.photo = o
+      //this.photo.urlcss = this.sanitizer.bypassSecurityTrustStyle('url(' + this.photo.url + ')');
+      if (!this.photo.url) {
+        this.getPhotoBg(n-1)
+      } else {
+        this.bigBack.nativeElement.style.backgroundImage = 'url(' + this.photo.url + ')'
+      }
+    }).catch(e => {
+      console.log('ERROR PHOTO', e)
+    })
   }
 
   getCatOptions(type) {

@@ -6,11 +6,39 @@ import { ParamService } from './param.service';
 @Injectable()
 export class PhotoService {
   private subscriptionKey = 'AIzaSyDgR7geKq0faSort2zVVFyxgHTIPsIZL34';
-  private pexel_apikey = '563492ad6f9170000100000134220e6df7ba49b2ba8a9ae937eac8e8';
   private paramService;
   private cache = [];
   private cache_keys = [];
   private severe:boolean = false;
+
+  private samples = [
+    {
+      regex: /(tram|tramway)/gi,
+      urls: ['https://upload.wikimedia.org/wikipedia/commons/6/6e/Wuhan_Optics_Valley_Modern_Tram_%284%29.jpg',
+            'https://upload.wikimedia.org/wikipedia/commons/a/a0/Carris_Tram_route_15_Lisbon_12_2016_9828.jpg']
+    }, {
+      regex: /(cathedral|cattedral|basili[qc]|[ée]glise|chies[ae]|messa( |$)|messe( |$))/gi,
+      urls: ['https://upload.wikimedia.org/wikipedia/commons/8/88/St_Albans%2C_Cathedral_and_Abbey_Church_of_St_Alban_-_geograph.org.uk_-_1350217.jpg',
+            'https://upload.wikimedia.org/wikipedia/commons/e/eb/Basilica-di-San-Marco-Venice-20050524-029.jpg',
+            'https://upload.wikimedia.org/wikipedia/commons/0/02/Bourges-Cath%C3%A9drale_Saint-%C3%89tienne-5.jpg',
+            'https://upload.wikimedia.org/wikipedia/commons/5/58/Notre_Dame_I_%28REIMS-CATHEDRAL%29_%28904620963%29.jpg']
+    }, {
+      regex: /(^| )rer( |$)/gi,
+      urls: ['https://upload.wikimedia.org/wikipedia/commons/3/39/RER_E_train_in_Magenta_station.JPG']
+    }, {
+      regex: /(^| )(trains?|treno|ter)( |$)/gi,
+      urls: ['http://s0.geograph.org.uk/geophotos/03/05/04/3050435_09029b6c.jpg',
+            'https://upload.wikimedia.org/wikipedia/commons/0/00/Hogwarts_Express_at_Harry_Potter_Experience_at_Leavesden.jpg']
+    }, {
+      regex: /(^| )(metro|subway)( |$)/gi,
+      urls: ['https://upload.wikimedia.org/wikipedia/commons/d/df/Moscow_metro_D_2037_museum_car_panoramic.jpg',
+            'https://upload.wikimedia.org/wikipedia/commons/0/04/Subway_station_in_Moscow_2015.JPG']
+    }, {
+      regex: /(^| )(dentifric|toothpast)/gi,
+      urls: ['https://www.protegez-vous.ca/var/protegez_vous/storage/images/_aliases/social_network_image/mediatheque/illustrations-et-images/dentifrice/990970-1-fre-CA/dentifrice.jpg',
+            'http://dentalhealthgroup.ca/2014/wp-content/uploads/2015/06/dpc-toothpaste-1030x684.jpg']
+    }
+  ]
 
   constructor(paramService: ParamService) {
     this.paramService = paramService
@@ -72,7 +100,11 @@ export class PhotoService {
           this.severe = false
           if (el.photo == '$' && res.length > 2) {
             this.severe = true;
-            return res[2];
+            let mot_cle = res[2].trim()
+            let url = this.findSample(mot_cle)
+            console.log('safesearch mot-cle = ', mot_cle, url)
+            if (url) return url
+            return mot_cle
           } else if (el.photo == '*') {
             return s
           } else if (el.photo.substr(0,8) == '@google:') {
@@ -86,6 +118,16 @@ export class PhotoService {
       }
     }
     return ''
+  }
+
+  findSample(mot_cle) {
+    for (let el of this.samples) {
+      let res = mot_cle.match(el.regex)
+      if (res) {
+        let ind = Math.round(Math.random() * (el.urls.length - 1))
+        return el.urls[ind]
+      }
+    }
   }
 
   setCache(key, val) {
