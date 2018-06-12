@@ -27,6 +27,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { AppVersion } from '@ionic-native/app-version';
+//import { GooglePlus } from '@ionic-native/google-plus';
 
 import { TransactionService } from '../services/transaction.service';
 import { ParamService } from '../services/param.service';
@@ -117,6 +118,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     AndroidPermissions,
     Diagnostic,
     AppVersion,
+    //GooglePlus,
     FjObservationsPage
   ]
 })

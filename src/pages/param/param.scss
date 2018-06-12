@@ -1,7 +1,13 @@
 page-param {
   .info {
+    margin-top: 2rem;
     color: color($colors, lightgray);
     font-style: italic;
+  }
+
+  .raz {
+    background-color: red;
+    color: white;
   }
 
   form {
@@ -24,5 +30,9 @@ page-param {
 
   .spinner {
     margin-right: 10px;
+  }
+
+  .icons_nav {
+    font-size: 1.7em;
   }
 }

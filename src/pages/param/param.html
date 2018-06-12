@@ -2,49 +2,67 @@
 
   <ion-navbar color='primary'>
     <ion-title>Paramètres</ion-title>
+
+    <ion-buttons end>
+      <button ion-button (click)="enregistrer()">
+        <i class="icons_nav fa fa-floppy-o"></i>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content>
 
-  <form (ngSubmit)="enregistrer()">
-    <ion-item class="personne">
-      <label>Prénom Nom</label>
-      <input id="input_personne" type="text" [(ngModel)]="paramService.personne" name="personne">
-    </ion-item>
+  <ion-list>
+    <ion-item-group>
+      <ion-item-divider color="secondary">Infos générales</ion-item-divider>
+      <ion-item class="personne">
+        <label>Prénom Nom</label>
+        <input id="input_personne" type="text" [(ngModel)]="paramService.personne" name="personne">
+      </ion-item>
 
-    <ion-item class="personne">
-      <label>Maison</label>
-      <input id="input_maison" type="text" [(ngModel)]="paramService.maison" name="maison">
-    </ion-item>
+      <ion-item class="personne">
+        <label>Maison</label>
+        <input id="input_maison" type="text" [(ngModel)]="paramService.maison" name="maison">
+      </ion-item>
 
-    <ion-item>
-      <ion-label>Monnaie</ion-label>
-      <ion-select [(ngModel)]="paramService.currency" name="currency">
-        <ion-option *ngFor="let curr of paramService.currencies" [value]="curr.id" [selected]="curr.id == default_currency">{{curr.name}} {{curr.symbol}}</ion-option>
-      </ion-select>
-    </ion-item>
+      <ion-item>
+        <ion-label>Monnaie</ion-label>
+        <ion-select [(ngModel)]="paramService.currency" name="currency">
+          <ion-option *ngFor="let curr of paramService.currencies" [value]="curr.id" [selected]="curr.id == default_currency">{{curr.name}} {{curr.symbol}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-item-group>
 
-    <button ion-button type="submit" block>Enregistrer</button>
-  </form>
-
-  <hr style="margin-top:2em;margin-bottom:2em;">
-  <ion-list no-lines>
-    <ion-item>
-      <button ion-item type="button" (click)="exporter()" block color="secondary">
-        <i class="fa fa-circle-o-notch fa-spin spinner" aria-hidden="true" *ngIf="loading_export"></i>
+    <ion-item-group>
+      <ion-item-divider color="secondary">Options avancées</ion-item-divider>
+      <ion-item (click)="exporter()">
         Exporter toute la base de données
-      </button>
-    </ion-item>
-    <ion-item>
-      <input type="file" id="file_picker_browser" hidden>
-      <button ion-item type="button" (click)="importer()" block color="secondary">
-        <i class="fa fa-circle-o-notch fa-spin spinner" aria-hidden="true" *ngIf="loading_import"></i>
+        <div item-end>
+          <i class="fa fa-circle-o-notch fa-spin spinner" aria-hidden="true" *ngIf="loading_export"></i>
+          <i class="fa fa-arrow-right" aria-hidden="true" *ngIf="!loading_import"></i>
+        </div>
+      </ion-item>
+
+      <ion-item (click)="importer()">
+        <input type="file" id="file_picker_browser" hidden>
         Importer une base de données
-      </button>
-    </ion-item>
+        <div item-end>
+          <i class="fa fa-circle-o-notch fa-spin spinner" aria-hidden="true" *ngIf="loading_import"></i>
+          <i class="fa fa-arrow-left" aria-hidden="true" *ngIf="!loading_import"></i>
+        </div>
+      </ion-item>
+
+      <ion-item (click)="raz()" class="raz">
+        Tout remettre à zéro
+        <div item-end>
+          <i class="fa fa-circle-o-notch fa-spin spinner" aria-hidden="true" *ngIf="loading_import"></i>
+          <i class="fa fa-window-close" aria-hidden="true" *ngIf="!loading_import"></i>
+        </div>
+      </ion-item>
+    </ion-item-group>
 
     <ion-item class="info">
       Version: {{version}}<br/> Contact: <a href="mailto:shaqed@outlook.fr">shaqed@outlook.fr</a>

@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, Platform, ToastController } from 'ionic-angular';
+import { NavController, NavParams, Platform, ToastController, AlertController } from 'ionic-angular';
 import { AppVersion } from '@ionic-native/app-version';
 
 import { ParamService } from '../../services/param.service';
+import { TransactionService } from '../../services/transaction.service';
+import { FjService } from '../../services/fj.service';
 import { ExportService } from '../../services/export.service';
-
-
-
-
 
 
 @Component({
@@ -15,13 +13,15 @@ import { ExportService } from '../../services/export.service';
   templateUrl: 'param.html',
 })
 export class ParamPage {
-  private version:string = "0.10.2";
-  private loading_export:boolean = false;
-  private loading_import:boolean = false;
+  private version:string = "0.11.0";
+  private loading:boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public toastCtrl: ToastController,
+    public alertCtrl: AlertController,
     public paramService: ParamService,
+    public fjService: FjService,
+    public trService: TransactionService,
     public appVersion: AppVersion,
     public exportService: ExportService,
     public ptfm: Platform) {
@@ -60,32 +60,32 @@ export class ParamPage {
   }
 
   exporter() {
-    this.loading_export = true;
+    this.loading = true;
     this.exportService.exportDB().then(res => {
       this.showToast("Base de données exportée ! Merci Seigneur de prendre soin de nous !");
-      this.loading_export = false;
+      this.loading = false;
     }).catch(err => {
       console.log("DB export failed : ", err);
-      this.loading_export = false;
+      this.loading = false;
     });
   }
 
   importer() {
     // TODO faire un alert confirmation
-    this.loading_import = true;
+    this.loading = true;
     if (this.ptfm.is('mobileweb') || this.ptfm.is('core')) {
       console.log("import from browser", this.ptfm.platforms())
       document.getElementById("file_picker_browser").click();
     } else if (this.ptfm.is('android')) {
       console.log("importing from android", this.ptfm.platforms());
       this.exportService.importDB().then(res => {
-        this.loading_import = false;
+        this.loading = false;
       }).catch(err => {
-        this.loading_import = false;
+        this.loading = false;
       });
     } else {
       alert("this platform : " + JSON.stringify(this.ptfm.platforms()) + " is not supported")
-      this.loading_import = false;
+      this.loading = false;
     }
   }
 
@@ -105,7 +105,55 @@ export class ParamPage {
       }
     })(file)
     reader.readAsText(file);
-    this.loading_import = false; // TODO le mettre plutôt qd importDBcore a terminé !
+    this.loading = false; // TODO le mettre plutôt qd importDBcore a terminé !
+  }
+
+  raz() {
+    let alert = this.alertCtrl.create({
+      title: 'Supprimer',
+      message: 'Veux-tu vraiment réinitialisées toutes les données de l\'application (cette action est irréversible) ?',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: () => {
+            console.log('RAZ annulée');
+          }
+        },
+        {
+          text: 'Réinitialiser',
+          handler: () => {
+            this.loading = true;
+            console.log('Réinitialisation des données...');
+            this.raz_core().then(_ => {
+              this.presentToast("Toutes les données ont été réinitialisées ! Thank you O Lord !")
+              this.loading = false
+            }).catch(err => {
+              console.log(err)
+              this.loading = false
+            })
+          }
+        }
+      ]
+    })
+    alert.present()
+  }
+
+  raz_core() {
+    this.loading = true
+    let plist = []
+    plist.push(this.trService.raz())
+    plist.push(this.fjService.raz())
+    plist.push(this.paramService.raz())
+    return Promise.all(plist)
+  }
+
+  presentToast(msg) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    });
+    toast.present();
   }
 
 }

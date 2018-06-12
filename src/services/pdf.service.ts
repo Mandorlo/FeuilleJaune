@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { File } from '@ionic-native/file';
-import { ToastController } from 'ionic-angular';
+import { ToastController, Platform } from 'ionic-angular';
 import { ParamService } from './param.service';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import _ from 'lodash';
+
 import moment from 'moment';
 
 declare var pdfMake: any;
@@ -17,7 +17,8 @@ export class PdfService {
   constructor(private paramService: ParamService,
     public toastCtrl: ToastController,
     private file: File,
-    private socialSharing: SocialSharing) {
+    private socialSharing: SocialSharing,
+    public ptfm: Platform) {
     moment.locale('fr');
   }
 
@@ -164,7 +165,6 @@ export class PdfService {
 
   // pdf_paths_o est un objet retourné par createFJPDF
   async shareFJ(pdf_paths_o) {
-    let sujet = "Feuille Jaune - " + pdf_paths_o.personne + " - mois de " + moment(pdf_paths_o.month).format("MMMM - YYYY");
     console.log('pdf.service > shareFJ', pdf_paths_o)
 
     if (this.weAreInBrowser()) {
@@ -175,7 +175,13 @@ export class PdfService {
         return `Trying to download PDF ${file_o.filename} directly...`
       }
     } else {
-      let paths = []
+      return this.shareFJ_android(pdf_paths_o)
+    }
+  }
+
+  async shareFJ_android(pdf_paths_o) {
+    let sujet = "Feuille Jaune - " + pdf_paths_o.personne + " - mois de " + moment(pdf_paths_o.month).format("MMMM - YYYY");
+    let paths = []
       for (let file_o of pdf_paths_o.files) {
         await this.coolWrite(pdf_paths_o.dir, file_o.filename, file_o.blob)
         paths.push(pdf_paths_o.dir + "/" + file_o.filename)
@@ -201,12 +207,10 @@ export class PdfService {
           throw "Erreur pendant l'export de la Feuille Jaune : " + JSON.stringify(err)
         }
       }
-    }
   }
 
   weAreInBrowser() {
-    // TODO à compléter TBD
-    return true
+    return this.ptfm.is('mobileweb') || this.ptfm.is('core')
   }
 
   public shareFJ_old(blob, opt) {
@@ -263,7 +267,6 @@ export class PdfService {
   }
 
   downloadBrowser(data, file_o) {
-
     var element = document.createElement('a');
     // element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
     element.setAttribute('href', data);

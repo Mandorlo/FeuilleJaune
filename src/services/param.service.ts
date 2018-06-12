@@ -546,6 +546,15 @@ export class ParamService {
     return this.storage.get(key)
   }
 
+  raz() {
+    let plist = []
+    plist.push(this.setInit({ 'bienvenue_msg': true }))
+    plist.push(this.setPersonne(''))
+    plist.push(this.setMaison(''))
+    plist.push(this.setCurrency('EUR'))
+    return Promise.all(plist)
+  }
+
   // renvoie 1 si @s est un trigramme de devise (genre 'EUR'), 
   // 2 si c'est un symbole de devise
   // -1 sinon

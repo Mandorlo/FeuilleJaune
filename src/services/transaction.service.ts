@@ -23,8 +23,21 @@ export class TransactionService {
     return this.storage.set(this.key, tr_list);
   }
 
-  add(tr) {
-    return new Promise((resolve, reject) => {
+  raz() {
+    return this.set([])
+  }
+
+  async add(tr) {
+    let tr_list = await this.getAll()
+    tr.id = this.genId(tr)
+    tr.icon = this.smartIcon(tr)
+    tr_list.push(tr)
+    return this.set(tr_list)
+  }
+
+  add_old(tr) {
+    // TODO delete this function
+    /* return new Promise((resolve, reject) => {
       this.getAll().then(data => {
         if (!data) data = [];
         tr.id = this.genId(tr);
@@ -38,11 +51,25 @@ export class TransactionService {
       }).catch(err => {
         reject(err)
       })
-    })
+    }) */
   }
 
-  update(id, tr) {
-    return new Promise((resolve, reject) => {
+  // met à jour la transaction tr
+  async update(id, tr) {
+    let tr_list = await this.getAll()
+    let ind = tr_list.findIndex(el => el.id == id)
+    if (ind) {
+      tr_list.splice(ind, 1, tr)
+    } else {
+      console.log("Aucune mise à jour de la trasanction pour id=" + id + " et tr:", tr)
+      return 0
+    }
+    return this.set(tr_list)
+  }
+
+  update_old(id, tr) {
+    // TODO delete this function
+    /* return new Promise((resolve, reject) => {
       this.getAll().then(data => {
         let newdata = [];
         let updated = false;
@@ -64,7 +91,7 @@ export class TransactionService {
       }).catch(err => {
         reject(err)
       })
-    })
+    }) */
   }
 
   trEqual(tr, el) {
@@ -77,8 +104,30 @@ export class TransactionService {
     return moment(tr.date).format("YYMMDD") + "_" + tr.name + alea;
   }
 
-  delete(tr) {
-    if (typeof tr == 'object') {
+  async delete(tr) {
+    let tr_list = await this.getAll()
+    if (typeof tr != 'object') tr = tr_list.find(el => el.id == tr.id)
+    if (!tr) throw {
+      errnum: "INVALID_PARAM",
+      fun: 'transaction.service > delete',
+      arg: tr,
+      descr: "Cannot delete this element, wrong format or unknown id"
+    }
+    if (typeof tr_list != 'object' || !tr_list.length) throw "le format de la base de données des transactions est corrompu, ou la base est vide"
+
+    let ind = tr_list.findIndex(el => el.id == tr.id)
+    if (ind) {
+      tr_list.splice(ind, 1)
+      return this.set(tr_list)
+    } else {
+      console.log("WARNING in transaction.service > delete : transaction not found...", tr)
+      return 0
+    }    
+  }
+
+  delete_old(tr) {
+    // TODO delete this function
+    /* if (typeof tr == 'object') {
       return new Promise((resolve, reject) => {
         this.getAll().then(data => {
           if (typeof data != 'object' || !data.length) reject("le format de la base de données des transactions est corrompu, ou la base est vide");
@@ -107,11 +156,14 @@ export class TransactionService {
       })
     } else {
       console.log("problem, tr is not an object")
-    }
+    } */
   }
 
-  getAll() {
-    return this.storage.get(this.key) // this is a promise
+  async getAll() {
+    let tr_list = await this.storage.get(this.key) // this is a promise
+    if (!tr_list) return []
+    tr_list = this.fixOldTrFormat(tr_list)
+    return tr_list
   }
 
   async getTransactions(month = null, currency = null) {
@@ -202,6 +254,17 @@ export class TransactionService {
     }
 
     return myicon
+  }
+
+  // ========================================================
+  //             HELPER FUNS TO FIX OLD TR FORMATS
+  // ========================================================
+
+  fixOldTrFormat(tr_list) {
+    for (let i = 0; i < tr_list.length; i++) {
+      if (!('id' in tr_list[i])) tr_list[i].id = this.genId(tr_list[i]);
+    }
+    return tr_list
   }
 
 }

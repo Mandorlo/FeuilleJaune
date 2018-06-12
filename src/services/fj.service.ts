@@ -43,6 +43,10 @@ export class FjService {
     return this.storage.set(this.db_fj, fj_list);
   }
 
+  raz() {
+    return this.setAllFJ([])
+  }
+
   async getAllFJ() { // renvoie tous les json + metadata de feuilles faunes
     let fj_list = await this.storage.get(this.db_fj);
     if (!fj_list || !fj_list.length) return []
