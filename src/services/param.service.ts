@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 
+import { AngularFirestore } from 'angularfire2/firestore';
+//import { Observable } from 'rxjs/Observable';
+
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -56,334 +59,7 @@ export class ParamService {
   // == CHAMPS PHOTO ==
   // dans les champs photo, par défaut il va chercher sur bing images.
   // mais quand le champ vaut '@google:...', ça correspond à des images de google agenda
-  public smart_categories = [
-    {
-      regex: /(^| )(no[eë]l|natale|christmas|xmas)/gi,
-      photo: '@google:xmas'
-    }, {
-      category: 'avance',
-      regex: /(^| )(avance|avanz)/gi,
-      photo: 'money'
-    }, {
-      category: 'enfant',
-      regex: /(^| )(scolarit|scolaire|[ée]cole)/gi,
-      photo: '@google:backtoschool'
-    }, {
-      category: 'cadeau',
-      regex: /(^| )(cadeau|regalo)/gi
-    }, {
-      category: 'divers_maison',
-      regex: /(^| )(r[iée]para[tz]ion|r[ée]pare|repair|plombier|[ée]lectricien)/gi,
-      icon: 'fa-wrench',
-      photo: '@google:repair'
-    }, {
-      category: 'livre',
-      regex: /(^| )(book|livre|libro|ebook|epub)/gi,
-      icon: 'fa-book',
-      photo: '@google:read'
-    }, {
-      category: 'transport_commun',
-      regex: /(^| )(vol( |$)|avion|flight|plane|aereo)/gi,
-      icon: 'fa-plane',
-      photo: 'flight plane'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(peinture|pinceau|pennell)/gi,
-      icon: 'fa-plane',
-      photo: '@google:art'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(cin[eé](ma| |$)|movie|film)/gi,
-      icon: 'fa-film',
-      photo: '@google:cinema'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(train|treno)/gi,
-      icon: 'fa-train',
-      photo: '$'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(concert)/gi,
-      icon: 'fa-music',
-      photo: '@google:concert'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(d[ée]jeuner|lunch|pranzo|repas)/gi,
-      icon: 'fa-utensils',
-      photo: '@google:lunch'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(d[iî]nn?er|cena)/gi,
-      icon: 'fa-utensils',
-      photo: '@google:dinner'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(soirée jeu|giochi|jeux)/gi,
-      photo: '@google:gamenight'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(boisson|cocktail|drinks|bevande)/gi,
-      icon: 'fa-bottle',
-      photo: '@google:drinks'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(bbq|barbecue)/gi,
-      photo: '@google:bbq'
-    }, {
-      category: '',
-      regex: /(^| )(foto|photo)/gi,
-      icon: 'fa-camera',
-      photo: 'appareil photo'
-    }, {
-      category: 'hygiene',
-      regex: /(^| )(hairdresser|haircut|coiffeur|parr?ucc?hiere)/gi,
-      icon: 'fa-scissors',
-      photo: '@google:haircut'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(taxi|cab|uber|blablacar)/gi,
-      icon: 'fa-cab',
-      photo: 'taxi new york'
-    }, {
-      category: 'transport_commun',
-      regex: /(^| )(metro|subway|rer($|\s))/gi,
-      icon: 'fa-subway',
-      photo: '$'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(beer|bi[eè]re|birra|verre|bar)/gi,
-      icon: 'fa-beer',
-      photo: 'bar photo'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(h[oô]tel|bnb|auberge|albergo)/gi,
-      icon: 'fa-bed',
-      photo: 'hotel 5 stars'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(boat|bateau|battello|voile)/gi,
-      icon: 'fa-anchor',
-      photo: '@google:sailing'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(op[ée]ra|th?[ée][aâ]tr)/gi,
-      photo: '@google:theatreopera'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(pizza)/gi,
-      icon: 'myicon-pizza',
-      photo: 'pizza napoletana'
-    }, {
-      category: 'livre',
-      regex: /(^| )(bible|bibbia)/gi,
-      icon: 'myicon-bible',
-      photo: 'bible'
-    }, {
-      category: 'liturgie',
-      regex: /(^| )(magnificat|prions en [eé]glise)/gi,
-      icon: 'myicon-bible',
-      photo: 'bible'
-    }, {
-      category: 'liturgie',
-      regex: /(^| )(messe)/gi,
-      icon: '',
-      photo: '$'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(biscuit|biscott)/gi,
-      icon: 'myicon-biscuit',
-      photo: 'tea pastries'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(petit d[ée]jeuner|breakfast|colazione)/gi,
-      icon: 'myicon-coffee',
-      photo: '@google:breakfast'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(eau|water|acqua|milk|lait|latte|coca|sprite|jus|succo)/gi,
-      icon: 'myicon-bottle',
-      photo: '$'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(brioche|dolc[ei]|gateau|torta|cake|muffin|tarte)/gi,
-      icon: 'myicon-muffin',
-      photo: 'chocolate cake'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(croissant|viennoiserie|pain|bread|pane|baguette)/gi,
-      icon: 'myicon-croissant',
-      photo: 'croissant baguette bakery'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(coffee|caff?[eéè]|th?[eéè]($| ))/gi,
-      icon: 'myicon-coffee',
-      photo: '@google:coffee'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(choco|ciocco)/gi,
-      icon: 'myicon-chocolate',
-      photo: 'chocolate'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(panin|sandwich|hamburger)/gi,
-      icon: 'myicon-hamburger',
-      photo: '$'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(fromage|formaggi|jambon|prosciutt)/gi
-    }, {
-      category: 'hygiene',
-      regex: /(^| )(dentifric|brosse [aà] dent|spazzolin|toothpaste|toothbrush)/gi,
-      icon: 'myicon-toothpaste',
-      photo: '$'
-    }, {
-      category: 'habillement',
-      regex: /(^| )(slip|cale[cç]on|culotte)/gi,
-      icon: 'myicon-underpants'
-    }, {
-      category: 'sante',
-      regex: /(^| )(medicament|medicin|antibio)/gi,
-      icon: 'myicon-medicament',
-      photo: 'medicine'
-    }, {
-      category: 'sante',
-      regex: /(^| )(pansement|bandage|garza|cerott)/gi,
-      icon: 'myicon-bandage'
-    }, {
-      category: 'sante',
-      regex: /(^| )(dentist)/gi,
-      photo: '@google:dentist'
-    }, {
-      category: 'hygiene',
-      regex: /(^| )(d[ée]o($| |dorant)|ddt)/gi,
-      icon: 'myicon-deodorant',
-      photo: 'deodorant'
-    }, {
-      category: 'habillement',
-      regex: /(^| )(shirt|chemis|camic[ei])/gi,
-      icon: 'myicon-shirt'
-    }, {
-      category: 'habillement',
-      regex: /(^| )(pantalon|trouser)/gi,
-      icon: 'myicon-trousers'
-    }, {
-      category: 'habillement',
-      regex: /(^| )(chaussette|calzett|calzin)/gi,
-      icon: 'myicon-socks',
-      photo: '$'
-    }, {
-      category: 'habillement',
-      regex: /(^| )(chaussure|scarp|shoe|sandal)/gi,
-      icon: 'myicon-shoe',
-      photo: '$'
-    }, {
-      category: 'habillement',
-      regex: /(^| )(montre|orologio|watch($| ))/gi,
-      icon: 'myicon-watch',
-      photo: 'watch cartier'
-    }, {
-      category: 'loisir',
-      regex: /(^| )(r[ei]st(au|o)rant)/gi,
-      icon: '',
-      photo: 'restaurant'
-    }, {
-      category: 'hygiene',
-      regex: /(^| )(rasoir|rasoi)/gi,
-      icon: ''
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(confiture|marmelade|marmellata)/gi,
-      icon: '',
-      photo: '*'
-    }, {
-      category: 'hygiene',
-      regex: /(^| )(shampoo)/gi,
-      icon: '',
-      photo: 'shampoo'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(h[uo]+mm?[uo]+s)/gi,
-      icon: '',
-      photo: '$'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(sans gluten|senza glutine|gluten free)/gi,
-      photo: 'gluten free'
-    }, {
-      category: 'alimentation',
-      regex: /(^| )(graine|mandorl|amande|arachide|noix|noci|cachu[eè]te|peanut)/gi,
-      icon: '',
-      photo: 'seeds almond nuts'
-    }, {
-      category: 'transport_commun',
-      regex: /(^| )(v[eé]lib|v[ée]lo\'?v|v[ée]lhop)/gi,
-      icon: 'fa-bicycle',
-      photo: 'velib'
-    }, {
-      category: 'transport_commun',
-      regex: /(^| )(ouibus|flixbus|bus( |$)|tram( |$)|tramway)/gi,
-      icon: 'fa-bus',
-      photo: '$'
-    }, {
-      category: 'divers_vie',
-      regex: /(^| )(ordi|laptop|computer)/gi,
-      icon: 'fa-laptop',
-      photo: '@google:code'
-    }, {
-      category: 'divers_vie',
-      regex: /(^| )(smartphone|iphone|portable)/gi,
-      icon: 'fa-mobile',
-      photo: '@google:code'
-    }, {
-      category: 'divers_secretariat',
-      regex: /(^| )(cartolin|cartes?\s+postal)/gi,
-      photo: '@google:reachout'
-    }, {
-      category: 'divers_secretariat',
-      regex: /(^| )(timbre|stamp|francoboll)/gi,
-      photo: 'timbres poste'
-    }, {
-      category: 'energie',
-      regex: /(^| )([ée]l[ée]ctricit[eé]|gaz|electricity|gas($| )|elettricit)/gi,
-      icon: '',
-      photo: 'electricity'
-    }, {
-      category: 'carburant',
-      regex: /(^| )(essence|benzin|diesel|carburant)/gi,
-      icon: ''
-    }, {
-      category: 'divers_vie',
-      regex: /(^| )(cart[ea] d?\'? ?identit|id card|pass[ae]?port|driver license|permis de conduire|patent)/gi,
-      icon: 'fa-id-card',
-      photo: 'passport'
-    }, {
-      category: 'divers_vie',
-      regex: /(^| )(disque dur|hdd)/gi,
-      icon: 'fa-hdd-o',
-      photo: '@google:code'
-    }, {
-      category: 'sante',
-      regex: /(^| )(h[oô]pital|m[eé]decin|docteur|medico|cardiolog)/gi,
-      icon: 'fa-heartbeat'
-    }, {
-      category: 'divers_vie',
-      regex: /(^| )([ée]lectroni)/gi,
-      icon: 'fa-microchip'
-    }, {
-      category: 'frais_banque',
-      regex: /(^| )(carte (CB|d?e? ?cr[ée]dit|bancaire|bleu|visa)|carta (di )?credito)/gi,
-      icon: 'fa-credit-card',
-      photo: 'credit card'
-    }, {
-      category: 'parking',
-      regex: /(^| )(parking|parchegg)/gi,
-      photo: 'parking lot'
-    }, {
-      category: 'salaire',
-      regex: /(^| )(salaire|pension)/gi,
-      photo: 'money'
-    }
-  ];
+  public smart_categories = []
 
   public liste_maison = _.map(_.filter(this.categories, ['type', 'maison']), 'id');
   public liste_viecourante = _.map(_.filter(this.categories, ['type', 'vie courante']), 'id');
@@ -391,93 +67,9 @@ export class ParamService {
   public liste_secretariat = _.map(_.filter(this.categories, ['type', 'secretariat']), 'id');
   public liste_banque = _.map(_.filter(this.categories, ['type', 'banque']), 'id');
 
-  public currencies = [{
-    id: 'EUR',
-    name: 'Euros',
-    symbol: '€',
-    country: ['DEU', 'FRA', 'ITA', 'ESP', 'PRT', 'NLD', 'IRL', 'AUT', 'BEL', 'LTU', 'EST', 'CYP', 'MLT', 'FIN', 'SVK', 'LVA', 'LUX', 'SVN', 'REU', 'GLP', 'MTQ', 'MYT', 'GUF'],
-    default_rate_eur: 1
-  }, {
-    id: 'USD',
-    name: 'Dollars',
-    symbol: '$',
-    country: ['USA', 'NLD'],
-    default_rate_eur: 1.177019
-  }, {
-    id: 'GBP',
-    name: 'Livre sterling',
-    symbol: '£',
-    country: 'GBR',
-    default_rate_eur: 0.878103
-  }, {
-    id: 'CHF',
-    name: 'Franc Suisse',
-    symbol: 'FrS',
-    country: 'CHE',
-    default_rate_eur: 1.158898
-  }, {
-    id: 'PLN',
-    name: 'Złoty',
-    symbol: 'zł',
-    country: 'POL',
-    default_rate_eur: 4.27835
-  }, {
-    id: 'HUF',
-    name: 'Forint', // hongrie
-    symbol: 'Ft',
-    country: 'HUN',
-    default_rate_eur: 319.348748
-  }, {
-    id: 'CZK',
-    name: 'Couronne tchèque',
-    symbol: 'Kč',
-    country: 'CZE',
-    default_rate_eur: 25.735564
-  }, {
-    id: 'ILS',
-    name: 'Sheqels',
-    symbol: '\u20AA',
-    country: 'ISR',
-    default_rate_eur: 4.194942
-  }, {
-    id: 'LBP',
-    name: 'Livre libanaise',
-    symbol: 'ل.ل',
-    country: 'LBN',
-    default_rate_eur: 1772.237141
-  }, {
-    id: 'BRL',
-    name: 'Réal Brésilien',
-    symbol: 'R$',
-    country: 'BRA',
-    default_rate_eur: 4.354268
-  }, {
-    id: 'MUR',
-    name: 'Roupie mauricienne',
-    symbol: 'Rs',
-    country: 'MUS',
-    default_rate_eur: 39.783234
-  }, {
-    id: 'MGA',
-    name: 'Ariary malgache',
-    symbol: 'Ariary',
-    country: 'MDG',
-    default_rate_eur: 3848.851867
-  }]
+  public currencies = []
 
-  public maisons = [{
-    regex: /(hautecombe|htc)/gi,
-    photo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Hautecombe.jpg'
-  }, {
-    regex: /(marie.+nazaret|cimdn)/gi,
-    photo: 'http://pp.mariedenazareth.com/sites/default/files/styles/actus/public/mav-cimn.jpg'
-  }, {
-    regex: /(ecce\s+homo|jerusalem)/gi,
-    photo: 'https://media-cdn.tripadvisor.com/media/photo-s/03/2d/fe/57/ecce-homo-convent.jpg'
-  }, {
-    regex: /abuna\s+faraj/gi,
-    photo: 'https://il.chemin-neuf.org/dam?media-id=58c677a0245640d7008b77fd'
-  }]
+  public maisons = []
 
   public init: any;
   public gauges: any; // min/max values for the gauges on home screen
@@ -486,7 +78,14 @@ export class ParamService {
   public maison: string;
   public currency: string;
 
-  constructor(private storage: Storage) {
+  constructor(private storage: Storage, private afs: AngularFirestore) {
+
+    // these 2 lines fix the error for firebase : "The behavior for Date objects stored in Firestore is going to change AND YOUR APP MAY BREAK"
+    // see here : https://stackoverflow.com/questions/50029307/getting-a-timestamp-error-in-an-angular-app-and-firebase-integration
+    afs.app.firestore().settings({timestampsInSnapshots: true});
+    afs.app.firestore().enablePersistence();
+
+    this.initialize()
 
     // on récupère les variables d'initialisation
     this.storage.get("init").then(res => {
@@ -520,6 +119,54 @@ export class ParamService {
       console.log("No currency found, using euros (EUR)");
       this.currency = "EUR"
     })
+  }
+
+  initialize() {
+    // maisons
+    let maisonsCollection = this.afs.collection('maisons')
+    let maisonsObs = maisonsCollection.valueChanges()
+    maisonsObs.subscribe(data => this.maisons = this.prepareMaisons(data))
+
+    // devises
+    let currencyCollection = this.afs.collection('currencies')
+    let currencyObs = currencyCollection.valueChanges()
+    currencyObs.subscribe(data => this.currencies = data)
+
+    // smart_categories
+    let catCollection = this.afs.collection('smart_categories')
+    let catObs = catCollection.valueChanges()
+    catObs.subscribe(data => this.smart_categories = this.prepareSmartCategories(data))
+  }
+
+  // returns only when param attributes are all set
+  async ready(n = 10) {
+    if (n < 0) return false;
+    if (this.maisons && this.maisons.length 
+        && this.currencies && this.currencies.length
+        && this.smart_categories && this.smart_categories.length) {
+          return true
+    } else {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          this.ready(n-1).then(r => resolve(r)).catch(err => reject(err))
+        }, 500)
+      })
+    }
+  }
+
+  prepareSmartCategories(raw_cats) {
+    for (let i = 0; i < raw_cats.length; i++) {
+      raw_cats[i].regex = new RegExp(raw_cats[i].regex, 'gi')
+    }
+    return raw_cats
+  }
+
+  prepareMaisons(raw_maisons) {
+    for (let i = 0; i < raw_maisons.length; i++) {
+      let re = (raw_maisons[i].trig) ? `((^|\\s)${raw_maisons[i].trig}($|\\s)|${raw_maisons[i].regex})`: raw_maisons[i].regex;
+      raw_maisons[i].regex = new RegExp(re, 'gi')
+    }
+    return raw_maisons
   }
 
   setInit(o) {
@@ -559,6 +206,9 @@ export class ParamService {
   // 2 si c'est un symbole de devise
   // -1 sinon
   isCurrency(s) {
+    if (!this.currencies) {
+      throw {err: 'No currencies loaded :(', fun: 'param.service > isCurrency'}
+    }
     if (this.currencies.map(c => c.id).indexOf(s) >= 0) return 1
     if (this.currencies.map(c => c.symbol).indexOf(s) >= 0) return 2
     return -1
@@ -586,7 +236,10 @@ export class ParamService {
   // recherche une photo pour la maison renseignée
   getPhotoMaison(maison) {
     for (let m of this.maisons) {
-      if (m.regex.test(maison)) return m.photo
+      if (m.regex.test(maison)) {
+        let alea = Math.round(Math.random() * (m.photos.length -1))
+        return m.photos[alea]
+      }
     }
     return ''
   }

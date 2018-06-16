@@ -1,0 +1,616 @@
+[
+  {
+    "country": "FRA",
+    "name": "Aire sur l'Adour",
+    "trig": "ASA",
+    "num": 14,
+    "photos": [
+      "http://wiki.ccn/lib/exe/fetch.php?w=200&tok=4b19a7&media=aire_sur_ardour.jpg"
+    ],
+    "regex": "aire\\s.+adour"
+  },
+  {
+    "country": "FRA",
+    "name": "Aix-en-Provence (Foyer Sainte Claire)",
+    "trig": "AIX",
+    "num": 45,
+    "photos": [
+      "http://odms.aixenprovencetourism.com/ODMS/OpenData/Medias/81441/PATIO-55cacb5a-3b6f-4b32-bde3-321d1b16b549_636533258764482656.jpg"
+    ],
+    "regex": "(aix.+provence|(ste|sainte)\\s.*claire)"
+  },
+  {
+    "country": "FRA",
+    "name": "Angers",
+    "trig": "ANG",
+    "num": 82,
+    "photos": [
+    ],
+    "regex": "anger"
+  },
+  {
+    "country": "FRA",
+    "name": "Abbaye de Boquen",
+    "trig": "BQN",
+    "num": 79,
+    "photos": [
+      "http://auto.img.v4.skyrock.net/6284/91056284/pics/3254160838_1_3_EwUM8FZb.jpg"
+    ],
+    "regex": "boquen"
+  },
+  {
+    "country": "FRA",
+    "name": "Bordeaux (Paroisse Sainte Croix)",
+    "trig": "BDX",
+    "num": 81,
+    "photos": [
+      "https://upload.wikimedia.org/wikipedia/commons/4/48/Bordeaux_eglise_ste_croix.JPG"
+    ],
+    "regex": "(bordeaux|(sainte|ste)\\s.*croix)"
+  },
+  {
+    "country": "FRA",
+    "name": "Monast\u00E8re de Bouvines",
+    "trig": "BVN",
+    "num": 73,
+    "photos": [
+    ],
+    "regex": "bouvine"
+  },
+  {
+    "country": "FRA",
+    "name": "Chamb\u00E9ry",
+    "trig": "CHB",
+    "num": 76,
+    "photos": [
+    ],
+    "regex": "chamb[\u00E9e]ry"
+  },
+  {
+    "country": "FRA",
+    "name": "Charpennes",
+    "trig": "CHN",
+    "num": 67,
+    "photos": [
+    ],
+    "regex": "charpenne"
+  },
+  {
+    "country": "FRA",
+    "name": "Chartres - Centre \u0152cum\u00E9nique et Artistique",
+    "trig": "COA",
+    "num": 39,
+    "photos": [
+    ],
+    "regex": "centre\\s+.*(cum[\u00E9e]nique|artist)"
+  },
+  {
+    "country": "FRA",
+    "name": "Chartres - Studium",
+    "trig": "STU",
+    "num": 20,
+    "photos": [
+    ],
+    "regex": "studium"
+  },
+  {
+    "country": "FRA",
+    "name": "Clermont-Ferrand",
+    "trig": "CLF",
+    "num": 91,
+    "photos": [
+    ],
+    "regex": "(clermon|ferrand)"
+  },
+  {
+    "country": "FRA",
+    "name": "Abbaye Notre Dame des Dombes",
+    "trig": "DBS",
+    "num": 15,
+    "photos": [
+    ],
+    "regex": "(^|\\s)dombes"
+  },
+  {
+    "country": "FRA",
+    "name": "\u00C9toile de la Mer",
+    "trig": "EDM",
+    "num": 36,
+    "photos": [
+    ],
+    "regex": "[\u00E9e]toile.*mer"
+  },
+  {
+    "country": "FRA",
+    "name": "Grenoble (foyer)",
+    "trig": "GRE",
+    "num": 11,
+    "photos": [
+    ],
+    "regex": "grenoble"
+  },
+  {
+    "country": "FRA",
+    "name": "Abbaye d'Hautecombe",
+    "trig": "HTC",
+    "num": 12,
+    "photos": [
+      "https://upload.wikimedia.org/wikipedia/commons/a/a9/Hautecombe.jpg"
+    ],
+    "regex": "hautecombe"
+  },
+  {
+    "country": "FRA",
+    "name": "Levallois (Foyer Jean-Paul II)",
+    "trig": "LVF",
+    "num": 49,
+    "photos": [
+    ],
+    "regex": "(levallois.*foyer|foyer.*levallois|jean[\\s\\-]paul.*(ii|2))"
+  },
+  {
+    "country": "FRA",
+    "name": "Levallois (Paroisse Saint-Justin - presbyt\u00E8re)",
+    "trig": "LVP",
+    "num": 32,
+    "photos": [
+    ],
+    "regex": "(levallois.*presbyt[\u00E8e]re|(st|saint).*justin)"
+  },
+  {
+    "country": "FRA",
+    "name": "Lille (Foyer Saint Pierre)",
+    "trig": "LIL",
+    "num": 44,
+    "photos": [
+    ],
+    "regex": "(lille|(st|saint).*pierre)"
+  },
+  {
+    "country": "FRA",
+    "name": "Livry",
+    "trig": "LIV",
+    "num": 10,
+    "photos": [
+    ],
+    "regex": "livry"
+  },
+  {
+    "country": "FRA",
+    "name": "Lyon - La Colline (41 - 61 mont\u00E9e du Chemin Neuf)",
+    "trig": "F55",
+    "num": 66,
+    "photos": [
+    ],
+    "regex": "(lyon.*colline|61)"
+  },
+  {
+    "country": "FRA",
+    "name": "Lyon - Henri 4 (Foyer Paul Couturier)",
+    "trig": "HE4",
+    "num": 16,
+    "photos": [
+      "https://www.foyersetudiants.org/dam?media-id=59230dd53965885567677e55"
+    ],
+    "regex": "(couturier|h(4|iv)|henri.*(4|iv))"
+  },
+  {
+    "country": "FRA",
+    "name": "Lyon - Charcot",
+    "trig": "CHO",
+    "num": 42,
+    "photos": [
+    ],
+    "regex": "charcot"
+  },
+  {
+    "country": "FRA",
+    "name": "Marseille - Mazargues (paroisse)",
+    "trig": "MAZ",
+    "num": 21,
+    "photos": [
+    ],
+    "regex": "mazargue"
+  },
+  {
+    "country": "FRA",
+    "name": "Marseille - Roucas",
+    "trig": "RCS",
+    "num": 18,
+    "photos": [
+      "https://lieux-de-retraite.croire.la-croix.com/lieu_images/59/small_Centre_Notre_Dame_du_Roucas_13007.jpg"
+    ],
+    "regex": "roucas"
+  },
+  {
+    "country": "FRA",
+    "name": "Abbaye de Melleray",
+    "trig": "MEL",
+    "num": 46,
+    "photos": [
+      "https://www.unidivers.fr/wp-content/uploads/2017/08/abbaye-notre-dame-de-melleray-visite-de-labbaye-notre-dame-de-melleray.jpg",
+      "https://www.chemin-neuf.org.uk/dam?media-id=55e6f20c45205e943f484092"
+    ],
+    "regex": "melleray"
+  },
+  {
+    "country": "FRA",
+    "name": "Maison Forte de Montagnieu - Centre Silo\u00E9",
+    "trig": "MTG",
+    "num": 19,
+    "photos": [
+      "https://upload.wikimedia.org/wikipedia/commons/7/72/Maison_forte_de_Montagnieu.JPG"
+    ],
+    "regex": "(montagnieu|silo[\u00E9e]|maison.*forte)"
+  },
+  {
+    "country": "FRA",
+    "name": "Nancy (Foyer de l'Assomption)",
+    "trig": "NCY",
+    "num": 69,
+    "photos": [
+    ],
+    "regex": "(nancy|assomption)"
+  },
+  {
+    "country": "FRA",
+    "name": "Nantes (Foyer du Chapeau Rouge)",
+    "trig": "NTS",
+    "num": 64,
+    "photos": [
+    ],
+    "regex": "(nantes|chapeau.*rouge)"
+  },
+  {
+    "country": "FRA",
+    "name": "Paris - Saint-Denys de la Chapelle (paroisse)",
+    "trig": "DEN",
+    "num": 25,
+    "photos": [
+    ],
+    "regex": "denys.*chapelle"
+  },
+  {
+    "country": "FRA",
+    "name": "Paris - Simplon (foyer)",
+    "trig": "SIM",
+    "num": 28,
+    "photos": [
+    ],
+    "regex": "si[nm]plon"
+  },
+  {
+    "country": "FRA",
+    "name": "Les Pothi\u00E8res",
+    "trig": "POT",
+    "num": 13,
+    "photos": [
+    ],
+    "regex": "poth?i[e\u00E8]re"
+  },
+  {
+    "country": "FRA",
+    "name": "Puteaux (Foyer Henri Planchat)",
+    "trig": "PTX",
+    "num": 17,
+    "photos": [
+    ],
+    "regex": "(puteau|planchat)"
+  },
+  {
+    "country": "FRA",
+    "name": "Reims",
+    "trig": "RMS",
+    "num": 75,
+    "photos": [
+    ],
+    "regex": "reims"
+  },
+  {
+    "country": "FRA",
+    "name": "Abbaye de Sablonceaux",
+    "trig": "SBX",
+    "num": 26,
+    "photos": [
+    ],
+    "regex": "sablonceau"
+  },
+  {
+    "country": "FRA",
+    "name": "Sophia (Paroisse Notre-Dame de la Sagesse)",
+    "trig": "SOP",
+    "num": 23,
+    "photos": [
+    ],
+    "regex": "sagesse"
+  },
+  {
+    "country": "FRA",
+    "name": "Saint Sulpice-de-Favi\u00E8re",
+    "trig": "SSF",
+    "num": 47,
+    "photos": [
+    ],
+    "regex": "sulpice.*favi"
+  },
+  {
+    "country": "FRA",
+    "name": "Tigery",
+    "trig": "TIG",
+    "num": 27,
+    "photos": [
+      "https://www.chemin-neuf.fr/dam?media-id=555c546345205e60467e68a4"
+    ],
+    "regex": "tigery"
+  },
+  {
+    "country": "FRA",
+    "name": "Vernaison",
+    "trig": "VER",
+    "num": 74,
+    "photos": [
+    ],
+    "regex": "vernaison"
+  },
+  {
+    "country": "FRA",
+    "name": "Villeneuve d'Ascq",
+    "trig": "VDA",
+    "num": 48,
+    "photos": [
+    ],
+    "regex": "villeneuve.*ascq"
+  },
+  {
+    "country": "FRA",
+    "name": "Saint Louis de Vincennes et Saint Mand\u00E9",
+    "trig": "VIN",
+    "photos": [
+    ],
+    "regex": "(louis.*vincenne|(st|saint).*mand)"
+  },
+  {
+    "country": "BEL",
+    "name": "Couvent du Sacr\u00E9 Coeur (Berchem, Anvers)",
+    "trig": "BCH",
+    "num": 50,
+    "photos": [
+    ],
+    "regex": "(sacr[\u00E9e].*c.e?ur|berchem|anvers)"
+  },
+  {
+    "country": "BEL",
+    "name": "Carmel de Mehagne (Li\u00E8ge)",
+    "trig": "MEH",
+    "num": 31,
+    "photos": [
+    ],
+    "regex": "mehagne"
+  },
+  {
+    "country": "BEL",
+    "name": "Kot for God (Li\u00E8ge)",
+    "trig": "LGE",
+    "num": 51,
+    "photos": [
+    ],
+    "regex": "kot.*god"
+  },
+  {
+    "country": "BRA",
+    "name": "Belo Horizonte",
+    "trig": "BEL",
+    "num": 62,
+    "photos": [
+    ],
+    "regex": "horizonte"
+  },
+  {
+    "country": "BDI",
+    "name": "Gihosha",
+    "trig": "GHA",
+    "num": 58,
+    "photos": [
+    ],
+    "regex": "gihosha"
+  },
+  {
+    "country": "CAN",
+    "name": "Val de Paix",
+    "trig": "VDP",
+    "num": 33,
+    "photos": [
+    ],
+    "regex": "val.*paix"
+  },
+  {
+    "country": "COD",
+    "name": "Kinshasa",
+    "trig": "KIN",
+    "num": 34,
+    "photos": [
+    ],
+    "regex": "(kinshasa|(^| )rdc($| )|congo)"
+  },
+  {
+    "country": "CIV",
+    "name": "Abidjan",
+    "trig": "ABJ",
+    "num": 35,
+    "photos": [
+    ],
+    "regex": "abidjan"
+  },
+  {
+    "country": "CIV",
+    "name": "Gagnoa",
+    "trig": "GAG",
+    "num": 56,
+    "photos": [
+    ],
+    "regex": "gagnoa"
+  },
+  {
+    "country": "ESP",
+    "name": "Chartreuse Aula Dei (Zaragoza / Saragosse)",
+    "trig": "ZAR",
+    "num": 96,
+    "photos": [
+    ],
+    "regex": "(zaragoza|saragosse|aula\\s+dei)"
+  },
+  {
+    "country": "HUN",
+    "name": "Zugliget (Budapest)",
+    "trig": "ZUG",
+    "num": 80,
+    "photos": [
+    ],
+    "regex": "(budapest|zugliget)"
+  },
+  {
+    "country": "ISR",
+    "name": "Ecce Homo (J\u00E9rusalem)",
+    "trig": "EHO",
+    "num": 78,
+    "photos": [
+      "https://media-cdn.tripadvisor.com/media/photo-s/03/2d/fe/57/ecce-homo-convent.jpg"
+    ],
+    "regex": "(j[\u00E9e]rusalem|ecce\\s+homo)"
+  },
+  {
+    "country": "ISR",
+    "name": "Centre International Marie de Nazareth",
+    "trig": "MDN",
+    "num": 70,
+    "photos": [
+      "http://pp.mariedenazareth.com/sites/default/files/styles/actus/public/mav-cimn.jpg"
+    ],
+    "regex": "(centre.*internat|marie.*nazareth|cimdn)"
+  },
+  {
+    "country": "ISR",
+    "name": "Abuna Faraj",
+    "trig": "ABF",
+    "photos": [
+      "https://il.chemin-neuf.org/dam?media-id=58c677a0245640d7008b77fd"
+    ],
+    "regex": "abuna\\s+faraj"
+  },
+  {
+    "country": "ITA",
+    "name": "Modena",
+    "trig": "MOD",
+    "num": 87,
+    "photos": [
+    ],
+    "regex": "modena"
+  },
+  {
+    "country": "ITA",
+    "name": "Poliziano",
+    "trig": "POL",
+    "num": 52,
+    "photos": [
+    ],
+    "regex": "poliziano"
+  },
+  {
+    "country": "NLD",
+    "name": "Abbaye Saint Paul (Oosterhout)",
+    "trig": "PLS",
+    "num": 77,
+    "photos": [
+    ],
+    "regex": "(oosterhout|(st|saint).*paul)"
+  },
+  {
+    "country": "PHL",
+    "name": "Manille",
+    "trig": "MAN",
+    "num": 60,
+    "photos": [
+    ],
+    "regex": "manille"
+  },
+  {
+    "country": "POL",
+    "name": "\u0141\u00F3d\u017A / Lodz",
+    "trig": "LDZ",
+    "num": 85,
+    "photos": [
+    ],
+    "regex": "(\u0141\u00F3d\u017A|Lodz)"
+  },
+  {
+    "country": "POL",
+    "name": "Mist\u00F3w",
+    "trig": "MIS",
+    "num": 43,
+    "photos": [
+    ],
+    "regex": "mist[\u00F3o]w"
+  },
+  {
+    "country": "POL",
+    "name": "Weso\u0142a / Wesola",
+    "trig": "WES",
+    "num": 65,
+    "photos": [
+    ],
+    "regex": "weso[\u0142l]a"
+  },
+  {
+    "country": "GBR",
+    "name": "Carmel de Sclerder",
+    "trig": "SCL",
+    "num": 61,
+    "photos": [
+    ],
+    "regex": "sclerder"
+  },
+  {
+    "country": "GBR",
+    "name": "Storrington",
+    "trig": "STO",
+    "num": 29,
+    "photos": [
+    ],
+    "regex": "storrington"
+  },
+  {
+    "country": "CHE",
+    "name": "Bethanien",
+    "trig": "BET",
+    "num": 71,
+    "photos": [
+    ],
+    "regex": "bethanien"
+  },
+  {
+    "country": "CHE",
+    "name": "Fribourg Salesianum",
+    "trig": "FBG",
+    "num": 98,
+    "photos": [
+    ],
+    "regex": "(fribourg|salesianum)"
+  },
+  {
+    "country": "TCD",
+    "name": "Ku Jericho",
+    "trig": "KJO",
+    "num": 94,
+    "photos": [
+    ],
+    "regex": "jericho"
+  },
+  {
+    "country": "CZE",
+    "name": "Tuchom\u011B\u0159ice / Tuchomerice",
+    "trig": "TUC",
+    "photos": [
+    ],
+    "regex": "tuchom[e\u011B][r\u0159]ice"
+  }
+]

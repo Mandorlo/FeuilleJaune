@@ -1,0 +1,328 @@
+[
+    {
+      "regex": "(^| )(no[eë]l|natale|christmas|xmas)",
+      "photo": "@google:xmas"
+    }, {
+      "category": "avance",
+      "regex": "(^| )(avance|avanz)",
+      "photo": "money"
+    }, {
+      "category": "enfant",
+      "regex": "(^| )(scolarit|scolaire|[ée]cole)",
+      "photo": "@google:backtoschool"
+    }, {
+      "category": "cadeau",
+      "regex": "(^| )(cadeau|regalo)"
+    }, {
+      "category": "divers_maison",
+      "regex": "(^| )(r[iée]para[tz]ion|r[ée]pare|repair|plombier|[ée]lectricien)",
+      "icon": "fa-wrench",
+      "photo": "@google:repair"
+    }, {
+      "category": "livre",
+      "regex": "(^| )(book|livre|libro|ebook|epub)",
+      "icon": "fa-book",
+      "photo": "@google:read"
+    }, {
+      "category": "transport_commun",
+      "regex": "(^| )(vol( |$)|avion|flight|plane|aereo)",
+      "icon": "fa-plane",
+      "photo": "flight plane"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(peinture|pinceau|pennell)",
+      "icon": "fa-plane",
+      "photo": "@google:art"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(cin[eé](ma| |$)|movie|film)",
+      "icon": "fa-film",
+      "photo": "@google:cinema"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(train|treno)",
+      "icon": "fa-train",
+      "photo": "$"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(concert)",
+      "icon": "fa-music",
+      "photo": "@google:concert"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(d[ée]jeuner|lunch|pranzo|repas)",
+      "icon": "fa-utensils",
+      "photo": "@google:lunch"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(d[iî]nn?er|cena)",
+      "icon": "fa-utensils",
+      "photo": "@google:dinner"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(soirée jeu|giochi|jeux)",
+      "photo": "@google:gamenight"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(boisson|cocktail|drinks|bevande)",
+      "icon": "fa-bottle",
+      "photo": "@google:drinks"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(bbq|barbecue)",
+      "photo": "@google:bbq"
+    }, {
+      "category": "",
+      "regex": "(^| )(foto|photo)",
+      "icon": "fa-camera",
+      "photo": "appareil photo"
+    }, {
+      "category": "hygiene",
+      "regex": "(^| )(hairdresser|haircut|coiffeur|parr?ucc?hiere)",
+      "icon": "fa-scissors",
+      "photo": "@google:haircut"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(taxi|cab|uber|blablacar)",
+      "icon": "fa-cab",
+      "photo": "taxi new york"
+    }, {
+      "category": "transport_commun",
+      "regex": "(^| )(metro|subway|rer($|\\s))",
+      "icon": "fa-subway",
+      "photo": "$"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(beer|bi[eè]re|birra|verre|bar)",
+      "icon": "fa-beer",
+      "photo": "bar photo"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(h[oô]tel|bnb|auberge|albergo)",
+      "icon": "fa-bed",
+      "photo": "hotel 5 stars"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(boat|bateau|battello|voile)",
+      "icon": "fa-anchor",
+      "photo": "@google:sailing"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(op[ée]ra|th?[ée][aâ]tr)",
+      "photo": "@google:theatreopera"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(pizza)",
+      "icon": "myicon-pizza",
+      "photo": "pizza napoletana"
+    }, {
+      "category": "livre",
+      "regex": "(^| )(bible|bibbia)",
+      "icon": "myicon-bible",
+      "photo": "bible"
+    }, {
+      "category": "liturgie",
+      "regex": "(^| )(magnificat|prions en [eé]glise)",
+      "icon": "myicon-bible",
+      "photo": "bible"
+    }, {
+      "category": "liturgie",
+      "regex": "(^| )(messe)",
+      "icon": "",
+      "photo": "$"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(biscuit|biscott)",
+      "icon": "myicon-biscuit",
+      "photo": "tea pastries"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(petit d[ée]jeuner|breakfast|colazione)",
+      "icon": "myicon-coffee",
+      "photo": "@google:breakfast"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(eau|water|acqua|milk|lait|latte|coca|sprite|jus|succo)",
+      "icon": "myicon-bottle",
+      "photo": "$"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(brioche|dolc[ei]|gateau|torta|cake|muffin|tarte)",
+      "icon": "myicon-muffin",
+      "photo": "chocolate cake"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(croissant|viennoiserie|pain|bread|pane|baguette)",
+      "icon": "myicon-croissant",
+      "photo": "croissant baguette bakery"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(coffee|caff?[eéè]|th?[eéè]($| ))",
+      "icon": "myicon-coffee",
+      "photo": "@google:coffee"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(choco|ciocco)",
+      "icon": "myicon-chocolate",
+      "photo": "chocolate"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(panin|sandwich|hamburger)",
+      "icon": "myicon-hamburger",
+      "photo": "$"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(fromage|formaggi|jambon|prosciutt)"
+    }, {
+      "category": "hygiene",
+      "regex": "(^| )(dentifric|brosse [aà] dent|spazzolin|toothpaste|toothbrush)",
+      "icon": "myicon-toothpaste",
+      "photo": "$"
+    }, {
+      "category": "habillement",
+      "regex": "(^| )(slip|cale[cç]on|culotte)",
+      "icon": "myicon-underpants"
+    }, {
+      "category": "sante",
+      "regex": "(^| )(medicament|medicin|antibio)",
+      "icon": "myicon-medicament",
+      "photo": "medicine"
+    }, {
+      "category": "sante",
+      "regex": "(^| )(pansement|bandage|garza|cerott)",
+      "icon": "myicon-bandage"
+    }, {
+      "category": "sante",
+      "regex": "(^| )(dentist)",
+      "photo": "@google:dentist"
+    }, {
+      "category": "hygiene",
+      "regex": "(^| )(d[ée]o($| |dorant)|ddt)",
+      "icon": "myicon-deodorant",
+      "photo": "deodorant"
+    }, {
+      "category": "habillement",
+      "regex": "(^| )(shirt|chemis|camic[ei])",
+      "icon": "myicon-shirt"
+    }, {
+      "category": "habillement",
+      "regex": "(^| )(pantalon|trouser)",
+      "icon": "myicon-trousers"
+    }, {
+      "category": "habillement",
+      "regex": "(^| )(chaussette|calzett|calzin)",
+      "icon": "myicon-socks",
+      "photo": "$"
+    }, {
+      "category": "habillement",
+      "regex": "(^| )(chaussure|scarp|shoe|sandal)",
+      "icon": "myicon-shoe",
+      "photo": "$"
+    }, {
+      "category": "habillement",
+      "regex": "(^| )(montre|orologio|watch($| ))",
+      "icon": "myicon-watch",
+      "photo": "watch cartier"
+    }, {
+      "category": "loisir",
+      "regex": "(^| )(r[ei]st(au|o)rant)",
+      "icon": "",
+      "photo": "restaurant"
+    }, {
+      "category": "hygiene",
+      "regex": "(^| )(rasoir|rasoi)",
+      "icon": ""
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(confiture|marmelade|marmellata)",
+      "icon": "",
+      "photo": "*"
+    }, {
+      "category": "hygiene",
+      "regex": "(^| )(shampoo)",
+      "icon": "",
+      "photo": "shampoo"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(h[uo]+mm?[uo]+s)",
+      "icon": "",
+      "photo": "$"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(sans gluten|senza glutine|gluten free)",
+      "photo": "gluten free"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(graine|mandorl|amande|arachide|noix|noci|cachu[eè]te|peanut)",
+      "icon": "",
+      "photo": "seeds almond nuts"
+    }, {
+      "category": "transport_commun",
+      "regex": "(^| )(v[eé]lib|v[ée]lo\"?v|v[ée]lhop)",
+      "icon": "fa-bicycle",
+      "photo": "velib"
+    }, {
+      "category": "transport_commun",
+      "regex": "(^| )(ouibus|flixbus|bus( |$)|tram( |$)|tramway)",
+      "icon": "fa-bus",
+      "photo": "$"
+    }, {
+      "category": "divers_vie",
+      "regex": "(^| )(ordi|laptop|computer)",
+      "icon": "fa-laptop",
+      "photo": "@google:code"
+    }, {
+      "category": "divers_vie",
+      "regex": "(^| )(smartphone|iphone|portable)",
+      "icon": "fa-mobile",
+      "photo": "@google:code"
+    }, {
+      "category": "divers_secretariat",
+      "regex": "(^| )(cartolin|cartes?\\s+postal)",
+      "photo": "@google:reachout"
+    }, {
+      "category": "divers_secretariat",
+      "regex": "(^| )(timbre|stamp|francoboll)",
+      "photo": "timbres poste"
+    }, {
+      "category": "energie",
+      "regex": "(^| )([ée]l[ée]ctricit[eé]|gaz|electricity|gas($| )|elettricit)",
+      "icon": "",
+      "photo": "electricity"
+    }, {
+      "category": "carburant",
+      "regex": "(^| )(essence|benzin|diesel|carburant)",
+      "icon": ""
+    }, {
+      "category": "divers_vie",
+      "regex": "(^| )(cart[ea] d?\"? ?identit|id card|pass[ae]?port|driver license|permis de conduire|patent)",
+      "icon": "fa-id-card",
+      "photo": "passport"
+    }, {
+      "category": "divers_vie",
+      "regex": "(^| )(disque dur|hdd)",
+      "icon": "fa-hdd-o",
+      "photo": "@google:code"
+    }, {
+      "category": "sante",
+      "regex": "(^| )(h[oô]pital|m[eé]decin|docteur|medico|cardiolog)",
+      "icon": "fa-heartbeat"
+    }, {
+      "category": "divers_vie",
+      "regex": "(^| )([ée]lectroni)",
+      "icon": "fa-microchip"
+    }, {
+      "category": "frais_banque",
+      "regex": "(^| )(carte (CB|d?e? ?cr[ée]dit|bancaire|bleu|visa)|carta (di )?credito)",
+      "icon": "fa-credit-card",
+      "photo": "credit card"
+    }, {
+      "category": "parking",
+      "regex": "(^| )(parking|parchegg)",
+      "photo": "parking lot"
+    }, {
+      "category": "salaire",
+      "regex": "(^| )(salaire|pension)",
+      "photo": "money"
+    }
+  ]

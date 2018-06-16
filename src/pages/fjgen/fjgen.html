@@ -34,7 +34,7 @@
       </ion-select> -->
     </ion-item-group>
     
-    <ion-item *ngIf="!edit_fj">
+    <ion-item> <!-- *ngIf="!edit_fj" -->
       <ion-label>Devise</ion-label>
       <ion-select name="fj_curr_currency" [(ngModel)]="curr_currency">
         <ion-option *ngFor="let c of fj_currencies" [value]="c.id">{{c.label}}</ion-option>

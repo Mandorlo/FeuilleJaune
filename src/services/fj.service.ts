@@ -273,9 +273,10 @@ export class FjService {
     if (last_fj) {
       // on regarde pour chaque devise de la dernière FJ, s'il y avait un solde non nul
       let fj_currencies = Object.getOwnPropertyNames(last_fj.data)
+      let last_totaux = this.genSousTotaux(last_fj)
       for (let curr of fj_currencies) {
         // si le solde est non nul et que la devise n'existe pas dans currencies, on ajoute la devise
-        if ((last_fj.data[curr].solde.banque != 0 || last_fj.data[curr].solde.caisse != 0) && !currencies.includes(curr)) {
+        if ((last_totaux[curr].solde.banque != 0 || last_totaux[curr].solde.caisse != 0) && !currencies.includes(curr)) {
           currencies.push(curr)
         }
       }
@@ -291,9 +292,10 @@ export class FjService {
 
     // 1. on insère les reports de la fj du mois précédent si elle existe
     let last_fj = await this.getFjLastMonth(month)
-    if (last_fj && last_fj.data[currency]) {
-      fj_curr.report_mois_precedent.banque = last_fj.data[currency].solde.banque
-      fj_curr.report_mois_precedent.caisse = last_fj.data[currency].solde.caisse
+    let last_totaux = this.genSousTotaux(last_fj)
+    if (last_fj && last_totaux[currency]) {
+      fj_curr['report_mois_precedent'].banque = last_totaux[currency].solde.banque
+      fj_curr['report_mois_precedent'].caisse = last_totaux[currency].solde.caisse
     }
     
     // 2. on calcule les montants par catégorie
@@ -379,12 +381,17 @@ export class FjService {
   // renvoie une structure vide de données de fj
   // si old_fj_data est spécifié (données fj dans l'ancien format) on reporte les données
   initFjCategories(old_fj_data = null) {
-    let category_list = {
-      'report_mois_precedent': {
-        banque: (old_fj_data) ? parseFloat(old_fj_data.report_mois_precedent.banque) :0,
-        caisse: (old_fj_data) ? parseFloat(old_fj_data.report_mois_precedent.caisse) :0,
-        observations: (old_fj_data) ? old_fj_data.report_mois_precedent.observations :'',
+    let category_list = {}
+    try {
+      category_list = {
+        'report_mois_precedent': {
+          banque: (old_fj_data) ? parseFloat(old_fj_data.report_mois_precedent.banque) :0,
+          caisse: (old_fj_data) ? parseFloat(old_fj_data.report_mois_precedent.caisse) :0,
+          observations: (old_fj_data) ? old_fj_data.report_mois_precedent.observations :'',
+        }
       }
+    } catch(e) {
+      throw {fun: 'ERROR in fj.service > initFjCategories', args: old_fj_data, err: e}
     }
 
     for (let cat of this.paramService.categories) {

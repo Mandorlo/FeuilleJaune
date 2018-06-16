@@ -3,13 +3,13 @@ import { File } from '@ionic-native/file';
 import { ToastController, Platform } from 'ionic-angular';
 import { ParamService } from './param.service';
 import { SocialSharing } from '@ionic-native/social-sharing';
-import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfMake2 from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import moment from 'moment';
 
-declare var pdfMake: any;
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+//declare var pdfMake2: any;
+pdfMake2.vfs = pdfFonts.pdfMake.vfs;
 
 
 @Injectable()
@@ -26,9 +26,13 @@ export class PdfService {
     console.log("Lodato sia il Signore !")
   }
 
-  private prettyCurrency(amount) {
+  private prettyCurrency(amount, currency = null) {
+    if (currency == null) currency = this.paramService.symbolCurrency();
+    let symbol = this.paramService.getCurrencyObj(currency).symbol
     if (amount == "" || amount == 0) return "";
-    return amount + " " + this.paramService.symbolCurrency();
+    if (typeof amount == 'string') amount = parseFloat(amount).toFixed(2).toString();
+    else amount = amount.toFixed(2).toString();
+    return amount + " " + symbol
   }
 
   // génère le nom du fichier feuille jaune dans la devise @devise
@@ -52,39 +56,6 @@ export class PdfService {
       return this.file.writeFile(path, filename, blob, {replace:true})
     }
     return this.file.writeFile(path, filename, blob, {replace:true})
-  }
-
-  coolWrite_old(path, filename, blob) {
-    /* // TODO remove this function
-    return new Promise((resolve, reject) => {
-      this.file.checkFile(path, filename).then(exists => {
-        if (exists) {
-          this.file.removeFile(path, filename).then(res => {
-            this.file.writeFile(path, filename, blob, {replace:true}).then(res => {
-              resolve(res)
-            }).catch(err => {
-              reject(err)
-            });
-          }).catch(err => {
-            console.log("Error removing existing file at " + path + "/" + filename);
-            reject(err)
-          })
-        } else {
-          this.file.writeFile(path, filename, blob, {replace:true}).then(res => {
-            resolve(res)
-          }).catch(err => {
-            reject(err)
-          });
-        }
-      }).catch(err => {
-        console.log("Impossible de vérifier l'existence du fichier " + path + "/" + filename)
-        this.file.writeFile(path, filename, blob, {replace:true}).then(res => {
-          resolve(res)
-        }).catch(err => {
-          reject(err)
-        });
-      });
-    }); */
   }
 
   async createFJPDF(fj_o) {
@@ -115,54 +86,6 @@ export class PdfService {
     return results
   }
 
-  createFJ_old(fjdata, opt) {
-    /* // TODO remove this function
-    // on gère les paramètres par défaut
-    opt = this.manageDefaults(opt);
-
-    // this.fjdata = this.fjdata_test;
-    return new Promise((resolve, reject) => {
-      this.createPdf(fjdata, opt).then((pdf) => {
-        let blob = new Blob([pdf], { type: 'application/pdf' });
-        this.file.checkFile(opt.path, opt.filename).then(exists => {
-          if (exists) {
-            this.file.removeFile(opt.path, opt.filename).then(res => {
-              console.log("File remove : ", res);
-              this.shareFJ(blob, opt).then(msg => {
-                resolve(msg)
-              }).catch(err => {
-                reject(err)
-              });
-            }).catch(err => {
-              console.log("Error removing existing pdf file at " + opt.path + "/" + opt.filename)
-            })
-          } else {
-            this.shareFJ(blob, opt).then(msg => {
-              resolve(msg)
-            }).catch(err => {
-              reject(err)
-            });
-          }
-        }).catch(err => {
-          if (err.code == 1) {
-            this.shareFJ(blob, opt).then(msg => {
-              resolve(msg)
-            }).catch(err => {
-              reject(err)
-            });
-          } else {
-            console.log("Impossible checkFile of " + opt.path + "/" + opt.filename + ", trying direct download...", err);
-            this.pdf_url = URL.createObjectURL(blob);
-            this.downloadBrowser(this.pdf_url, opt);
-            resolve("Trying to download directly from the browser...")
-          }
-        });
-      }).catch(err => {
-        console.log("Error creating pdf blob : ", err);
-      })
-    }) */
-  }
-
   // pdf_paths_o est un objet retourné par createFJPDF
   async shareFJ(pdf_paths_o) {
     console.log('pdf.service > shareFJ', pdf_paths_o)
@@ -172,7 +95,7 @@ export class PdfService {
       for (let file_o of pdf_paths_o.files) {
         let pdf_url = URL.createObjectURL(file_o.blob);
         this.downloadBrowser(pdf_url, file_o);
-        return `Trying to download PDF ${file_o.filename} directly...`
+        console.log(`Trying to download PDF ${file_o.filename} directly...`)
       }
     } else {
       return this.shareFJ_android(pdf_paths_o)
@@ -210,54 +133,13 @@ export class PdfService {
   }
 
   weAreInBrowser() {
-    return this.ptfm.is('mobileweb') || this.ptfm.is('core')
-  }
-
-  public shareFJ_old(blob, opt) {
-    // TODO delete this function
-    // on gère les paramètres par défaut
-    /* opt = this.manageDefaults(opt);
-
-    return new Promise((resolve, reject) => {
-      // this.file.writeFile(opt.path, opt.filename, blob, true).then(_ => {
-      this.coolWrite(opt.path, opt.filename, blob).then(_ => {
-        console.log("PDF file written in : " + opt.path + "/" + opt.filename);
-        let sujet = "Feuille Jaune - " + opt.personne + " - mois de " + moment(opt.curr_month).format("MMMM - YYYY");
-        this.socialSharing.share("", sujet, opt.path + "/" + opt.filename).then(e => {
-          console.log("PDF sharing ok", e);
-          resolve(1);
-        }).catch(err => {
-          if (err === false) {
-            let toast = this.toastCtrl.create({
-              message: "Feuille Jaune exportée ! Merci Seigneur de prendre soin de nous !",
-              duration: 2000
-            });
-            toast.present();
-            resolve(2);
-          } else {
-            console.log(err)
-            let toast = this.toastCtrl.create({
-              message: "Erreur pendant l'export de la Feuille Jaune : " + JSON.stringify(err),
-              duration: 2000
-            });
-            toast.present();
-            reject("Erreur pendant l'export de la Feuille Jaune : " + JSON.stringify(err));
-          }
-        });
-      }).catch(err => {
-        console.log("Failed writing PDF file : ", err);
-        console.log("Trying to download PDF directly...");
-        this.pdf_url = URL.createObjectURL(blob);
-        this.downloadBrowser(this.pdf_url, opt);
-        resolve("Trying to download PDF directly...")
-      })
-    }) */
+    return (this.ptfm.is('mobileweb') || this.ptfm.is('core')) && !this.ptfm.is('cordova')
   }
 
   public createPdf(fjdata, currency) {
     return new Promise((resolve, reject) => {
       let dd = this.createDocumentDefinition(fjdata, currency);
-      let pdf = pdfMake.createPdf(dd);
+      let pdf = pdfMake2.createPdf(dd);
 
       pdf.getBase64((output) => {
         if (!output) console.log("PDF Base64 output is empty :(");
@@ -299,17 +181,21 @@ export class PdfService {
       if (categorie != 'soustotaux') {
         data[categorie] = {
           label: this.paramService.getCatLabel(categorie),
-          banque: this.prettyCurrency(fj_o.data[currency][categorie].banque),
-          caisse: this.prettyCurrency(fj_o.data[currency][categorie].caisse),
+          banque: this.prettyCurrency(fj_o.data[currency][categorie].banque, currency),
+          caisse: this.prettyCurrency(fj_o.data[currency][categorie].caisse, currency),
           observations: fj_o.data[currency][categorie].observations
         }
-      } else {
-        data[categorie] = JSON.parse(JSON.stringify(fj_o.data[currency][categorie]))
+      } else { // soustotaux
+        data['soustotaux'] = JSON.parse(JSON.stringify(fj_o.data[currency]['soustotaux']))
+        for (let categorie_tot in data['soustotaux']) {
+          data['soustotaux'][categorie_tot].banque = this.prettyCurrency(data['soustotaux'][categorie_tot].banque, currency)
+          data['soustotaux'][categorie_tot].caisse = this.prettyCurrency(data['soustotaux'][categorie_tot].caisse, currency)
+        }
       }
     }
 
-    data['soustotaux']['total']['bc'] = this.prettyCurrency(fj_o.data[currency]['soustotaux']['total'].banque + fj_o.data[currency]['soustotaux']['total'].caisse)
-    data['soustotaux']['solde']['bc'] = this.prettyCurrency(fj_o.data[currency]['soustotaux']['solde'].banque + fj_o.data[currency]['soustotaux']['solde'].caisse)
+    data['soustotaux']['total']['bc'] = this.prettyCurrency(fj_o.data[currency]['soustotaux']['total'].banque + fj_o.data[currency]['soustotaux']['total'].caisse, currency)
+    data['soustotaux']['solde']['bc'] = this.prettyCurrency(fj_o.data[currency]['soustotaux']['solde'].banque + fj_o.data[currency]['soustotaux']['solde'].caisse, currency)
 
     let line_nums = [];
     let body = [];
@@ -370,7 +256,7 @@ export class PdfService {
     body.push([{ text: '62', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'TOTAL DES SORTIES', style: 'total_sorties' }, { text: data['soustotaux']['total'].banque, style: 'montantImp' }, { text: data['soustotaux']['total'].caisse, style: 'montantImp' }, { text: data['soustotaux']['total'].bc, style: 'montantImp' }]);
     body.push([{ text: '63', style: 'line_num' }, { text: '', style: 'col_space' }, { text: 'SOLDE (à reporter le mois suivant ligne 12)', style: 'solde' }, { text: data['soustotaux']['solde'].banque, style: 'montant' }, { text: data['soustotaux']['solde'].caisse, style: 'montant' }, { text: data['soustotaux']['solde'].bc, style: 'montant' }]);
  
-    console.log("BODY PDF", body)
+    //console.log("BODY PDF", body)
     return body
   }
 

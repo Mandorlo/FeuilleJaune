@@ -8,16 +8,24 @@ Une fois qu'on a fait un git clone du repo, il faut faire les choses suivantes :
 
 ### Setup pdf generation correctly
 
-Pdfmake ne marche pas directement dans ionic 2, il faut prendre la dernière build depuis le repo. Donc exécuter :
+Pdfmake ne marche pas directement dans ionic 3, il faut prendre la dernière build depuis le repo. Donc exécuter :
+
+OPTION 1 :
 * $ cd  FeuilleJaune/www/
 * $ git clone https://github.com/bpampuch/pdfmake.git
-Mais il faut garder le npm install pdfmake !
+* copier le dossier pdfmake/build dans FeuilleJaune/www/pdfmake/ et dans FeuilleJaune/www/
+
+OPTION 2 plu simple : (mise à jour du 12/06/2018 en suivant le tuto ici : https://medium.com/@rakeshuce1990/ionic-how-to-create-pdf-file-with-pdfmake-step-by-step-75b25aa541a4)
+* copier le contenu de node_modules/pdfmake/build dans FeuilleJaune/www/pdfmake/ et dans FeuilleJaune/www/
+
+Je ne sais plus laquelle des options marche. Quoi qu'il arrive il faut garder le npm install pdfmake.
 
 Car dans index.html, on pointe vers le pdfmake.min.js et vfs_fonts.js de ce dossier-là et non l'officiel.
 
 ## Publish new version
 
 ### for PlayStore
+
 Voir ici : https://ionicframework.com/docs/v1/guide/publishing.html
 
 * change version number in package.json, config.xml and param.ts
@@ -51,8 +59,13 @@ Pour utiliser la custom font, c'est un peu comme font awesome, on ajoute des bal
 * run `ionic cordova run android` to run the app on your usb connected smartphone
 * while developping, in index.html you should comment the service worker lines (otherwise it will cache everything and livereload won't work)
 
+## Known bugs
+
+* the plugin cordova-plugin-googleplus makes the android build fail, but it's necessary if I want to add "backup to Google Drive" functionality...
+
 ## What helped me writing this app
 
+* to import JSON files with typescript's import keyword : https://medium.com/@kgrvr/reading-local-json-present-in-an-angular-2-project-733bc3dda18e
 * For persistent storage with PouchDB + SQLite : https://gonehybrid.com/how-to-use-pouchdb-sqlite-for-local-storage-in-ionic-2/
 * For PDF generation : https://gonehybrid.com/how-to-create-and-display-a-pdf-file-in-your-ionic-app/ + https://stackoverflow.com/questions/42146857/how-can-use-pdfmake-in-ionic-2
 * To create custom components : https://www.joshmorony.com/custom-components-in-ionic-2/
@@ -62,3 +75,5 @@ Pour utiliser la custom font, c'est un peu comme font awesome, on ajoute des bal
 * To add fontawesome : https://luiscabrera.site/tech/2017/01/09/fontawesome-in-ionic2.html (not straightforward !)
 * To add charts with chart.js : https://www.joshmorony.com/adding-responsive-charts-graphs-to-ionic-2-applications/
 * Adding custom font : https://stackoverflow.com/questions/36870847/custom-font-with-ionic2
+* Adding Google Sign-In : https://angularfirebase.com/lessons/ionic-google-login-with-firebase-and-angularfire/
+* Adding Google Drive API : https://medium.com/google-cloud/using-google-apis-with-firebase-auth-and-firebase-ui-on-the-web-46e6189cf571

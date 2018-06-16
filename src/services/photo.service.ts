@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import request from 'request';
 import { ParamService } from './param.service';
+import { googlesearch_api_key } from '../arcana/apis_config';
 
 
 @Injectable()
 export class PhotoService {
-  private subscriptionKey = 'AIzaSyDgR7geKq0faSort2zVVFyxgHTIPsIZL34';
+  private subscriptionKey = googlesearch_api_key;
   private paramService;
   private cache = [];
   private cache_keys = [];

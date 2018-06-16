@@ -33,7 +33,7 @@ export class ChartsPage {
   private repartition_depenses_mois_total:string = "0";
   private last_months:any;
 
-  private mycurrency:string = "";
+  //private mycurrency:string = "";
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -210,7 +210,7 @@ export class ChartsPage {
   ionViewDidLoad() {
     console.log('ChartsPage: Heureux l\'homme qui remet sa vie entre les mains du Père.');
     this.getLastMonths();
-    this.mycurrency = this.paramService.symbolCurrency();
+    //this.mycurrency = this.paramService.symbolCurrency();
     this.repartition_depenses_mois = this.last_months[0].date;
     this.reload();
   }

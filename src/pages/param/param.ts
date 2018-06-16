@@ -7,6 +7,8 @@ import { TransactionService } from '../../services/transaction.service';
 import { FjService } from '../../services/fj.service';
 import { ExportService } from '../../services/export.service';
 
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'page-param',
@@ -17,6 +19,7 @@ export class ParamPage {
   private loading:boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
+    private afs: AngularFirestore,
     public toastCtrl: ToastController,
     public alertCtrl: AlertController,
     public paramService: ParamService,
@@ -56,6 +59,7 @@ export class ParamPage {
     this.paramService.setPersonne(this.paramService.personne).catch(err => console.log("Error setting personne : ", err));
     this.paramService.setMaison(this.paramService.maison).catch(err => console.log("Error setting maison : ", err));
     this.paramService.setCurrency(this.paramService.currency).catch(err => console.log("Error setting currency : ", err));
+    console.log('my maisons', this.paramService.maisons)
     this.navCtrl.pop();
   }
 
@@ -81,6 +85,7 @@ export class ParamPage {
       this.exportService.importDB().then(res => {
         this.loading = false;
       }).catch(err => {
+        alert("Error during import, sorry :( " + JSON.stringify(err))
         this.loading = false;
       });
     } else {

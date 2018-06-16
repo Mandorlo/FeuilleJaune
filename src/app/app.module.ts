@@ -1,3 +1,9 @@
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+
+import { firebaseConfig } from '../arcana/firebase_config'
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
@@ -23,11 +29,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { File } from '@ionic-native/file';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { FileChooser } from '@ionic-native/file-chooser';
+import { FilePath } from '@ionic-native/file-path';
 import { IonicStorageModule } from '@ionic/storage';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { AppVersion } from '@ionic-native/app-version';
-//import { GooglePlus } from '@ionic-native/google-plus';
 
 import { TransactionService } from '../services/transaction.service';
 import { ParamService } from '../services/param.service';
@@ -66,6 +72,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     FjmgmtPage,
     FjactionsPage,
     TabsPage,
+    //LoginPage,
     BudgetLineComponent,
     FjLineComponent,
     ProgressBarComponent,
@@ -81,7 +88,10 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     BrowserModule,
     BrowserAnimationsModule,
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireAuthModule,
+    AngularFirestoreModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -98,7 +108,8 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     FjDetailsPage,
     FjmgmtPage,
     FjactionsPage,
-    TabsPage
+    TabsPage,
+    //LoginPage
   ],
   providers: [
     StatusBar,
@@ -107,6 +118,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     File,
     SocialSharing,
     FileChooser,
+    FilePath,
     TransactionService,
     ParamService,
     PdfService,

@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { ParamService } from './param.service';
 import client from 'node-rest-client-promise';
+import { currency_api_key } from '../arcana/apis_config';
 
 @Injectable()
 export class CurrencyService {
-  public APIKEY: string = '2659119d03e208f036e49bd71fd1c6ef'
+  public APIKEY: string = currency_api_key
   public url = `http://data.fixer.io/api/latest?access_key=${this.APIKEY}&base=EUR&symbols=@sym`
   public conversions;
 
@@ -24,15 +25,9 @@ export class CurrencyService {
     try {
       http_result = await client.Client({}).getPromise(this.url)
     } catch(err) {
-      console.log('WARNING : Failed to contact currency API, getting local currency conversion rates')
+      console.log('WARNING : Failed to contact currency API, getting local currency conversion rates', this.url)
       this.conversions = await this.getLocalConversions()
       return 2
-      /* throw {
-        'errnum': 'HTTP_REQUEST_FAILED',
-        'fun': 'CurrencyService constructor',
-        'descr': this.url,
-        err
-      } */
     }
 
     if (http_result && http_result.data.success) {
@@ -40,14 +35,9 @@ export class CurrencyService {
       this.storage.set('currency_conversion', this.conversions)
       return 1
     } else {
-      console.log('WARNING : failed to contact currency API, getting local currency conversion rates')
+      console.log('WARNING : failed to contact currency API, getting local currency conversion rates', this.url)
       this.conversions = await this.getLocalConversions()
       return 3
-      /* throw {
-        'errnum': 'HTTP_RESULT_FAILED',
-        'fun': 'CurrencyService constructor',
-        'descr': `GET ${this.url} returned success=false because : ${JSON.stringify(r)}`
-      } */
     }
   }
 

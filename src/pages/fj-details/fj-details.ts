@@ -67,13 +67,13 @@ export class FjDetailsPage {
     console.log('edit fj', this.curr_fj['month'], currency)
     this.navCtrl.push(FjgenPage, {
       "month": this.curr_fj['month'],
-      currency
+      //currency
     })
   }
 
   shareFJ() {
     this.loading = true
-    this.fjService.shareFJ(this.curr_fj['month']).then(res => {
+    this.fjService.shareFJ(this.curr_fj['month']).then(_ => {
       this.presentToast("Feuille Jaune partagée ! Béni soit le Seigneur, Dieu de l'univers !");
       this.loading = false
     }).catch(err => {

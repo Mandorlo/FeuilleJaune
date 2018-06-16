@@ -1,9 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Slides, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Slides, ToastController, Platform } from 'ionic-angular';
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
 // import { RadioSquareComponent } from '../../components/radio-square/radio-square';
 import { DatePicker } from '@ionic-native/date-picker';
+
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -21,6 +22,8 @@ export class Ajouter2Page {
   private cool_date: string = "";
   private pretty_moyen: string = "";
   private pretty_category: string = "";
+
+  public bugFixAndroidKeyboard:Object = {}; // to fix bug when keyboard appears (see https://stackoverflow.com/questions/36827211/ionic2-content-in-slides-not-scrolling#41176943)
 
   private nbPhases: number = 6;
   private traduction_type = { 'in': 'un revenu', 'out': 'une dépense', 'retrait': 'un retrait DAB', 'depot': "un dépôt en banque" };
@@ -52,17 +55,26 @@ export class Ajouter2Page {
   public data_default = { 'name': '', 'type': 'out', 'moyen': 'banque', 'montant': 0.0, 'currency': 'EUR', 'date': moment().format('YYYY-MM-DD'), 'category': '', 'comment': '' }
   public data = JSON.parse(JSON.stringify(this.data_default));
 
+
+
+
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private toastCtrl: ToastController,
     private transactionService: TransactionService,
     private paramService: ParamService,
+    private ptfm: Platform,
     private datePicker: DatePicker) {
+
+
     moment.locale('fr');
     this.today = moment().format("dddd DD MMMM YYYY");
     this.categories_options = _.map(this.paramService.categories, el => {
       return { 'val': el.id, 'title': el.label, 'icon': el.icon }
     });
+
+    // bug fix android keyboard (see https://stackoverflow.com/questions/36827211/ionic2-content-in-slides-not-scrolling#41176943)
+    if (this.ptfm.is('cordova')) this.bugFixAndroidKeyboard = {height: 'auto'};
 
     // on initialise les currencies et la currency à utiliser lorsqu'on ajoute des transactions
     this.data.currency = (paramService.currency) ? paramService.currency : 'EUR';

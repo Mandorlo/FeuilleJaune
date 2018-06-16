@@ -36,13 +36,14 @@ export class FjgenPage {
     private fjService: FjService) {
       
     let curr_month_param = this.navParams.get("month");
-    this.curr_currency = this.navParams.get("currency");
-    console.log('curr_currency', this.curr_currency)
+    this.curr_currency = 'EUR'; //this.navParams.get("currency");
 
     if (curr_month_param) {
       console.log("editing fj: ", curr_month_param);
       this.edit_fj = true;
       this.fjService.getFjData(curr_month_param).then(fj => {
+        this.fj_currencies = Object.getOwnPropertyNames(fj.data).map(c => this.paramService.getCurrencyObj(c))
+        this.curr_currency = this.fj_currencies[0]['id'];
         console.log('FJDATA EDITION', this.curr_currency, fj)
         this.curr_fj = fj
         this.tr_engine_ready = true;

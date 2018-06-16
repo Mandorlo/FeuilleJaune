@@ -35,25 +35,6 @@ export class TransactionService {
     return this.set(tr_list)
   }
 
-  add_old(tr) {
-    // TODO delete this function
-    /* return new Promise((resolve, reject) => {
-      this.getAll().then(data => {
-        if (!data) data = [];
-        tr.id = this.genId(tr);
-        tr.icon = this.smartIcon(tr);
-        data.push(tr);
-        this.set(data).then(res => {
-          resolve(res)
-        }).catch(err => {
-          reject(err)
-        })
-      }).catch(err => {
-        reject(err)
-      })
-    }) */
-  }
-
   // met à jour la transaction tr
   async update(id, tr) {
     let tr_list = await this.getAll()
@@ -65,33 +46,6 @@ export class TransactionService {
       return 0
     }
     return this.set(tr_list)
-  }
-
-  update_old(id, tr) {
-    // TODO delete this function
-    /* return new Promise((resolve, reject) => {
-      this.getAll().then(data => {
-        let newdata = [];
-        let updated = false;
-        data.forEach((el, i) => {
-          if ('id' in el && el["id"] == id) {
-            newdata.push(tr)
-            updated = true;
-          } else {
-            if (!('id' in el)) el.id = this.genId(el);
-            newdata.push(el)
-          }
-        });
-        if (!updated) console.log("Aucune mise à jour de la trasanction pour id=" + id + " et tr:", tr)
-        this.set(newdata).then(res => {
-          resolve(res)
-        }).catch(err => {
-          reject(err)
-        })
-      }).catch(err => {
-        reject(err)
-      })
-    }) */
   }
 
   trEqual(tr, el) {
@@ -123,40 +77,6 @@ export class TransactionService {
       console.log("WARNING in transaction.service > delete : transaction not found...", tr)
       return 0
     }    
-  }
-
-  delete_old(tr) {
-    // TODO delete this function
-    /* if (typeof tr == 'object') {
-      return new Promise((resolve, reject) => {
-        this.getAll().then(data => {
-          if (typeof data != 'object' || !data.length) reject("le format de la base de données des transactions est corrompu, ou la base est vide");
-          let newdata = [];
-          let supprime: boolean = false;
-          data.forEach(el => {
-            if (!('id' in el)) el['id'] = this.genId(el);
-            if (this.trEqual(tr,el)) {
-              supprime = true;
-            } else {
-              newdata.push(el)
-            }
-          });
-          if (newdata.length == data.length) {
-            reject("L'élément n'a pas été trouvé, rien n'a été supprimé")
-          } else {
-            this.set(newdata).then(_ => {
-              resolve("Element supprimé")
-            }).catch(err => {
-              reject(err)
-            })
-          }
-        }).catch(err => {
-          reject(err)
-        })
-      })
-    } else {
-      console.log("problem, tr is not an object")
-    } */
   }
 
   async getAll() {

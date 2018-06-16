@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.shaqed.feuillejaune" version="0.10.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.shaqed.feuillejaune" version="0.11.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Feuille Jaune</name>
     <description>Une app pour faire sa feuille jaune dans la communauté du Chemin Neuf :)</description>
     <author email="shaqed@outlook.fr" href="">Mandorlo</author>
@@ -92,6 +92,8 @@
     <plugin name="cordova.plugins.diagnostic" spec="^3.6.6" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <allow-navigation href="http://10.70.10.65:8100" />
+    <allow-navigation href="http://10.70.10.47:8100" />
+    <plugin name="cordova-plugin-filepath" spec="^1.3.0" />
     <engine name="android" spec="^6.2.3" />
     <engine name="windows" spec="^5.0.0" />
 </widget>

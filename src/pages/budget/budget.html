@@ -37,6 +37,9 @@
 
   <ion-list>
     <budget-line *ngFor="let tr of transactions | histoFilter:filtre_moyen_sel2 | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
+    <!-- <div *virtualItem="let tr | histoFilter:filtre_moyen_sel2 | histoFilter:searchText">
+      <budget-line [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
+    </div> -->
   </ion-list>
 
   <ion-fab right bottom>

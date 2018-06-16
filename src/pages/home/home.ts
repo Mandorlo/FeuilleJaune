@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
 import { App, NavController, ModalController, AlertController } from 'ionic-angular';
+//import { GooglePlus } from '@ionic-native/google-plus';
 
 import { TransactionService } from '../../services/transaction.service';
 import { FjService } from '../../services/fj.service';
 import { ParamService } from '../../services/param.service';
 import { CurrencyService } from '../../services/currency.service';
 
-import { GaugeComponent } from '../../components/gauge/gauge';
+//import { GaugeComponent } from '../../components/gauge/gauge';
 
 import { Ajouter2Page } from '../ajouter2/ajouter2';
 import { ParamPage } from '../param/param';
+//import { LoginPage } from '../login/login';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -37,28 +39,19 @@ export class HomePage {
     public alertCtrl: AlertController,
     private paramService: ParamService,
     private currencyService: CurrencyService,
+    //private googlePlus: GooglePlus,
     private appCtrl: App) {
 
-    /* trService.getAll().then(data => {
-      this.transactions = data;
-    }).catch(err => {
-      console.log(err)
-    });
-
-    fjService.getAllFJ().then(data => {
-      this.fj_list = data;
+    paramService.ready().then(r => {
       this.updateGauges();
-    }).catch(err => {
-      console.log(err)
-    }); */
-
-    this.updateGauges();
+    })
 
     paramService.get("init").then(v => {
       if (v) this.init = v;
     }).catch(err => {
       console.log(err)
     });
+
   }
 
   ionViewDidLoad() {
@@ -67,24 +60,29 @@ export class HomePage {
 
   ionViewDidEnter() {
     this.updateGauges();
+    //this.loginGoogle()
   }
 
-  updateGauges() {
-    this.trService.getAll().then(tr_list => {
-      this.transactions = tr_list;
-      this.fjService.getAllFJ().then(fj_list => {
-        this.fj_list = fj_list;
-        this.updateGaugesCore().then(r => 1).catch(e => console.log('ERROR in home.ts > updateGauges > updateGaugesCore', e));
-      }).catch(err => {
-        console.log(err)
-      })
-    }).catch(err => {
-      console.log(err)
-    })
+  /* loginGoogle() {
+    console.log('Logging in with Google')
+    this.googlePlus.login({
+      'webClientId': '896977390209-5ab1vtvbcm9uvloqi8fpa3ghmvsv35pu.apps.googleusercontent.com'
+    }).then((res) => {
+        console.log(res);
+    }, (err) => {
+        console.log(err);
+    });
+  } */
+
+  async updateGauges() {
+    await this.paramService.ready()
+    this.transactions = await this.trService.getAll()
+    this.fj_list = await this.fjService.getAllFJ()
+    return this.updateGaugesCore()
   }
 
   async updateGaugesCore() {
-    let res = await this.currencyService.init();
+    await this.currencyService.init();
     let curr_month = moment().format("YYYY-MM") + "-01";
     //let last_month = moment(curr_month).subtract(1, 'months').format("YYYY-MM") + "-01";
 
@@ -108,7 +106,7 @@ export class HomePage {
         solde["banque_max"] = Math.max(10, solde.banque + this_m_bank);
         solde["caisse_max"] = Math.max(10, solde.caisse + this_m_caisse);
       } else {
-        console.log("Impossible de trouver la fj de ce mois")
+        //console.log("Impossible de trouver la fj de ce mois")
       }
     } else {
       console.log("Impossible de trouver la fj du mois précédent")
@@ -159,6 +157,7 @@ export class HomePage {
 
   showParamPage() {
     this.navCtrl.push(ParamPage);
+    //1this.navCtrl.push(LoginPage);
   }
 
   showAjouterPage() {
