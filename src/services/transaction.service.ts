@@ -116,7 +116,7 @@ export class TransactionService {
     let myyear = month.year()
     if (!tr_list) tr_list = await this.getAll()
     let month_tr_list = tr_list.filter(tr => moment(tr.date, 'YYYY-MM-DD').month() == mymonth && moment(tr.date, 'YYYY-MM-DD').year() == myyear)
-    return _.sum(month_tr_list.map(tr => this.currencyService.convert(tr.montant, devise)))
+    return _.sum(month_tr_list.map(tr => this.currencyService.convert(tr.montant, tr.currency, devise)))
   }
 
   // renvoie la liste des transactions du mois @month

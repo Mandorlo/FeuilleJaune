@@ -5,6 +5,7 @@ import { FjgenPage } from '../fjgen/fjgen';
 
 import { FjService } from '../../services/fj.service';
 import { ParamService } from '../../services/param.service';
+import { StatsService } from '../../services/stats.service';
 
 import moment from 'moment';
 
@@ -24,18 +25,25 @@ export class FjDetailsPage {
 
   private curr_fj: Object;
   private fj_currencies: Array<Object>;
+  private fj_soustotaux;
   private loading: boolean = false;
+
+  private fj_total_depenses:number = 0;
+  private moyenne_depenses:number = 0;
+  private moyenne_ratio:string = '0';
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
               private fjService: FjService,
+              private statsService: StatsService,
               private paramService: ParamService) {
 
     this.curr_fj = navParams.get("fj");
     this.fj_currencies = Object.getOwnPropertyNames(this.curr_fj['data']).map(c => this.paramService.getCurrencyObj(c))
-    console.log('THIS FJ : ', this.curr_fj)
+
+    this.init().catch(err => console.log(err))
   }
 
   get pretty_month() {
@@ -54,6 +62,19 @@ export class FjDetailsPage {
     this.maison.nativeElement.style.backgroundImage = 'url(' + bg_img + ')';
   }
 
+  async init() {
+    this.fj_soustotaux = this.fjService.genSousTotaux(this.curr_fj)
+    this.moyenne_depenses = await this.statsService.fjMoyenneDepenses(12)
+    this.fj_total_depenses = this.fjService.getTotalFJ(this.curr_fj).bc
+
+    this.moyenne_ratio = (this.fj_total_depenses - this.moyenne_depenses).toFixed(2)
+    if (this.fj_total_depenses > this.moyenne_depenses) this.moyenne_ratio = '+' + this.moyenne_ratio;
+    this.moyenne_ratio += ' ' + this.paramService.symbolCurrency();
+
+    console.log('sous_totaux', this.fj_soustotaux, this.moyenne_depenses, this.fj_total_depenses, this.moyenne_ratio)
+    console.log('THIS FJ : ', this.curr_fj)
+  }
+
   presentToast(msg, temps = 2000) {
     let toast = this.toastCtrl.create({
       message: msg,
@@ -66,8 +87,7 @@ export class FjDetailsPage {
   editFJ(currency) {
     console.log('edit fj', this.curr_fj['month'], currency)
     this.navCtrl.push(FjgenPage, {
-      "month": this.curr_fj['month'],
-      //currency
+      "month": this.curr_fj['month']
     })
   }
 

@@ -17,8 +17,28 @@
 </ion-header>
 
 
-<ion-content padding>
-  <div class="circle_container">
+<ion-content>
+  <ion-list *ngIf="fjs_ready">
+    <ion-item-group *ngFor="let year of fj_years">
+      <ion-item-divider color="secondary" sticky>
+        <div>{{year}}</div>
+        <div item-end>{{totalYearDepenses(year)}}</div>
+      </ion-item-divider>
+      <ion-item *ngFor='let fj of yearFJList(year)'>
+          <ion-avatar item-start (click)="showFJDetails(fj)">
+              <img [src]="paramService.getPhotoMaison(fj.maison)"> <!-- 'https://api.adorable.io/avatars/32/'+fj.month+'.png' -->
+            </ion-avatar>
+            <h2 (click)="showFJDetails(fj)">{{monthPretty(fj)}}</h2>
+            <div class="currency_container">
+              <div class="currency" *ngFor="let currency of getCurrencies(fj)" [tooltip]="currencyService.pretty(fj.data[currency.id].soustotaux.total.bc, currency.id)">{{currency.symbol}}</div>
+            </div>
+            <p>{{fj.total.pretty}}</p>
+            <progress-bar [progress]="fj.total.bc *100 / maxDepenses(year)"></progress-bar>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+
+  <!-- div class="circle_container">
     <div class="circle_div" *ngFor='let fj of fj_list'>
       <div class="checkbox_or_not" *ngIf="multiple_selection">
         <i class="fa fa-check-square-o check" *ngIf="isSelected(fj); else elseBlock" (click)="unselectFJ(fj)"></i>
@@ -29,5 +49,5 @@
     <div class="add_circle" (click)="showFjPage()" block>
       <i class="fa fa-plus fa-2x"></i>
     </div>
-  </div>
+  </div> -->
 </ion-content>

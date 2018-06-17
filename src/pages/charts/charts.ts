@@ -7,6 +7,7 @@ import { FjService } from '../../services/fj.service';
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
 import { CurrencyService } from '../../services/currency.service';
+import { StatsService } from '../../services/stats.service';
 
 import { Chart } from 'chart.js';
 import moment from 'moment';
@@ -33,6 +34,9 @@ export class ChartsPage {
   private repartition_depenses_mois_total:string = "0";
   private last_months:any;
 
+  private depenses_mois_courant:string = '0';
+  private moyenne_depenses_mois:string = '0';
+
   //private mycurrency:string = "";
 
   constructor(public navCtrl: NavController,
@@ -40,12 +44,21 @@ export class ChartsPage {
     private fjService: FjService,
     private paramService: ParamService,
     private currencyService: CurrencyService,
+    private statsService: StatsService,
     private trService: TransactionService) {
 
   }
 
   ionViewDidEnter() {
-    this.reload();
+    this.reload().catch(err => console.log(err))
+  }
+
+  async computeMoisCourant() {
+    this.depenses_mois_courant = (await this.trService.getTotalDepensesMonth(moment().startOf('month'))).toFixed(2)
+    this.depenses_mois_courant += ' ' + this.paramService.symbolCurrency()
+
+    this.moyenne_depenses_mois = (await this.statsService.fjMoyenneDepenses(12)).toFixed(2)
+    this.moyenne_depenses_mois += ' ' + this.paramService.symbolCurrency()
   }
 
   getLastMonths() {
@@ -60,15 +73,12 @@ export class ChartsPage {
     this.navCtrl.push(BudgetPage);
   }
 
-  reload() {
-    this.trService.getAll().then(trlist => {
-      this.tr_list = trlist;
-      // console.log("Transactions loaded ! Grazie Signore !");
-      this.genDataBarTotalDepensesParMois();
-      this.genDataPie(this.repartition_depenses_mois, 1);
-    }).catch(err => {
-      console.log("Impossible de charger les transactions", err)
-    });
+  async reload() {
+    this.computeMoisCourant().catch(err => console.log(err))
+    this.tr_list = await this.trService.getAll();
+    // console.log("Transactions loaded ! Grazie Signore !");
+    this.genDataBarTotalDepensesParMois();
+    this.genDataPie(this.repartition_depenses_mois, 1);
   }
 
   genDataPie(mois_ref = "auto", nb_mois = 1) {
@@ -85,10 +95,13 @@ export class ChartsPage {
       if (mycat && mycat.type) {
         mycat = mycat.type;
         if (tr.type === 'out' && date_limit_inf.isSameOrBefore(tr.date) && moment(tr.date).isSameOrBefore(date_limit_sup) && categories.indexOf(mycat) > -1) {
-          data[categories.indexOf(mycat)] += this.currencyService.convert(tr.montant, tr.currency);
+          data[categories.indexOf(mycat)] += this.currencyService.convert(tr.montant, tr.currency)*100;
         }
       }
     });
+    for (let i = 0; i < data.length; i++) {
+      data[i] = Math.round(data[i])/100
+    }
 
     this.repartition_depenses_mois_total = _.sum(data).toFixed(2).toString();
 
@@ -157,6 +170,11 @@ export class ChartsPage {
       }
       labels = labels.reverse();
       data = data.reverse();
+
+      for (let i = 0; i < data.length; i++) {
+        data[i] = Math.round(data[i]*100)/100
+      }
+
       // console.log("Bar chart data : ", labels, data);
       this.genBarTotalDepensesParMois(labels, data)
     }).catch(err => {

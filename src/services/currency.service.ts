@@ -85,4 +85,11 @@ export class CurrencyService {
     let base_montant = montant / this.conversions[from]
     return Math.round(base_montant * this.conversions[to] * 100) / 100
   }
+
+  // e.g. : pretty(3.49999997, 'EUR') = "3.5 €"
+  pretty(montant, devise = null) {
+    if (!devise) devise = this.paramService.currency;
+    let symbol = this.paramService.symbolCurrency(devise)
+    return montant.toFixed(2) + ' ' + symbol;
+  }
 }

@@ -47,11 +47,28 @@ export class FjService {
     return this.setAllFJ([])
   }
 
-  async getAllFJ() { // renvoie tous les json + metadata de feuilles faunes
+  async getAllFJ(opt = {}) { // renvoie tous les json + metadata de feuilles faunes
+    opt = Object.assign({
+      soustotaux: false // ajoute les sous-totaux (genSousTotaux)
+    }, opt)
+
+    // on récupère la liste brute des FJs
     let fj_list = await this.storage.get(this.db_fj);
     if (!fj_list || !fj_list.length) return []
+
     // on convertit les anciennes FJ dans le nouveau format
     let new_fj_list = this.convertOldfFJ(fj_list)
+    
+    // on ajoute éventuellement les sous-totaux
+    if (opt['soustotaux']) {
+      for (let i = 0; i < new_fj_list.length; i++) {
+        let soustotaux = this.genSousTotaux(new_fj_list[i])
+        for (let currency in soustotaux) {
+          new_fj_list[i].data[currency]['soustotaux'] = soustotaux[currency];
+        }
+      }
+    }
+    
     return new_fj_list
   }
 
@@ -80,37 +97,6 @@ export class FjService {
     return this.setAllFJ(fj_list)
   }
 
-  saveFJ_old(fjdata, opt) {
-    // TODO delete this function
-    /* return new Promise((resolve, reject) => {
-      this.getAllFJ().then(data => {
-        console.log("going to save fjdata_plus: ",fjdata);
-        console.log("already existing FJs: ", data);
-        if (!data || !data.length) data = [];
-        let already_exists = _.find(data, { 'month': fjdata.month });
-        if (already_exists) { // TODO gérer de manière plus cool avec un prompt
-          if (!opt.already_exists) {
-            console.log("une feuille jaune du mois de " + fjdata.month + " existe déjà : ", already_exists);
-            reject("une feuille jaune du mois de " + fjdata.month + " existe déjà")
-          } else {
-            console.log("une feuille jaune du mois de " + fjdata.month + " existe déjà, on overwrite ");
-            data = _.reject(data, {'month': fjdata.month});
-            data.push(fjdata);
-          }
-        } else {
-          data.push(fjdata);
-        }
-        this.storage.set(this.db_fj, data).then(res => {
-          resolve(res)
-        }).catch(err => {
-          reject(err)
-        })
-      }).catch(err => {
-        reject(err)
-      })
-    }) */
-  }
-
   async deleteFJ(fj_list_tobedel) {
     let list_months = _.map(fj_list_tobedel, 'month');
     let fj_list = await this.getAllFJ()
@@ -118,30 +104,6 @@ export class FjService {
     let newdata = _.reject(fj_list, (o) => (list_months.indexOf(o.month) > -1))
     console.log("new fj_list will be: ", newdata);
     return this.setAllFJ(newdata)
-  }
-
-  deleteFJ_old(fj_list) { // array des objets fj
-    // TODO delete this function
-    /* let list_months = _.map(fj_list, 'month');
-
-    return new Promise((resolve, reject) => {
-      this.getAllFJ().then(data => {
-        if (!data || !data.length) resolve("ok");
-        else {
-          let newdata = _.reject(data, (o) => {
-            return (list_months.indexOf(o.month) > -1);
-          });
-          console.log("new fj_list will be: ", newdata);
-          this.storage.set(this.db_fj, newdata).then(res => {
-            resolve(res)
-          }).catch(err => {
-            reject(err)
-          })
-        }
-      }).catch(err => {
-        reject(err)
-      })
-    }) */
   }
 
   async shareFJ(month) {
@@ -162,38 +124,6 @@ export class FjService {
     // on les partage
     let res = await this.pdfService.shareFJ(pdf_paths)
     return res
-  }
-
-  shareFJ_old(month) { // month should have format YYYY-MM
-    /* let opt = {
-      'personne': this.paramService.personne,
-      'maison': this.paramService.maison,
-      'curr_month': month,
-      'filename': 'feuillejaune.pdf'
-    }
-
-    return new Promise((resolve, reject) => {
-      this.getAllFJ().then(data => {
-        let myfj = _.find(data, { 'month': month });
-        if (myfj) {
-          this.pdfService.createPdf(myfj.data, opt).then((pdf) => {
-            let blob = new Blob([pdf], { type: 'application/pdf' });
-            this.pdfService.shareFJ(blob, opt).then(res => {
-              resolve(res)
-            }).catch(err => {
-              reject(err)
-            })
-          }).catch(err => {
-            reject(err)
-          })
-        } else {
-          reject("Pas de feuille jaune pour le mois de " + month + " dans la db :(")
-        }
-      }).catch(err => {
-        console.log("Error retrieving all fj from db : ", err);
-        reject(err)
-      })
-    }) */
   }
 
   // renvoie le mois pour lequel doit être émise la prochaine nouvelle FJ
@@ -330,6 +260,9 @@ export class FjService {
       }
     }
     totaux['solde'] = this.soustotal(fj_o, currency, 'solde')
+    totaux['solde']['bc'] = totaux['solde']['banque'] + totaux['solde']['caisse']
+    totaux['total'] = this.soustotal(fj_o, currency, 'total')
+    totaux['total']['bc'] = totaux['total']['banque'] + totaux['total']['caisse']
     return totaux
   }
 

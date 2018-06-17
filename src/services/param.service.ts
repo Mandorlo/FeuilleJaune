@@ -78,6 +78,10 @@ export class ParamService {
   public maison: string;
   public currency: string;
 
+  private CACHE = {
+    photos_maisons: {}
+  }
+
   constructor(private storage: Storage, private afs: AngularFirestore) {
 
     // these 2 lines fix the error for firebase : "The behavior for Date objects stored in Firestore is going to change AND YOUR APP MAY BREAK"
@@ -235,9 +239,12 @@ export class ParamService {
 
   // recherche une photo pour la maison renseignée
   getPhotoMaison(maison) {
+    //console.log('maison photo', maison, this.CACHE['photos_maisons'][maison])
+    if (this.CACHE['photos_maisons'][maison]) return this.maisons.find(m => m.id == this.CACHE['photos_maisons'][maison]).photos[0];
     for (let m of this.maisons) {
-      if (m.regex.test(maison)) {
+      if (maison.match(m.regex)) {
         let alea = Math.round(Math.random() * (m.photos.length -1))
+        this.CACHE['photos_maisons'][maison] = m.id;
         return m.photos[alea]
       }
     }

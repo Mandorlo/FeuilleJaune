@@ -10,6 +10,8 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { TooltipsModule } from 'ionic-tooltips';
+
 import { HomePage } from '../pages/home/home';
 import { Ajouter2Page } from '../pages/ajouter2/ajouter2';
 import { BudgetPage } from '../pages/budget/budget';
@@ -21,7 +23,6 @@ import { FjgenPage } from '../pages/fjgen/fjgen';
 import { FjObservationsPage } from '../pages/fj-observations/fj-observations';
 import { FjDetailsPage } from '../pages/fj-details/fj-details';
 import { FjmgmtPage } from '../pages/fjmgmt/fjmgmt';
-import { FjactionsPage } from '../pages/fjactions/fjactions';
 import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -42,6 +43,7 @@ import { FjService } from '../services/fj.service';
 import { ExportService } from '../services/export.service';
 import { CurrencyService } from '../services/currency.service';
 import { PhotoService } from '../services/photo.service';
+import { StatsService } from '../services/stats.service';
 
 import { DatePicker } from '@ionic-native/date-picker';
 import { BudgetLineComponent } from '../components/budget-line/budget-line';
@@ -70,9 +72,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     FjObservationsPage,
     FjDetailsPage,
     FjmgmtPage,
-    FjactionsPage,
     TabsPage,
-    //LoginPage,
     BudgetLineComponent,
     FjLineComponent,
     ProgressBarComponent,
@@ -91,7 +91,8 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     IonicStorageModule.forRoot(),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    TooltipsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -107,9 +108,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     FjObservationsPage,
     FjDetailsPage,
     FjmgmtPage,
-    FjactionsPage,
-    TabsPage,
-    //LoginPage
+    TabsPage
   ],
   providers: [
     StatusBar,
@@ -126,11 +125,11 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     ExportService,
     CurrencyService,
     PhotoService,
+    StatsService,
     DatePicker,
     AndroidPermissions,
     Diagnostic,
     AppVersion,
-    //GooglePlus,
     FjObservationsPage
   ]
 })

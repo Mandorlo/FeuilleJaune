@@ -30,4 +30,26 @@ page-fjmgmt {
     font-size: 2em;
     color: color($colors, primary);
   }
+
+  div.currency_container {
+    float: right;
+    display: flex;
+  }
+
+  div.currency {
+    background-color: #c1573c;
+    color: white;
+    width: 17px;
+    height: 17px;
+    font-size: 1.3rem;
+    text-align: center;
+    line-height: 17px;
+    border-radius: 4px;
+    margin-left: 4px;
+    cursor: pointer;
+  }
+
+  img {
+    background-color: #c1573c;
+  }
 }

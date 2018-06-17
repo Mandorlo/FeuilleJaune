@@ -41,23 +41,25 @@
     </div>
   </div>
 
-  <!-- <ion-list>
+  <ion-list>
     <ion-item-group>
 
       <ion-item-divider color="secondary">
-        Stats dépenses
+        Stats dépenses ({{moyenne_ratio}}) <i class="fa fa-info" tooltip="Delta entre les dépenses du mois courant et la moyenne des dépenses sur les 12 derniers mois" positionV="top"></i>
       </ion-item-divider>
-      <ion-item>
-        Coco
+      <ion-item *ngIf="fj_soustotaux">
+        Dépenses : <span *ngFor="let currency of fj_currencies">
+          {{fj_soustotaux[currency.id].total.banque + fj_soustotaux[currency.id].total.caisse}} {{currency.symbol}}
+        </span>
       </ion-item>
     </ion-item-group>
 
-    <ng-container *ngIf="fj_currencies.length > 1">
+    <!-- <ng-container *ngIf="fj_currencies.length > 1">
       <ion-item-group *ngFor="let currency of fj_currencies">
         <ion-item-divider color="secondary">
           Stats en {{currency.label}}
         </ion-item-divider>
       </ion-item-group>
-  </ng-container>
-  </ion-list> -->
+  </ng-container> -->
+  </ion-list>
 </ion-content>

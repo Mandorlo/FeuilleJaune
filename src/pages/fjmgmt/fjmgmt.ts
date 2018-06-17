@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, AlertController, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
 
 import { ParamService } from '../../services/param.service';
 import { FjService } from '../../services/fj.service';
 
 import { ParamPage } from '../param/param';
 import { FjgenPage } from '../fjgen/fjgen';
-import { FjactionsPage } from '../fjactions/fjactions';
 import { FjDetailsPage } from '../fj-details/fj-details';
+import { CurrencyService } from '../../services/currency.service';
 
 import _ from 'lodash';
+import moment from 'moment';
 
 
 @Component({
@@ -20,15 +21,21 @@ export class FjmgmtPage {
   private fj_list;
   private multiple_selection: boolean = false; // pour afficher ou non les checkbox de sélection multiple
   private selected_fj = [];
+  private fjs_ready:boolean = false;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private modalCtrl: ModalController,
     public paramService: ParamService,
+    public currencyService: CurrencyService,
     public fjService: FjService) {
+
     this.reload();
+  }
+
+  get fj_years() {
+    return _.uniq(this.fj_list.map(fj => moment(fj.month, 'YYYY-MM-DD').year()).sort().reverse())
   }
 
   ionViewDidLoad() {
@@ -39,11 +46,49 @@ export class FjmgmtPage {
     this.reload();
   }
 
+  // returns the list of FJs of the year @year
+  yearFJList(year) {
+    return this.fj_list.filter(fj => moment(fj.month, 'YYYY-MM-DD').year() == year)
+                        .sort((fj1, fj2) => {
+                          if (moment(fj1, 'YYYY-MM-DD').isBefore(moment(fj2, 'YYYY-MM-DD'))) return -1
+                          return 1
+                        })
+  }
+
+  // renvoie le total des dépenses de l'année en convertissant ce qu'il faut (toutes devises confondues)
+  totalYearDepenses(year) {
+    return this.currencyService.pretty(_.sum(this.yearFJList(year).map(fj => this.fjService.getTotalFJ(fj).bc)))
+  }
+
+  // returns the pretty string to represent the fj's month
+  monthPretty(fj) {
+    let s = moment(fj.month, 'YYYY-MM-DD').format('MMMM')
+    s = s[0].toUpperCase() + s.substr(1)
+    return s
+  }
+
+  // renvoie le montant des dépenses du mois de l'année @year où j'ai dépensé le plus
+  maxDepenses(year) {
+    return _.max(this.yearFJList(year).map(fj => fj.total.bc))
+  }
+
+  // renvoie les devises de la fj
+  getCurrencies(fj) {
+    return Object.getOwnPropertyNames(fj.data).map(c => {
+      return this.paramService.getCurrencyObj(c)
+    })
+  }
+
   reload() {
-    this.fjService.getAllFJ().then(data => {
+    this.fjService.getAllFJ({soustotaux: true}).then(data => {
       this.fj_list = data;
       if (!data || !data.length) this.fj_list = [];
       this.fj_list = _.sortBy(this.fj_list, [(o) => { return o.month }])
+      for (let i = 0; i < this.fj_list.length; i++) {
+        this.fj_list[i].total = this.fjService.getTotalFJ(this.fj_list[i])
+        this.fj_list[i].total.pretty = this.currencyService.pretty(this.fj_list[i].total.bc)
+      }
+      this.fjs_ready = true
     }).catch(err => {
       console.log("Error retrieving list of FJs : ", err)
     })
@@ -128,12 +173,7 @@ export class FjmgmtPage {
     this.multiple_selection = false;
   }
 
-  showFJActions(fj) { // montre la modal window pour choisir une action relative à la feuille jaune cliquée
-    /* let modalActions = this.modalCtrl.create(FjactionsPage, { "fj": fj });
-    modalActions.onDidDismiss(data => {
-      this.reload();
-    });
-    modalActions.present(); */
+  showFJDetails(fj) {
     this.navCtrl.push(FjDetailsPage, {"fj": fj});
   }
 
