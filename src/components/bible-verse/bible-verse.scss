@@ -1,0 +1,17 @@
+bible-verse {
+    .bv_root {
+        font-family: cursive;
+    }
+
+    .bible_verse {
+        font-size: 1.4rem;
+        color: #ffffff;
+        text-align: justify;
+    }
+
+    .bible_ref {
+        text-align: right;
+        color: rgb(255, 230, 230);
+        font-style: italic;
+    }
+}

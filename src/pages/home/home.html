@@ -9,7 +9,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding color="secondary">
   <!-- <button ion-button (click)="showAjouterPage()">Ajouter une nouvelle transaction</button> -->
 
   <h3 style="width:100%;text-align:center">Solde</h3>
@@ -17,6 +17,10 @@
   <div style="float:right;width:50%;text-align:center">Liquide</div>
   <gauge [level]="gauges.banque" min="0" [max]="gauges.banque_max" text="" style="float:left;width:50%;margin-top:-5px">{{gauges.pretty_banque}}</gauge>
   <gauge [level]="gauges.caisse" min="0" [max]="gauges.caisse_max" text="" style="float:right;width:50%;margin-top:-5px">{{gauges.pretty_caisse}}</gauge>
+
+  <ion-card padding color="primary">
+    <bible-verse></bible-verse>
+  </ion-card>
 
   <ion-card *ngIf="init.bienvenue_msg" color="light">
     <ion-card-header>

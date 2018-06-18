@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { App, NavController, ModalController, AlertController } from 'ionic-angular';
-//import { GooglePlus } from '@ionic-native/google-plus';
 
 import { TransactionService } from '../../services/transaction.service';
 import { FjService } from '../../services/fj.service';
 import { ParamService } from '../../services/param.service';
 import { CurrencyService } from '../../services/currency.service';
 
+import { BibleVerseComponent } from '../../components/bible-verse/bible-verse';
 //import { GaugeComponent } from '../../components/gauge/gauge';
 
 import { Ajouter2Page } from '../ajouter2/ajouter2';
@@ -23,6 +23,8 @@ import _ from 'lodash';
   templateUrl: 'home.html'
 })
 export class HomePage {
+  @ViewChild(BibleVerseComponent) bibleVerse:BibleVerseComponent;
+
   private transactions;
   private fj_list;
   private gauges: any = {
@@ -60,19 +62,8 @@ export class HomePage {
 
   ionViewDidEnter() {
     this.updateGauges();
-    //this.loginGoogle()
+    this.bibleVerse.randomVerse()
   }
-
-  /* loginGoogle() {
-    console.log('Logging in with Google')
-    this.googlePlus.login({
-      'webClientId': '896977390209-5ab1vtvbcm9uvloqi8fpa3ghmvsv35pu.apps.googleusercontent.com'
-    }).then((res) => {
-        console.log(res);
-    }, (err) => {
-        console.log(err);
-    });
-  } */
 
   async updateGauges() {
     await this.paramService.ready()
