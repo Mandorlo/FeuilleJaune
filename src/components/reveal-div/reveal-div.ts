@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 
@@ -19,6 +19,7 @@ export class RevealDivComponent {
   private show:boolean = false;
 
   @Input('title') title:string;
+  @Output('onToggle') onToggle:EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor() {
 
@@ -27,6 +28,7 @@ export class RevealDivComponent {
   toggle() {
     this.show = !this.show;
     this.contentActive = (this.contentActive == "true") ? "false" : "true";
+    this.onToggle.emit(this.show)
   }
 
 }

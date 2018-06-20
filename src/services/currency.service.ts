@@ -90,6 +90,7 @@ export class CurrencyService {
   pretty(montant, devise = null) {
     if (!devise) devise = this.paramService.currency;
     let symbol = this.paramService.symbolCurrency(devise)
+    if (typeof montant != 'number') montant = parseFloat(montant);
     return montant.toFixed(2) + ' ' + symbol;
   }
 }

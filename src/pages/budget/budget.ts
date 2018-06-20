@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { App, NavController, NavParams, ModalController } from 'ionic-angular';
 
 import { TransactionService } from '../../services/transaction.service';
@@ -13,6 +13,10 @@ import _ from 'lodash';
   templateUrl: 'budget.html',
 })
 export class BudgetPage {
+  @ViewChild('header_search') headerSearch;
+
+  private marginList:string = "120"; // la margin-top de "ion-list" dépend si le filtre de recherche est visible ou non
+
   private tr_engine_ready:boolean = false;
   public transactions;
   public nb_tr = 0;
@@ -79,6 +83,11 @@ export class BudgetPage {
     if (this.filtre_moyen_sel.length > 1) this.filtre_moyen_sel2 = "";
     else if (this.filtre_moyen_sel.length) this.filtre_moyen_sel2 = "@moyen " + this.filtre_moyen_sel[0];
     else this.filtre_moyen_sel2 = "@moyen azeraef";
+  }
+
+  // this is triggered when we develop/collaps the filter "<reveal-div>"
+  onFilterToggled($event) {
+    setTimeout(_ => this.marginList = ($event) ? "200" : "120", 300);
   }
 
 }

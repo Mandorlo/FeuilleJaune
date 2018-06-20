@@ -52,4 +52,9 @@ page-fjmgmt {
   img {
     background-color: #c1573c;
   }
+
+  .fa-exclamation-triangle {
+    margin-left: 0.2rem;
+    color: map-get($colors, secondary)
+  }
 }

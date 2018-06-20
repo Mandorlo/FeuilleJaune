@@ -77,3 +77,4 @@ Pour utiliser la custom font, c'est un peu comme font awesome, on ajoute des bal
 * Adding custom font : https://stackoverflow.com/questions/36870847/custom-font-with-ionic2
 * Adding Google Sign-In : https://angularfirebase.com/lessons/ionic-google-login-with-firebase-and-angularfire/
 * Adding Google Drive API : https://medium.com/google-cloud/using-google-apis-with-firebase-auth-and-firebase-ui-on-the-web-46e6189cf571
+* Create parallax fixed div effect : https://stackoverflow.com/questions/36511491/make-content-slide-over-h1-parallax-z-index-wont-apply

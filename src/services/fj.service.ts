@@ -275,8 +275,8 @@ export class FjService {
       let somme_in = this.soustotal(fj_o, currency, 'in')
       let somme_total = this.soustotal(fj_o, currency, 'total')
       return {
-        banque: (somme_in.banque - somme_total.banque).toFixed(2),
-        caisse: (somme_in.caisse - somme_total.caisse).toFixed(2)
+        banque: Math.round(100 * (somme_in.banque - somme_total.banque))/100,
+        caisse: Math.round(100 * (somme_in.caisse - somme_total.caisse))/100
       }
     }
 

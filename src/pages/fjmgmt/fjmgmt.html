@@ -25,14 +25,24 @@
         <div item-end>{{totalYearDepenses(year)}}</div>
       </ion-item-divider>
       <ion-item *ngFor='let fj of yearFJList(year)'>
-          <ion-avatar item-start (click)="showFJDetails(fj)">
+
+            <ion-avatar item-start (click)="showFJDetails(fj)">
               <img [src]="paramService.getPhotoMaison(fj.maison)"> <!-- 'https://api.adorable.io/avatars/32/'+fj.month+'.png' -->
             </ion-avatar>
-            <h2 (click)="showFJDetails(fj)">{{monthPretty(fj)}}</h2>
+
+            <h2 (click)="showFJDetails(fj)">
+              {{monthPretty(fj)}}
+              <span (click)="$event.stopPropagation()" *ngIf="warnings[fj.month] && warnings[fj.month]['msg']" [tooltip]="warnings[fj.month]['msg']" positionV="top">
+                <i class="fa fa-exclamation-triangle"></i>
+              </span>
+            </h2>
+
             <div class="currency_container">
-              <div class="currency" *ngFor="let currency of getCurrencies(fj)" [tooltip]="currencyService.pretty(fj.data[currency.id].soustotaux.total.bc, currency.id)">{{currency.symbol}}</div>
+              <div class="currency" *ngFor="let currency of getCurrencies(fj)" [tooltip]="fj_infos[fj.month][currency.id]">{{currency.symbol}}</div>
             </div>
+
             <p>{{fj.total.pretty}}</p>
+            
             <progress-bar [progress]="fj.total.bc *100 / maxDepenses(year)"></progress-bar>
       </ion-item>
     </ion-item-group>

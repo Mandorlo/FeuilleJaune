@@ -24,7 +24,9 @@ import _ from 'lodash';
 })
 export class HomePage {
   @ViewChild(BibleVerseComponent) bibleVerse:BibleVerseComponent;
+  @ViewChild('headerInfo') headerInfo;
 
+  private month_pretty:string = "Que le Seigneur de donne sa paix !";
   private transactions;
   private fj_list;
   private gauges: any = {
@@ -61,6 +63,8 @@ export class HomePage {
   }
 
   ionViewDidEnter() {
+    this.month_pretty = moment().format('MMMM YYYY')
+    this.month_pretty = this.month_pretty[0].toUpperCase() + this.month_pretty.substr(1)
     this.updateGauges();
     this.bibleVerse.randomVerse()
   }
@@ -69,7 +73,17 @@ export class HomePage {
     await this.paramService.ready()
     this.transactions = await this.trService.getAll()
     this.fj_list = await this.fjService.getAllFJ()
+
+    // we update the background image
+    let bg_img = this.getBgImage()
+    this.headerInfo.nativeElement.style.backgroundImage = 'url(' + bg_img + ')';
     return this.updateGaugesCore()
+  }
+
+  // renvoie une image de météo selon le solde/dépenses du mois courant
+  getBgImage() {
+    let orage = 'https://www.statisticbrain.com/wp-content/uploads/2014/04/tornado-statistics-1024x437.jpg'
+    return ''
   }
 
   async updateGaugesCore() {

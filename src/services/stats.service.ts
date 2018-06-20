@@ -10,6 +10,11 @@ import _ from 'lodash';
 
 @Injectable()
 export class StatsService {
+    private WARNINGS = {
+        'soldeNegatif': {
+            'fun': this.checkWarnings_soldeNegatif
+        }
+    }
 
 
     constructor(private fjService: FjService,
@@ -38,6 +43,53 @@ export class StatsService {
         return Math.round(_.sum(fj_list.map(fj => this.fjService.getTotalFJ(fj, currency).bc))*100 / fj_list.length)/100;
     }
 
-    
+    // renvoie des messages d'avertissement de/des FJ en paramètre (par ex si le solde est < 0)
+    async getWarnings(fj_o_or_list = null) {
+        // on rend le paramètre propre
+        let fj_list = fj_o_or_list;
+        if (fj_list === null) fj_list = await this.fjService.getAllFJ({soustotaux: true})
+        if (!fj_list.length && typeof fj_list.length != 'number') fj_list = [fj_list]
 
+        let warnings = {}
+        for (let fj of fj_list) {
+            let o = {}
+            let msg = []
+            for (let warn in this.WARNINGS) {
+                let res = this.WARNINGS[warn].fun.bind(this)(fj)
+                if (res.msg) {
+                    o[warn] = res
+                    msg.push(res.msg)
+                }
+            }
+            warnings[fj.month] = {msg: msg.join('\n'), details: o}
+        }
+        return warnings
+    }
+
+    // =========================================================================
+    //                    CHECK WARNINGS
+    // =========================================================================
+
+    // vérifie que le solde de cette FJ est bien positif
+    // si solde négatif, renvoie un message de warning
+    checkWarnings_soldeNegatif(fj) {
+        let warnings = []
+        for (let currency in fj.data) {
+            let o = {currency}
+            let solde = this.fjService.soustotal(fj, currency, 'solde')
+            if (solde.banque < 0) o['banque'] = this.currencyService.pretty(solde.banque, currency);
+            if (solde.caisse < 0) o['caisse'] = this.currencyService.pretty(solde.caisse, currency);
+            if (o['banque'] || o['caisse']) warnings.push(o)
+        }
+        // on construit un message texte à partir de l'objet warnings :
+        if (warnings.length == 0) return {msg: '', details: warnings}
+        let mycurrencies = Object.getOwnPropertyNames(fj.data);
+        if (warnings.length > 1) {
+            return {msg: `Le solde est négatif pour les devises suivantes : ${mycurrencies.join(', ')}`, details: warnings}
+        } else {
+            if (warnings[0]['banque'] && warnings[0]['caisse']) return {msg: `Le solde banque et caisse sont négatifs ! (${warnings[0]['banque']} pour banque et ${warnings[0]['caisse']} pour caisse)`, details: warnings};
+            else if (warnings[0]['banque']) return {msg: `Le solde banque est négatif : ${warnings[0]['banque']}`, details: warnings};
+            else if (warnings[0]['caisse']) return {msg: `Le solde caisse est négatif : ${warnings[0]['caisse']}`, details: warnings};
+        }
+    }
 }

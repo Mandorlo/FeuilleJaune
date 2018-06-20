@@ -7,12 +7,12 @@
       </linearGradient>
     </defs>
 
-    <circle class="circle" id="low" r="60" cx="50%" cy="50%" stroke="#FCDFC9" stroke-width="10" stroke-dasharray="275, 500" fill="none"></circle>
+    <circle class="circle" id="low" r="60" cx="50%" cy="50%" stroke="#FCDFC9" stroke-width="7" stroke-dasharray="275, 500" fill="none"></circle>
 
-    <circle class="circle" #levelCircle r="60" cx="50%" cy="50%" stroke="url(#grad1)" stroke-width="10" [attr.stroke-dasharray]="strokeDash" fill="none"></circle>
+    <circle class="circle" #levelCircle r="60" cx="50%" cy="50%" stroke="url(#grad1)" stroke-width="7" [attr.stroke-dasharray]="strokeDash" fill="none"></circle>
   </svg>
-  <div class="text">
-    <!-- {{text}} -->
-    <ng-content></ng-content>
+  <div class="text" [style.font-size.px]="fontSize">
+    {{text}}
+    <!-- <ng-content></ng-content> -->
   </div>
 </div>

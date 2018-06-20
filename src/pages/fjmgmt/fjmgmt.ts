@@ -3,6 +3,7 @@ import { NavController, NavParams, ToastController, AlertController } from 'ioni
 
 import { ParamService } from '../../services/param.service';
 import { FjService } from '../../services/fj.service';
+import { StatsService } from '../../services/stats.service';
 
 import { ParamPage } from '../param/param';
 import { FjgenPage } from '../fjgen/fjgen';
@@ -22,16 +23,19 @@ export class FjmgmtPage {
   private multiple_selection: boolean = false; // pour afficher ou non les checkbox de sélection multiple
   private selected_fj = [];
   private fjs_ready:boolean = false;
+  private warnings;
+  private fj_infos;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     public paramService: ParamService,
+    public statsService: StatsService,
     public currencyService: CurrencyService,
     public fjService: FjService) {
 
-    this.reload();
+    //this.reload();
   }
 
   get fj_years() {
@@ -43,7 +47,7 @@ export class FjmgmtPage {
   }
 
   ionViewDidEnter() {
-    this.reload();
+    this.reload().catch(err => console.log("Error : ", err))
   }
 
   // returns the list of FJs of the year @year
@@ -79,19 +83,34 @@ export class FjmgmtPage {
     })
   }
 
-  reload() {
-    this.fjService.getAllFJ({soustotaux: true}).then(data => {
-      this.fj_list = data;
-      if (!data || !data.length) this.fj_list = [];
-      this.fj_list = _.sortBy(this.fj_list, [(o) => { return o.month }])
-      for (let i = 0; i < this.fj_list.length; i++) {
-        this.fj_list[i].total = this.fjService.getTotalFJ(this.fj_list[i])
-        this.fj_list[i].total.pretty = this.currencyService.pretty(this.fj_list[i].total.bc)
+  async reload() {
+    // on récupère les FJ
+    this.fj_list = await this.fjService.getAllFJ({soustotaux: true})
+    if (!this.fj_list.length) this.fj_list = [];
+
+    // on récupère les warnings sur les FJ
+    this.warnings = await this.statsService.getWarnings(this.fj_list)
+
+    // on trie les FJ et on leur ajoute des stats
+    this.fj_list = _.sortBy(this.fj_list, [(o) => { return o.month }])
+    for (let i = 0; i < this.fj_list.length; i++) {
+      this.fj_list[i].total = this.fjService.getTotalFJ(this.fj_list[i])
+      this.fj_list[i].total.pretty = this.currencyService.pretty(this.fj_list[i].total.bc)
+    }
+
+    // on ajoute les infos tooltip aux fj
+    this.fj_infos = {}
+    for (let i = 0; i < this.fj_list.length; i++) {
+      this.fj_infos[this.fj_list[i].month] = {}
+      for (let currency in this.fj_list[i].data) {
+        let depenses = this.currencyService.pretty(this.fj_list[i].data[currency].soustotaux.total.bc, currency)
+        let solde = this.currencyService.pretty(this.fj_list[i].data[currency].soustotaux.solde.bc, currency)
+        this.fj_infos[this.fj_list[i].month][currency] = `Dépenses : ${depenses} - Solde : ${solde}`
       }
-      this.fjs_ready = true
-    }).catch(err => {
-      console.log("Error retrieving list of FJs : ", err)
-    })
+    }
+
+    this.fjs_ready = true
+    console.log('FJ LIST', this.fj_list)
   }
 
   presentToast(msg, temps = 2000) {

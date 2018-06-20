@@ -15,6 +15,7 @@ export class GaugeComponent {
   @Input('max') max;
 
   private strokeDash: string;
+  private fontSize:string = "30"
 
   constructor(private alertCtrl: AlertController) {
 
@@ -24,6 +25,10 @@ export class GaugeComponent {
     if (args[0].min) this.min = args[0].min.currentValue;
     if (args[0].max) this.max = args[0].max.currentValue;
     if (args[0].level && args[0].level.currentValue) this.level = args[0].level.currentValue;
+    if (args[0].text) {
+      this.text = args[0].text.currentValue;
+      this.fontSize = (30 - (this.text.length - 5)).toString()
+    }
     this.updateGauge();
   }
 
