@@ -242,8 +242,6 @@ export class Ajouter2Page {
       if (this.data.montant > 0) {
         if (this.last_slide_visited) {
           this.goToSlide(6);
-        } else if (this.data.type != 'in' && this.data.type != 'out') {
-          this.goToSlide(n + 2);
         } else {
           this.goToSlide(n + 1);
         }
@@ -258,7 +256,11 @@ export class Ajouter2Page {
 
     } else if (n == 4) {
       // 5eme phase : la date
-      if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
+      if (this.last_slide_visited || (this.data.type != 'in' && this.data.type != 'out')) {
+        this.goToSlide(6); 
+      } else {
+        this.goToSlide(n + 1);
+      } 
 
     } else if (n == 5) {
       // 6eme phase : la catégorie

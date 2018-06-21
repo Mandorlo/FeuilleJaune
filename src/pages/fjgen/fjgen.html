@@ -5,7 +5,7 @@
     <ion-title *ngIf="edit_fj">Editer FJ</ion-title>
 
     <ion-buttons end>
-      <button ion-button icon-only class="button_fa" (click)="createFJ()">
+      <button ion-button icon-only class="button_fa" *ngIf="tr_engine_ready" (click)="createFJ()">
         <i class="fa fa-floppy-o" aria-hidden="true"></i>
       </button>
 

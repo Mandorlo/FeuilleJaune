@@ -31,7 +31,7 @@ Voir ici : https://ionicframework.com/docs/v1/guide/publishing.html
 * change version number in package.json, config.xml and param.ts
 * ionic cordova plugin rm cordova-plugin-console
 * `ionic cordova build --release android --prod`
-* `cd platoforms/android/build/outputs/apk/`
+* `cd platforms/android/build/outputs/apk/`
 * jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-upload-key.jks android-release-unsigned.apk my-alias
 * `zipalign -v 4 android-release-unsigned.apk FeuilleJaune-vXXX.apk` (zipalign devrait se trouver ici si pas dans le path : C:/Users/[user]/AppData/Local/Android/Sdk/build-tools)
 

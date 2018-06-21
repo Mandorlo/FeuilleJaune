@@ -103,19 +103,20 @@ export class FjmgmtPage {
 
     // on ajoute les FJ phantôme qui doivent encore être créées
     if (this.fj_list.length) {
-      console.log("FJSERVICE", this.fjService)
+      this.fj_list = _.sortBy(this.fj_list, [(o) => { return o.month }])
       let debut = this.fjService.firstFJMonth(this.fj_list);
       console.log('first month FJ : ', debut)
       this.list_months = listMonths(debut)
       let fj_months = this.fj_list.map(fj => fj.month)
       this.fj_list_phantom = []
-      for (let month of this.list_months) {
+      let first_month_without_fj = this.list_months.find(month => fj_months.indexOf(month) < 0)
+      if (first_month_without_fj) this.fj_list_phantom.push({phantom:true, month: first_month_without_fj})
+      /* for (let month of this.list_months) {
         if (fj_months.indexOf(month) < 0) this.fj_list_phantom.push({phantom:true, month})
-      }
+      } */
     }
 
     // on trie les FJ et on leur ajoute des stats
-    this.fj_list = _.sortBy(this.fj_list, [(o) => { return o.month }])
     for (let i = 0; i < this.fj_list.length; i++) {
         this.fj_list[i].total = this.fjService.getTotalFJ(this.fj_list[i])
         this.fj_list[i].total.pretty = this.currencyService.pretty(this.fj_list[i].total.bc)
