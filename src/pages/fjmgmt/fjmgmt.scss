@@ -1,34 +1,32 @@
 page-fjmgmt {
-  .circle_container {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
+
+  .empty_fj {
+    height: 100vh;
+    background-color: map-get($colors, light);
   }
 
-  .add_circle {
+  .empty_fj ion-label {
+    margin-top: -8rem;
+    font-family: Lora;
+    font-size: 3rem;
+    white-space: normal;
     text-align: center;
-    background-color: white;
-    border: 2px dashed gray;
-    border-radius: 40px;
-    width: 70px;
-    height: 70px;
-    padding: 20px;
-    margin: 20px;
-    color: color($colors, lightgray);
   }
 
-  .circle_div {
-    position: relative;
-    margin: 7px;
+  .empty_fj fa {
+    font-size: 10rem;
   }
 
-  .check {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    z-index: 10;
-    font-size: 2em;
-    color: color($colors, primary);
+  .year {
+    font-size: 2.3rem;
+    font-family: Lora;
+    color: hsla(12, 53%, 25%, 1);
+    font-weight: bold;
+  }
+
+  .depenses_year {
+    font-size: 1.7rem;
+    color: hsla(12, 53%, 25%, 1);
   }
 
   div.currency_container {
@@ -70,5 +68,20 @@ page-fjmgmt {
     color: map-get($colors, darkgray );
     padding-top: 1rem;
     padding-bottom: 1rem;
+  }
+
+  .fa-info {
+    margin-left: 0.2rem;
+    line-height: 1.1rem;
+    font-size: 1rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 100%;
+    margin-top: -0.5rem;
+    position: relative;
+    top: -0.3rem;
   }
 }

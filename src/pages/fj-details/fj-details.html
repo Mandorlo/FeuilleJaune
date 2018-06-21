@@ -50,6 +50,18 @@
     </ion-item>
 
     <div class="stats_general" *ngIf="fj_soustotaux">
+      <div class="type_label">REVENUS</div>
+      <div class="type">
+          <div class="banque_caisse">
+            <div class="label">banque</div>
+            <div class="montant">{{fj_soustotaux['pretty'][curr_currency].real_in.banque}}</div>
+          </div>
+          <div class="banque_caisse">
+            <div class="label">caisse</div>
+            <div class="montant">{{fj_soustotaux['pretty'][curr_currency].real_in.caisse}}</div>
+          </div>
+      </div>
+
       <div class="type_label">DÉPENSES</div>
       <div class="type">
           <div class="banque_caisse">

@@ -4,7 +4,7 @@ import { Storage } from '@ionic/storage';
 import { PdfService } from './pdf.service';
 import { ParamService } from './param.service';
 import { TransactionService } from './transaction.service';
-import { CurrencyService } from './currency.service';
+import { CurrencyService, currency } from './currency.service';
 
 import { _ } from './_.service';
 import moment from 'moment';
@@ -22,14 +22,13 @@ interface bcbc {
   pretty?: string
 }
 
-type currency = 'EUR' | 'USD' | 'GBP' | 'CHF' | 'PLN' | 'HUF' | 'CZK' |'ILS' | 'LBP' | 'BRL' | 'MUR' | 'MGA' | 'BIF' | 'CAD' | 'CDF' | 'XOF' | 'PHP';
-
 export interface FeuilleJaune {
   personne: string,
   maison: string,
   month: string,
   data: Record<currency, Record<string, bco|Record<string, bco|bcbc>>>,
-  total?: bcbc
+  total?: bcbc,
+  solde?: bcbc
 }
 
 @Injectable()
@@ -37,7 +36,8 @@ export class FjService {
   private db_fj = "dbfj";
   public category_types = {
     'revenus': ['salaire', 'allocation', 'don'],
-    'in': [], // all categories_in
+    'in': [], // all categories_in + report_mois_precedent
+    'real_in': [], // all categories_in
     'maison': [],
     'vie_courante': [],
     'transport': [],
@@ -59,6 +59,7 @@ export class FjService {
       this.category_types.secretariat = paramService.categories.filter(cat => cat.type == 'secretariat').map(cat => cat.id)
       this.category_types.total = paramService.categories.map(cat => cat.id)
       this.category_types.in = paramService.categories_in.map(cat => cat.id).concat(['report_mois_precedent'])
+      this.category_types.real_in = paramService.categories_in.map(cat => cat.id)
   }
 
   setAllFJ(fj_list) {
@@ -111,6 +112,9 @@ export class FjService {
   }
 
   async saveFJ(fj_o, opt) {
+    // on nettoie la feuille jaune de tous les totaux et sous-totaux et résidus d'anciennes versions
+    fj_o = this.nettoyerFJObj(fj_o)
+
     // on récupère toutes les FJ existantes
     let fj_list = await this.getAllFJ()
     console.log("going to save fjdata_plus: ",fj_o)
@@ -193,6 +197,17 @@ export class FjService {
     return {date: madate.format('YYYY-MM') + '-01', label}
   }
 
+  // enlève tous les résidus de totaux, soustotaux et résidus d'anciennes versions de l'objet FJ
+  nettoyerFJObj(fj_o) {
+    delete fj_o.currency
+    for (let currency in fj_o.data) {
+      delete fj_o.data[currency].soustotaux
+      delete fj_o.data[currency].total
+      delete fj_o.data[currency].solde
+    }
+    return fj_o
+  }
+
   // ===================================================================
   //            GENERER LES DONNEES FJ POUR UN MOIS DONNE
   // ===================================================================
@@ -220,6 +235,8 @@ export class FjService {
 
     // 2. on récupère la liste des devises de ce mois
     let currencies = await this.getFjMonthCurrencies(month) // ['EUR', 'ILS']
+    // si on n'a aucune currency (ce qui veut dire qu'il n'y a eu aucune transaction ce mois-ci) on prend la currency par défaut
+    if (!currencies || currencies.length == 0) currencies = [this.paramService.currency];
 
     // 3. pour chaque devise, on génère les données fj
     for (let currency of currencies) {

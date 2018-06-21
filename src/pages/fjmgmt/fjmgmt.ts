@@ -150,11 +150,7 @@ export class FjmgmtPage {
     toast.present();
   }
 
-  /* showCheckboxes() { // affiche les checkbox pour sélectionner plusieurs feuilles jaunes
-    this.multiple_selection = !this.multiple_selection;
-  } */
-
-  showFjPage(month) { // to create a new FJ
+  async showFjPage(month = null) { // to create a new FJ
     if (!this.paramService.personne) {
       this.presentToast("Il faut spécifier une personne dans les paramètres");
       this.navCtrl.push(ParamPage);
@@ -164,6 +160,7 @@ export class FjmgmtPage {
       this.navCtrl.push(ParamPage);
       return
     }
+    if (!month) month = moment().startOf('month').format('YYYY-MM-DD');
     this.navCtrl.push(FjgenPage, {month});
   }
 

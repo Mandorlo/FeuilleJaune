@@ -6,6 +6,8 @@ import { currency_api_key } from '../arcana/apis_config';
 
 import { _ } from './_.service';
 
+export type currency = 'EUR' | 'USD' | 'GBP' | 'CHF' | 'PLN' | 'HUF' | 'CZK' |'ILS' | 'LBP' | 'BRL' | 'MUR' | 'MGA' | 'BIF' | 'CAD' | 'CDF' | 'XOF' | 'PHP';
+
 @Injectable()
 export class CurrencyService {
   public APIKEY: string = currency_api_key
