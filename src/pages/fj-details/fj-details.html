@@ -41,25 +41,61 @@
     </div>
   </div>
 
-  <ion-list>
+  <div class="stats">
+    <ion-item class="select currency" *ngIf="fj_currencies.length > 1">
+      <ion-label>Devise</ion-label>
+      <ion-select [(ngModel)]="curr_currency">
+        <ion-option *ngFor="let currency of fj_currencies.concat([{id:'all', label: 'Toutes'}])" [value]="currency.id">{{currency.label}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <div class="stats_general" *ngIf="fj_soustotaux">
+      <div class="type_label">DÉPENSES</div>
+      <div class="type">
+          <div class="banque_caisse">
+            <div class="label">banque</div>
+            <div class="montant">{{fj_soustotaux['pretty'][curr_currency].total.banque}}</div>
+          </div>
+          <div class="banque_caisse">
+            <div class="label">caisse</div>
+            <div class="montant">{{fj_soustotaux['pretty'][curr_currency].total.caisse}}</div>
+          </div>
+      </div>
+
+      <div class="type_label">SOLDE</div>
+      <div class="type">
+          <div class="banque_caisse">
+            <div class="label">banque</div>
+            <div class="montant">{{fj_soustotaux['pretty'][curr_currency].solde.banque}}</div>
+          </div>
+          <div class="banque_caisse">
+            <div class="label">caisse</div>
+            <div class="montant">{{fj_soustotaux['pretty'][curr_currency].solde.caisse}}</div>
+          </div>
+      </div>
+    </div>
+
+    <div style="height:100px"></div>
+  </div>
+
+  <!-- <ion-list *ngIf="fj_soustotaux">
     <ion-item-group>
 
       <ion-item-divider color="secondary">
         Stats dépenses ({{moyenne_ratio}}) <i class="fa fa-info" tooltip="Delta entre les dépenses du mois courant et la moyenne des dépenses sur les 12 derniers mois" positionV="top"></i>
       </ion-item-divider>
-      <ion-item *ngIf="fj_soustotaux">
+      
+      <ion-item>
         Dépenses : <span *ngFor="let currency of fj_currencies">
           {{fj_soustotaux[currency.id].total.banque + fj_soustotaux[currency.id].total.caisse}} {{currency.symbol}}
         </span>
       </ion-item>
-    </ion-item-group>
 
-    <!-- <ng-container *ngIf="fj_currencies.length > 1">
-      <ion-item-group *ngFor="let currency of fj_currencies">
-        <ion-item-divider color="secondary">
-          Stats en {{currency.label}}
-        </ion-item-divider>
-      </ion-item-group>
-  </ng-container> -->
-  </ion-list>
+      <ion-item>
+          Solde : <span *ngFor="let currency of fj_currencies">
+            {{fj_soustotaux[currency.id].solde.banque + fj_soustotaux[currency.id].solde.caisse}} {{currency.symbol}}
+          </span>
+        </ion-item>
+    </ion-item-group>
+  </ion-list> -->
 </ion-content>

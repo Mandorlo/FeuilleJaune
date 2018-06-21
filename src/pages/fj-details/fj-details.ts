@@ -6,8 +6,10 @@ import { FjgenPage } from '../fjgen/fjgen';
 import { FjService } from '../../services/fj.service';
 import { ParamService } from '../../services/param.service';
 import { StatsService } from '../../services/stats.service';
+import { CurrencyService } from '../../services/currency.service';
 
 import moment from 'moment';
+import { _ } from '../../services/_.service';
 
 /**
  * Generated class for the FjDetailsPage page.
@@ -25,6 +27,7 @@ export class FjDetailsPage {
 
   private curr_fj: Object;
   private fj_currencies: Array<Object>;
+  private curr_currency: string;
   private fj_soustotaux;
   private loading: boolean = false;
 
@@ -38,12 +41,15 @@ export class FjDetailsPage {
               private alertCtrl: AlertController,
               private fjService: FjService,
               private statsService: StatsService,
+              private currencyService: CurrencyService,
               private paramService: ParamService) {
 
     this.curr_fj = navParams.get("fj");
     this.fj_currencies = Object.getOwnPropertyNames(this.curr_fj['data']).map(c => this.paramService.getCurrencyObj(c))
+    this.curr_currency = this.fj_currencies[0]['id'];
+    console.log('curr_currency', this.curr_currency, this.fj_currencies)
 
-    this.init().catch(err => console.log(err))
+    //this.init().catch(err => console.log(err))
   }
 
   get pretty_month() {
@@ -51,6 +57,7 @@ export class FjDetailsPage {
   }
 
   ionViewDidLoad() {
+    this.init().catch(err => console.log(err))
     console.log('ionViewDidLoad FjDetailsPage Lodato sia il Signore !');
   }
 
@@ -64,6 +71,15 @@ export class FjDetailsPage {
 
   async init() {
     this.fj_soustotaux = this.fjService.genSousTotaux(this.curr_fj)
+    this.fj_soustotaux['all'] = {}
+    // on ajoute une devise 'all' dans les soustotaux
+    for (let t in this.fj_soustotaux[this.curr_currency]) {
+        this.fj_soustotaux['all'][t] = {}
+        this.fj_soustotaux['all'][t].banque = _.sum(this.fj_currencies.map(curr => this.currencyService.convert(this.fj_soustotaux[curr['id']][t].banque, curr['id'])))
+        this.fj_soustotaux['all'][t].caisse = _.sum(this.fj_currencies.map(curr => this.currencyService.convert(this.fj_soustotaux[curr['id']][t].caisse, curr['id'])))
+    }
+    this.fj_soustotaux['pretty'] = this.currencyService.prettyObj(this.fj_soustotaux)
+
     this.moyenne_depenses = await this.statsService.fjMoyenneDepenses(12)
     this.fj_total_depenses = this.fjService.getTotalFJ(this.curr_fj).bc
 

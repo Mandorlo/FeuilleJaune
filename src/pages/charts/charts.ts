@@ -11,8 +11,7 @@ import { StatsService } from '../../services/stats.service';
 
 import { Chart } from 'chart.js';
 import moment from 'moment';
-import _ from 'lodash';
-
+import { _ } from '../../services/_.service';
 
 
 @Component({
@@ -91,9 +90,10 @@ export class ChartsPage {
     let date_limit_sup = moment(mois_ref).endOf("month");
 
     this.tr_list.forEach(tr => {
-      let mycat = _.find(this.paramService.categories, { 'id': tr.category });
-      if (mycat && mycat.type) {
-        mycat = mycat.type;
+      let mycat_el = this.paramService.categories.find(e => e.id == tr.category);
+      let mycat = '';
+      if (mycat && mycat_el.type) {
+        mycat = mycat_el.type;
         if (tr.type === 'out' && date_limit_inf.isSameOrBefore(tr.date) && moment(tr.date).isSameOrBefore(date_limit_sup) && categories.indexOf(mycat) > -1) {
           data[categories.indexOf(mycat)] += this.currencyService.convert(tr.montant, tr.currency)*100;
         }
@@ -157,7 +157,7 @@ export class ChartsPage {
       for (let i = 0; i < 7; i++) {
         let mydate = moment().subtract(i, 'months');
         labels.push(mydate.format('MMM YY'));
-        let res = _.find(fj_list, { 'month': mydate.format("YYYY-MM") + "-01" });
+        let res = fj_list.find(e => e.month == mydate.format("YYYY-MM") + "-01");
         if (res) {
           let total = this.fjService.getTotalFJ(res)
           data.push(total.bc);

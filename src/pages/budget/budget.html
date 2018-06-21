@@ -35,12 +35,13 @@
     <div class="monfiltre">
       <reveal-div title="Filtrer" (onToggle)="onFilterToggled($event)">
         <filter-options title="Moyen de paiement" [options]="filtre_moyen_opt" [(selected)]="filtre_moyen_sel" (click)="onFilterMoyenChange($event)"></filter-options>
+        <filter-options title="Entrées / Sorties" [options]="filtre_inout_opt" [(selected)]="filtre_inout_sel" (click)="onFilterInoutChange($event)"></filter-options>
       </reveal-div>
     </div>
   </div>
 
   <ion-list [style.margin-top.px]="marginList">
-    <budget-line *ngFor="let tr of transactions | histoFilter:filtre_moyen_sel2 | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
+    <budget-line *ngFor="let tr of transactions | histoFilter:filtre_moyen_sel2 | histoFilter:filtre_inout_sel2 | histoFilter:searchText" [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
     <!-- <div *virtualItem="let tr | histoFilter:filtre_moyen_sel2 | histoFilter:searchText">
       <budget-line [tr]="tr" (onDeleted)="reload()" (click)="showDetails(tr)"></budget-line>
     </div> -->

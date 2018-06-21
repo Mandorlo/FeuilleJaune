@@ -6,7 +6,6 @@ import { ParamService } from '../../services/param.service';
 import { DatePicker } from '@ionic-native/date-picker';
 
 import moment from 'moment';
-import _ from 'lodash';
 
 @Component({
   selector: 'page-ajouter2',
@@ -69,7 +68,7 @@ export class Ajouter2Page {
 
     moment.locale('fr');
     this.today = moment().format("dddd DD MMMM YYYY");
-    this.categories_options = _.map(this.paramService.categories, el => {
+    this.categories_options = this.paramService.categories.map(el => {
       return { 'val': el.id, 'title': el.label, 'icon': el.icon }
     });
 
@@ -159,11 +158,11 @@ export class Ajouter2Page {
         // this.slides.slideTo(2, 200);
       } else {
         if (this.data.type == "in") {
-          this.categories_options = _.map(this.paramService.categories_in, el => {
+          this.categories_options = this.paramService.categories_in.map(el => {
             return { 'val': el.id, 'title': el.label, 'icon': el.icon }
           });
         } else if (this.data.type == 'out') {
-          this.categories_options = _.map(this.paramService.categories, el => {
+          this.categories_options = this.paramService.categories.map(el => {
             return { 'val': el.id, 'title': el.label, 'icon': el.icon }
           });
         } else {
@@ -181,8 +180,8 @@ export class Ajouter2Page {
       if (moment(this.data.date).format("DDMMYY") == moment().format("DDMMYY")) this.cool_date = "aujourd'hui";
       this.pretty_moyen = "en liquide";
       if (this.data.category) {
-        if (this.data.type == "out") this.pretty_category = _.find(this.paramService.categories, { 'id': this.data.category }).label;
-        else if (this.data.type == 'in') this.pretty_category = _.find(this.paramService.categories_in, { 'id': this.data.category }).label;
+        if (this.data.type == "out") this.pretty_category = this.paramService.categories.find(e => e.id == this.data.category).label;
+        else if (this.data.type == 'in') this.pretty_category = this.paramService.categories_in.find(e => e.id == this.data.category).label;
       } else {
         this.pretty_category = "";
       }
@@ -209,7 +208,7 @@ export class Ajouter2Page {
   }
 
   genNewTransactionName() {
-    let names = _.map(this.transactions, 'name');
+    let names = this.transactions.map(e => e.name);
     let newname = "New";
     let i = 2;
     while (names.indexOf(newname) > -1) {
@@ -227,8 +226,8 @@ export class Ajouter2Page {
       if (this.data.type != 'in' && this.data.type != 'out') {
         ind_slide++;
       } else { // alors on change un peu le texte
-        let ind_banque = _.findIndex(this.moyen_options, function(o) { return o.val == 'banque'; });
-        let ind_caisse = _.findIndex(this.moyen_options, function(o) { return o.val == 'caisse'; });
+        let ind_banque = this.moyen_options.findIndex(o => o.val == 'banque');
+        let ind_caisse = this.moyen_options.findIndex(o => o.val == 'caisse');
         this.moyen_options[ind_banque].title = this.moyen_titles[this.data.type]['banque'];
         this.moyen_options[ind_caisse].title = this.moyen_titles[this.data.type]['caisse'];
       }

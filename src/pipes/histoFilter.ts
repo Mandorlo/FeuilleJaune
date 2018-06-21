@@ -29,6 +29,11 @@ export class HistoFilter implements PipeTransform {
             return item.moyen == cmd_arg
           });
 
+        case "inout":
+        return items.filter((item, i) => {
+          return item.type == cmd_arg
+        });
+
         default:
           console.log("Impossible de trouver la commande " + filter);
           return items;

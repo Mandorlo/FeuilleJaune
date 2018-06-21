@@ -13,6 +13,9 @@ export class StatsService {
     private WARNINGS = {
         'soldeNegatif': {
             'fun': this.checkWarnings_soldeNegatif
+        },
+        'reportMoisPrecedent': {
+            'fun': this.checkWarnings_ReportSoldeMoisPrecedent
         }
     }
 
@@ -55,13 +58,13 @@ export class StatsService {
             let o = {}
             let msg = []
             for (let warn in this.WARNINGS) {
-                let res = this.WARNINGS[warn].fun.bind(this)(fj)
-                if (res.msg) {
+                let res = this.WARNINGS[warn].fun.bind(this)(fj, fj_list)
+                if (res && res.msg) {
                     o[warn] = res
                     msg.push(res.msg)
                 }
             }
-            warnings[fj.month] = {msg: msg.join('\n'), details: o}
+            warnings[fj.month] = {msg: msg.join(' - '), details: o}
         }
         return warnings
     }
@@ -72,7 +75,7 @@ export class StatsService {
 
     // vérifie que le solde de cette FJ est bien positif
     // si solde négatif, renvoie un message de warning
-    checkWarnings_soldeNegatif(fj) {
+    checkWarnings_soldeNegatif(fj, fj_list) {
         let warnings = []
         for (let currency in fj.data) {
             let o = {currency}
@@ -90,6 +93,39 @@ export class StatsService {
             if (warnings[0]['banque'] && warnings[0]['caisse']) return {msg: `Le solde banque et caisse sont négatifs ! (${warnings[0]['banque']} pour banque et ${warnings[0]['caisse']} pour caisse)`, details: warnings};
             else if (warnings[0]['banque']) return {msg: `Le solde banque est négatif : ${warnings[0]['banque']}`, details: warnings};
             else if (warnings[0]['caisse']) return {msg: `Le solde caisse est négatif : ${warnings[0]['caisse']}`, details: warnings};
+        }
+    }
+
+    // vérifie que le report du solde du mois précédent est bon
+    checkWarnings_ReportSoldeMoisPrecedent(myfj, fj_list) {
+        let mymonth = moment(myfj.month, 'YYYY-MM-DD')
+
+        // check if myfj is the first FJ of all times
+        let res = fj_list.find(fj => mymonth.diff(moment(fj.month, 'YYYY-MM-DD')) > 0)
+        if (!res) return;
+
+        // if not we get the last month FJ
+        let fj_lastmonth = fj_list.find(fj => mymonth.diff(moment(fj.month, 'YYYY-MM-DD'), 'months') == 1)
+        if (!fj_lastmonth) return {msg: `Aucune Feuille Jaune n'a été créée le mois précédent !`}
+        
+        let details = {}
+        for (let currency in fj_lastmonth.data) {
+            if (!myfj.data[currency]) return {msg: `Problème interne, il faudrait créer une Feuille Jaune en ${currency} pour ce mois-ci...`}
+            let solde_caisse_ok = fj_lastmonth.data[currency].soustotaux.solde.caisse == myfj.data[currency].report_mois_precedent.caisse;
+            let solde_banque_ok = fj_lastmonth.data[currency].soustotaux.solde.banque == myfj.data[currency].report_mois_precedent.banque;
+            details[currency] = {
+                lastmonth: {
+                    caisse: fj_lastmonth.data[currency].soustotaux.solde.caisse,
+                    banque: fj_lastmonth.data[currency].soustotaux.solde.banque
+                },
+                thismonth: {
+                    caisse: myfj.data[currency].report_mois_precedent.caisse,
+                    banque: myfj.data[currency].report_mois_precedent.banque
+                }
+            }
+            if (!solde_caisse_ok && !solde_banque_ok) return {msg: `Le report du solde du mois précédent en ${currency} ne correspond pas au mois précédent !`, details: details[currency]}
+            if (!solde_caisse_ok) return {msg: `Le report du solde caisse du mois précédent en ${currency} ne correspond pas au mois précédent !`, details: details[currency]}
+            if (!solde_banque_ok) return {msg: `Le report du solde banque du mois précédent en ${currency} ne correspond pas au mois précédent !`, details: details[currency]}
         }
     }
 }

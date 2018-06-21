@@ -48,4 +48,29 @@ page-fj-details {
         position: relative;
         top: -0.3rem;
     }
+
+    /* ============================================================ */
+    /*                       STATS                                  */
+    /* ============================================================ */
+
+    .stats_general .type {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .type_label {
+        margin: 2rem;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .label {
+        font-variant: small-caps;
+    }
+
+    .montant {
+        margin-top: -5px;
+        font-family: 'Segoe UI Light';
+        font-size: 30px;
+    }
 }

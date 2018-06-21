@@ -4,6 +4,8 @@ import { ParamService } from './param.service';
 import client from 'node-rest-client-promise';
 import { currency_api_key } from '../arcana/apis_config';
 
+import { _ } from './_.service';
+
 @Injectable()
 export class CurrencyService {
   public APIKEY: string = currency_api_key
@@ -87,10 +89,19 @@ export class CurrencyService {
   }
 
   // e.g. : pretty(3.49999997, 'EUR') = "3.5 €"
-  pretty(montant, devise = null) {
-    if (!devise) devise = this.paramService.currency;
+  pretty (montant, devise = null) {
+    // si montant est en fait un objet, on agit différement
+    if (typeof montant == 'object') return this.prettyObj(montant);
+
+    if (!devise || devise == 'all') devise = this.paramService.currency;
     let symbol = this.paramService.symbolCurrency(devise)
     if (typeof montant != 'number') montant = parseFloat(montant);
     return montant.toFixed(2) + ' ' + symbol;
+  }
+
+  // traverse tous l'objet obj et transforme tous les champs "banque", "caisse" et "bc" en pretty string (e.g. 3.49999997 devient "3.5 €")
+  prettyObj(obj) {
+    return _.traverse(obj,  (attr, val, tree) => attr == 'banque' || attr == 'caisse' || attr == 'bc', 
+                            (attr, val, tree) => this.pretty(val, tree.parent.val))
   }
 }

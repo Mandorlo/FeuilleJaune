@@ -6,7 +6,7 @@ import { ParamService } from './param.service';
 import { TransactionService } from './transaction.service';
 import { CurrencyService } from './currency.service';
 
-import _ from 'lodash';
+import { _ } from './_.service';
 import moment from 'moment';
 
 @Injectable()
@@ -49,7 +49,8 @@ export class FjService {
 
   async getAllFJ(opt = {}) { // renvoie tous les json + metadata de feuilles faunes
     opt = Object.assign({
-      soustotaux: false // ajoute les sous-totaux (genSousTotaux)
+      soustotaux: false, // ajoute les sous-totaux (genSousTotaux)
+      pretty: false // ajoute un chant 'pretty' de même structure que 'data' mais avec les montants sous forme de pretty string :)
     }, opt)
 
     // on récupère la liste brute des FJs
@@ -68,6 +69,20 @@ export class FjService {
         }
       }
     }
+
+    // on ajoute éventuellement les représentations pretty string
+    if (opt['pretty']) {
+      let pretty = new_fj_list.map(fj => _.traverse(fj, 
+                              (attr, val, tree) => attr == 'banque' || attr == 'caisse' || attr == 'bc', 
+                              (attr, val, tree) => {
+                                let curr = (tree.parent.val == 'soustotaux') ? tree.parent.parent.val : tree.parent.val ;
+                                return this.currencyService.pretty(val, curr)
+                              }))
+      console.log('pretty', pretty)                      
+      for (let i = 0; i < new_fj_list.length; i++) {
+        new_fj_list[i]['pretty'] = pretty[i].data
+      }
+    }
     
     return new_fj_list
   }
@@ -79,11 +94,11 @@ export class FjService {
     console.log("already existing FJs: ", fj_list)
 
     // on ajoute la nouvelle FJ à la liste (en remplaçant éventuellement si déjà existante)
-    let already_exists = _.find(fj_list, { 'month': fj_o.month })
+    let already_exists = fj_list.find(el => el.month == fj_o.month)
     if (already_exists) {
       if (opt.already_exists) {
         console.log("une feuille jaune du mois de " + fj_o.month + " existe déjà, on overwrite ")
-        fj_list = _.reject(fj_list, {'month': fj_o.month})
+        fj_list = fj_list.filter(el => el.month != fj_o.month) //_.reject(fj_list, {'month': fj_o.month})
         fj_list.push(fj_o)
       } else { // TODO gérer de manière plus cool avec un prompt
         console.log("une feuille jaune du mois de " + fj_o.month + " existe déjà : ", already_exists);
@@ -98,10 +113,10 @@ export class FjService {
   }
 
   async deleteFJ(fj_list_tobedel) {
-    let list_months = _.map(fj_list_tobedel, 'month');
+    let list_months = fj_list_tobedel.map(el => el.month) //_.map(fj_list_tobedel, 'month');
     let fj_list = await this.getAllFJ()
     if (!fj_list || !fj_list.length) return "ok";
-    let newdata = _.reject(fj_list, (o) => (list_months.indexOf(o.month) > -1))
+    let newdata = fj_list.filter(el => list_months.indexOf(el.month) < 0) //_.reject(fj_list, (o) => (list_months.indexOf(o.month) > -1))
     console.log("new fj_list will be: ", newdata);
     return this.setAllFJ(newdata)
   }
@@ -241,11 +256,15 @@ export class FjService {
     return fj_curr
   }
 
-  genSousTotaux(fj_o, currency = null) {
+  genSousTotaux(fj_o, currency = null, opt = {}) {
+    opt = Object.assign({
+      pretty: false // ajoute un champ 'pretty' à la racine pour les montants en string
+    }, opt)
+
     if (currency === null) {
       let o = {}
       for (let curr in fj_o.data) {
-        let t = this.genSousTotaux(fj_o, curr)
+        let t = this.genSousTotaux(fj_o, curr, opt )
         o[curr] = t
       }
       return o
@@ -263,6 +282,10 @@ export class FjService {
     totaux['solde']['bc'] = totaux['solde']['banque'] + totaux['solde']['caisse']
     totaux['total'] = this.soustotal(fj_o, currency, 'total')
     totaux['total']['bc'] = totaux['total']['banque'] + totaux['total']['caisse']
+
+    if (opt['pretty']) {
+      totaux['pretty'] = this.currencyService.prettyObj(totaux)
+    }
     return totaux
   }
 

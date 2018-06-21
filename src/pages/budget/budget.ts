@@ -26,6 +26,9 @@ export class BudgetPage {
   public filtre_moyen_opt = [{'title': 'Carte bleue', 'val': 'banque'}, {'title': 'Liquide', 'val': 'caisse'}];
   public filtre_moyen_sel = ['banque', 'caisse'];
   public filtre_moyen_sel2:string = "";
+  public filtre_inout_opt = [{'title': 'Entrées', 'val': 'in'}, {'title': 'Sorties', 'val': 'out'}]
+  public filtre_inout_sel = ['in', 'out'];
+  public filtre_inout_sel2:string = '';
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -85,9 +88,15 @@ export class BudgetPage {
     else this.filtre_moyen_sel2 = "@moyen azeraef";
   }
 
+  onFilterInoutChange(e) {
+    if (this.filtre_inout_sel.length > 1) this.filtre_inout_sel2 = "";
+    else if (this.filtre_inout_sel.length) this.filtre_inout_sel2 = "@inout " + this.filtre_inout_sel[0];
+    else this.filtre_inout_sel2 = "@inout azeraef";
+  }
+
   // this is triggered when we develop/collaps the filter "<reveal-div>"
   onFilterToggled($event) {
-    setTimeout(_ => this.marginList = ($event) ? "200" : "120", 300);
+    setTimeout(_ => this.marginList = ($event) ? "230" : "120", 300);
   }
 
 }
