@@ -36,8 +36,10 @@ export class FjObservationsPage {
     this.comments = this.navParams.get('comments')
     this.pretty_month = moment(this.month, 'YYYY-MM-DD').format('MMMM YYYY')
 
-    this.trService.getTrMonthCurrency(this.month, this.currency).then(data => {
+    let opt = {pretty: true}
+    this.trService.getTrMonthCurrency(this.month, this.currency, opt).then(data => {
       this.tr_list = data.filter(tr => tr.category == this.category);
+      console.log("transactions found for observation : ", this.tr_list)
       this.tr_ready = true
     }).catch(err => {
       console.log('ERROR while retrieving list of transactions', this.month, this.currency, err)

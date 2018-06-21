@@ -70,19 +70,34 @@ export class TransactionService {
     if (typeof tr_list != 'object' || !tr_list.length) throw "le format de la base de données des transactions est corrompu, ou la base est vide"
 
     let ind = tr_list.findIndex(el => el.id == tr.id)
-    if (ind) {
+    if (ind > -1) {
       tr_list.splice(ind, 1)
       return this.set(tr_list)
     } else {
-      console.log("WARNING in transaction.service > delete : transaction not found...", tr)
+      console.log("WARNING in transaction.service > delete : transaction not found...", tr, tr_list)
       return 0
     }    
   }
 
-  async getAll() {
+  async getAll(opt = {}) {
+    opt = Object.assign({
+      pretty: false // ajoute un champ pretty à chaque transaction pour afficher le montant de manière jolie
+    }, opt)
+
     let tr_list = await this.storage.get(this.key) // this is a promise
     if (!tr_list) return []
     tr_list = this.fixOldTrFormat(tr_list)
+
+    // on ajoute le champ pretty montant éventuellement
+    if (opt['pretty']) {
+      // TODO ajouter cette fonction dans _.service : tr_list = _.mapObj(tr_list, 'pretty', tr => this.currencyService.pretty(tr.montant, tr.currency))
+      for (let i = 0; i < tr_list.length; i++) {
+        tr_list[i]['pretty'] = {}
+        tr_list[i]['pretty']['montant'] = this.currencyService.pretty(tr_list[i].montant, tr_list[i].currency)
+        tr_list[i]['pretty']['date'] = moment(tr_list[i].date, 'YYYY-MM-DD').format('DD MMM YYYY')
+      }
+    }
+
     return tr_list
   }
 
@@ -121,10 +136,10 @@ export class TransactionService {
 
   // renvoie la liste des transactions du mois @month
   // si currency != null, renvoie uniquement les transactions en devise @currency
-  async getTrMonthCurrency(month, currency = null, tr_list = null) {
-    console.log('getting transactions with these parameters : ', month, currency)
+  async getTrMonthCurrency(month, currency = null, opt = {}, tr_list = null) {
+    console.log('getting transactions with these parameters : ', month, currency, opt)
     month = this.paramService.toMoment(month)
-    if (!tr_list || !tr_list.length) tr_list = await this.getAll()
+    if (!tr_list || !tr_list.length) tr_list = await this.getAll(opt)
     let tr_list_filtered = tr_list.filter(tr => moment(tr.date, 'YYYY-MM-DD').month() == month.month() && moment(tr.date, 'YYYY-MM-DD').year() == month.year())
     if (currency) tr_list_filtered = tr_list_filtered.filter(tr => tr.currency == currency)
     return tr_list_filtered

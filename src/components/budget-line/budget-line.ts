@@ -1,7 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AlertController } from 'ionic-angular';
+
 import { TransactionService } from '../../services/transaction.service';
 import { ParamService } from '../../services/param.service';
+import { CurrencyService } from '../../services/currency.service';
+
 import moment from 'moment';
 
 
@@ -18,12 +21,14 @@ export class BudgetLineComponent {
   private category_domain;
   private category_pretty;
   private default_currency: string;
+  private pretty_montant: string = '';
 
   @Input() tr;
   @Output('onDeleted') onDeleted: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(public alertCtrl: AlertController,
               private transactionService: TransactionService,
+              private currencyService: CurrencyService,
               private paramService: ParamService) {
     moment.locale('fr');
     this.default_currency = (paramService.currency) ? paramService.currency : 'EUR';
@@ -32,6 +37,7 @@ export class BudgetLineComponent {
 
   ngOnChanges(...args: any[]) {
     let curr_tr = args[0].tr.currentValue;
+    this.pretty_montant = this.currencyService.pretty(curr_tr.montant, curr_tr.currency)
     // console.log(curr_tr);
     this.cool_date = this.getCoolDate(curr_tr.date);
     let cat_list = (curr_tr.type == 'out') ? this.paramService.categories : this.paramService.categories_in ;

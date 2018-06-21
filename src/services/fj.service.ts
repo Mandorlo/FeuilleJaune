@@ -257,13 +257,15 @@ export class FjService {
   }
 
   genSousTotaux(fj_o, currency = null, opt = {}) {
+
     opt = Object.assign({
       pretty: false // ajoute un champ 'pretty' à la racine pour les montants en string
     }, opt)
 
     if (currency === null) {
       let o = {}
-      for (let curr in fj_o.data) {
+      let mycurrencies = (fj_o && fj_o.data) ? fj_o.data: [];
+      for (let curr in mycurrencies) {
         let t = this.genSousTotaux(fj_o, curr, opt )
         o[curr] = t
       }
@@ -291,6 +293,8 @@ export class FjService {
 
   // renvoie le soustotal de la meta-catégorie @cat_type uniquement dans la @currency (pas de conversion s'il y a d'autres devises dans la FJ)
   soustotal(fj_o, currency, cat_type = null) {
+    if (!fj_o) return {banque: 0, caisse: 0};
+
     fj_o.data[currency].transfert.caisse = -fj_o.data[currency].transfert.banque
 
     // cas spécial du solde

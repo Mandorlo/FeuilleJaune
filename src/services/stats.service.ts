@@ -110,7 +110,7 @@ export class StatsService {
         
         let details = {}
         for (let currency in fj_lastmonth.data) {
-            if (!myfj.data[currency]) return {msg: `Problème interne, il faudrait créer une Feuille Jaune en ${currency} pour ce mois-ci...`}
+            if (!myfj.data[currency]) return {msg: `Problème, il faudrait créer une Feuille Jaune en ${currency} pour ce mois-ci...`}
             let solde_caisse_ok = fj_lastmonth.data[currency].soustotaux.solde.caisse == myfj.data[currency].report_mois_precedent.caisse;
             let solde_banque_ok = fj_lastmonth.data[currency].soustotaux.solde.banque == myfj.data[currency].report_mois_precedent.banque;
             details[currency] = {

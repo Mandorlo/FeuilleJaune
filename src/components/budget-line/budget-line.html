@@ -3,7 +3,7 @@
     <ion-avatar [ngClass]="{'category_in': (tr.type == 'in')}" class="domaine_{{category_domain}}" item-start><i class="myicon fa {{category_icon}} fa-w"></i></ion-avatar>
     <h2>{{tr.name}}</h2>
     <h3>{{cool_date}}</h3>
-    <p item-right class='montant'>{{tr.montant}} {{paramService.symbolCurrency(tr.currency)}}</p>
+    <p item-right class='montant'>{{pretty_montant}}</p>
     <p>{{category_pretty}}</p>
   </ion-item>
 

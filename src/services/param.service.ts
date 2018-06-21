@@ -238,13 +238,14 @@ export class ParamService {
   }
 
   // recherche une photo pour la maison renseignée
+  // /!\ Angular n'aime pas que le résultat renvoyé change tout le temps, donc on utilise le cache pour renvoyer toujours la mm photo
   getPhotoMaison(maison) {
-    //console.log('maison photo', maison, this.CACHE['photos_maisons'][maison])
-    if (this.CACHE['photos_maisons'][maison]) return this.maisons.find(m => m.id == this.CACHE['photos_maisons'][maison]).photos[0];
+    //console.log('maison photo CACHE', maison, this.maisons, this.CACHE)
+    if (this.CACHE['photos_maisons'][maison]) return this.maisons.find(m => m.trig == this.CACHE['photos_maisons'][maison]).photos[0];
     for (let m of this.maisons) {
       if (maison.match(m.regex)) {
         let alea = Math.round(Math.random() * (m.photos.length -1))
-        this.CACHE['photos_maisons'][maison] = m.id;
+        this.CACHE['photos_maisons'][maison] = m.trig;
         return m.photos[alea]
       }
     }

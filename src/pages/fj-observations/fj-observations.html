@@ -28,8 +28,9 @@
         <ion-item-divider color="light" *ngIf="tr_ready">{{tr_list.length}} transaction<span *ngIf="tr_list.length > 1">s</span></ion-item-divider>
         <ion-item-divider color="light" *ngIf="!tr_ready">Chargement des transactions... <i class="fa fa-circle-o-notch fa-spin spinner" aria-hidden="true"></i></ion-item-divider>
         <ion-item *ngFor="let tr of tr_list">
-          <h2>{{tr.name}}<span item-right>{{tr.montant}} {{tr.currency}}</span></h2>
-          <p>{{tr.date}}</p>
+          <h2>{{tr.name}}</h2>
+          <p class="montant">{{tr.pretty.montant}}</p>
+          <p>{{tr.pretty.date}}</p>
           <p>{{tr.comment}}</p>
         </ion-item>
       </ion-item-group>

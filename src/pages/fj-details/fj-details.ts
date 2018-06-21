@@ -57,8 +57,19 @@ export class FjDetailsPage {
   }
 
   ionViewDidLoad() {
-    this.init().catch(err => console.log(err))
+    //this.init().catch(err => console.log(err))
     console.log('ionViewDidLoad FjDetailsPage Lodato sia il Signore !');
+  }
+
+  ionViewDidEnter() {
+    this.reload().catch(err => console.log(err))
+  }
+
+  async reload() {
+    this.curr_fj = await this.fjService.getFjData(this.curr_fj['month'])
+    this.fj_currencies = Object.getOwnPropertyNames(this.curr_fj['data']).map(c => this.paramService.getCurrencyObj(c))
+    this.curr_currency = this.fj_currencies[0]['id'];
+    this.init().catch(err => console.log(err))
   }
 
   ngAfterViewInit() {

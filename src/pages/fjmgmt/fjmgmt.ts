@@ -25,6 +25,7 @@ export class FjmgmtPage {
   private fjs_ready:boolean = false;
   private warnings;
   private fj_infos;
+  private photos_maisons:Object = {};
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -109,6 +110,12 @@ export class FjmgmtPage {
       }
     }
 
+    // on récupère les photos des maisons
+    for (let fj of this.fj_list) {
+      this.photos_maisons[fj.month] = this.paramService.getPhotoMaison(fj.maison)
+    }
+    //this.photos_maisons = _.map2Obj(this.fj_list, fj => fj.month, fj => this.paramService.getPhotoMaison(fj.maison))
+
     this.fjs_ready = true
     console.log('FJ LIST', this.fj_list)
   }
@@ -151,9 +158,9 @@ export class FjmgmtPage {
   }
 
   isSelected(fj) { // checks if the fj in input has been selected
-    let res = _.find(this.selected_fj, (o) => {
+    let res = this.selected_fj.find((o) => {
       return o.month == fj.month;
-    });
+    })
     return res !== undefined;
   }
 

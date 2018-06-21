@@ -27,7 +27,7 @@
       <ion-item *ngFor='let fj of yearFJList(year)'>
 
             <ion-avatar item-start (click)="showFJDetails(fj)">
-              <img [src]="paramService.getPhotoMaison(fj.maison)"> <!-- 'https://api.adorable.io/avatars/32/'+fj.month+'.png' -->
+              <img [src]="photos_maisons[fj.month]"> <!-- 'https://api.adorable.io/avatars/32/'+fj.month+'.png' -->
             </ion-avatar>
 
             <h2 (click)="showFJDetails(fj)">
