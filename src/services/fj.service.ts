@@ -9,6 +9,29 @@ import { CurrencyService } from './currency.service';
 import { _ } from './_.service';
 import moment from 'moment';
 
+interface bco {
+  banque: number,
+  caisse: number,
+  observations: string
+}
+
+interface bcbc {
+  banque: number,
+  caisse: number,
+  bc: number,
+  pretty?: string
+}
+
+type currency = 'EUR' | 'USD' | 'GBP' | 'CHF' | 'PLN' | 'HUF' | 'CZK' |'ILS' | 'LBP' | 'BRL' | 'MUR' | 'MGA' | 'BIF' | 'CAD' | 'CDF' | 'XOF' | 'PHP';
+
+export interface FeuilleJaune {
+  personne: string,
+  maison: string,
+  month: string,
+  data: Record<currency, Record<string, bco|Record<string, bco|bcbc>>>,
+  total?: bcbc
+}
+
 @Injectable()
 export class FjService {
   private db_fj = "dbfj";
@@ -375,6 +398,20 @@ export class FjService {
   // ===================================================================
   //            HELPER FUNCTIONS
   // ===================================================================
+
+  // renvoie la première FJ de la base de données
+  firstFJMonth(fj_list) {
+    if (!fj_list || fj_list.length == 0) return null;
+    
+    let fj_min = 0
+    for (let i = 1; i < fj_list.length; i++) {
+      if (moment(fj_list[i].month, 'YYYY-MM-DD').isBefore(moment(fj_list[fj_min].month, 'YYYY-MM-DD'))) {
+        fj_min = i
+      }
+    }
+    console.log("FIRST FJ : ", fj_list, fj_min)
+    return fj_list[fj_min].month
+  }
 
   // renvoie le solde archi-total de la feuille jaune fj dans la devise @devise (en convertissant si besoin les autres devises)
   getSoldeFJ(fj, devise = null) {

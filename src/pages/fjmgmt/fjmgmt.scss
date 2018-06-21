@@ -57,4 +57,18 @@ page-fjmgmt {
     margin-left: 0.2rem;
     color: map-get($colors, secondary)
   }
+
+  .phantom {
+    background-color: map-get($colors, light );
+  }
+
+  .phantom h2 {
+    text-align: center;
+    font-size: 1.4rem;
+    border: 1px dashed map-get($colors, darkgray );
+    border-radius: 15px;
+    color: map-get($colors, darkgray );
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
 }

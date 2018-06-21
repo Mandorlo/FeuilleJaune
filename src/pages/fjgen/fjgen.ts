@@ -41,16 +41,7 @@ export class FjgenPage {
     this.curr_currency = 'EUR'; //this.navParams.get("currency");
 
     if (curr_month_param) {
-      console.log("editing fj: ", curr_month_param);
-      this.edit_fj = true;
-      this.fjService.getFjData(curr_month_param).then(fj => {
-        this.fj_currencies = Object.getOwnPropertyNames(fj.data).map(c => this.paramService.getCurrencyObj(c))
-        this.curr_currency = this.fj_currencies[0]['id'];
-        console.log('FJDATA EDITION', this.curr_currency, fj)
-        this.curr_fj = fj
-        this.tr_engine_ready = true;
-      })
-      this.curr_month = moment(curr_month_param).format("YYYY-MM") + "-01";
+      this.getFJMonth(curr_month_param).catch(err => console.log(err))
     } else {
       this.setupNewFJ().catch(err => {
         console.log('ERROR in setting up new FJ : ', err)
@@ -76,12 +67,12 @@ export class FjgenPage {
   }
 
   // called by the constructor
-  async setupNewFJ() {
-    let lastmonth = await this.fjService.getMonthOfNewFJ();
+  async setupNewFJ(lastmonth = null) {
+    if (!lastmonth) lastmonth = await this.fjService.getMonthOfNewFJ();
     this.last_months = [lastmonth]
-    this.curr_month = lastmonth.date
+    this.curr_month = lastmonth
 
-    console.log("creating new FJ");
+    console.log("creating new FJ for month ", lastmonth);
     this.edit_fj = false;
     let fj = await this.fjService.genFjData(this.curr_month)
     this.fj_currencies = Object.getOwnPropertyNames(fj.data).map(c => this.paramService.getCurrencyObj(c))
@@ -90,6 +81,22 @@ export class FjgenPage {
     this.curr_currency = this.fj_currencies[0]['id']
     this.tr_engine_ready = true;
     return true
+  }
+
+  async getFJMonth(curr_month_param) {
+    let myFJ = await this.fjService.getFjData(curr_month_param);
+    if (myFJ) {
+      console.log("editing fj: ", curr_month_param);
+      this.edit_fj = true;
+      this.fj_currencies = Object.getOwnPropertyNames(myFJ.data).map(c => this.paramService.getCurrencyObj(c))
+      this.curr_currency = this.fj_currencies[0]['id'];
+      console.log('FJDATA EDITION', this.curr_currency, myFJ)
+      this.curr_fj = myFJ
+      this.tr_engine_ready = true;
+      this.curr_month = moment(curr_month_param).format("YYYY-MM") + "-01";
+    } else {
+      return this.setupNewFJ(curr_month_param)
+    }
   }
 
   presentToast(msg, temps = 2000) {

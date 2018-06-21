@@ -1,17 +1,22 @@
+import moment from 'moment';
+
+
 Array.prototype['sum'] = function () {
     return this.reduce((a,b) => a+b, 0)
 }
 
+
 export const _ = {
     sum,
-    traverse
+    traverse,
+    listMonths
 }
 
-function sum(arr) {
+export function sum(arr) {
     return arr.reduce((a,b) => a+b, 0)
 }
 
-function traverse(obj, condition, result, tree = {}) {
+export function traverse(obj, condition, result, tree = {}) {
     let debug = false
     let new_obj = {}
     if (debug) console.log("traversing OBJ : ", obj)
@@ -34,4 +39,22 @@ function traverse(obj, condition, result, tree = {}) {
         if (debug) console.log('not obj. Returning : ', obj)
         return obj
     }
+}
+
+// renvoie la liste des mois au format 'YYYY-MM-01' entre start (inclus) et end (inclus)
+// si end = null, on termine au mois courant
+export function listMonths (start, end = null) {
+    if (typeof start == 'string') start = moment(start, 'YYYY-MM-DD').startOf('month')
+    if (!end) end = moment().startOf('month')
+    if (typeof end == 'string') end = moment(end, 'YYYY-MM-DD').startOf('month')
+    start = start.startOf('month')
+    end = end.startOf('month')
+
+    let months = [start.format('YYYY-MM-DD')]
+    let i = 1
+    while (start.add(1, 'months').isSameOrBefore(end)) { // because .add mutates start
+        months.push(start.format('YYYY-MM-DD'))
+        i++
+    }
+    return months
 }
