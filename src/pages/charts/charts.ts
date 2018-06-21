@@ -75,7 +75,7 @@ export class ChartsPage {
   async reload() {
     this.computeMoisCourant().catch(err => console.log(err))
     this.tr_list = await this.trService.getAll();
-    // console.log("Transactions loaded ! Grazie Signore !");
+    //console.log("Transactions loaded ! Grazie Signore !", this.tr_list);
     this.genDataBarTotalDepensesParMois();
     this.genDataPie(this.repartition_depenses_mois, 1);
   }
@@ -88,13 +88,14 @@ export class ChartsPage {
     if (mois_ref == "auto") mois_ref = moment().format("YYYY-MM-DD");
     let date_limit_inf = moment(mois_ref).startOf("month").subtract(nb_mois-1, "months");
     let date_limit_sup = moment(mois_ref).endOf("month");
+    console.log("dates limit charts", date_limit_inf.format('YYYY-MM-DD'), date_limit_sup.format('YYYY-MM-DD'))
 
     this.tr_list.forEach(tr => {
       let mycat_el = this.paramService.categories.find(e => e.id == tr.category);
       let mycat = '';
-      if (mycat && mycat_el.type) {
+      if (mycat_el && mycat_el.type) {
         mycat = mycat_el.type;
-        if (tr.type === 'out' && date_limit_inf.isSameOrBefore(tr.date) && moment(tr.date).isSameOrBefore(date_limit_sup) && categories.indexOf(mycat) > -1) {
+        if (tr.type == 'out' && date_limit_inf.isSameOrBefore(tr.date) && moment(tr.date).isSameOrBefore(date_limit_sup) && categories.indexOf(mycat) > -1) {
           data[categories.indexOf(mycat)] += this.currencyService.convert(tr.montant, tr.currency)*100;
         }
       }

@@ -260,7 +260,7 @@ export class TrDetailsPage {
             let m = parseFloat(data.montant);
             if (!isNaN(m)) {
               this.curr_tr['montant'] = m;
-              this.pretty['montant'] = this.curr_tr['montant'].toString() + " " + this.paramService.symbolCurrency(this.curr_tr['montant']);
+              this.pretty['montant'] = this.curr_tr['montant'].toString() + " " + this.paramService.symbolCurrency(this.curr_tr['currency']);
             } else {
               this.presentToast("Le montant inséré n'est pas valide !")
             }
