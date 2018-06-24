@@ -19,8 +19,16 @@
 
 <ion-content>
   <ion-list *ngIf="fjs_ready">
-    <ion-item *ngIf="fj_list.length == 0" class="empty_fj" (click)="showFjPage()">
-      <div><i class="fa fa-leaf"></i><br>Ajoute ta première Feuille Jaune en cliquant ici :)</div>
+    <ion-item *ngIf="fj_list.length == 0" class="empty_fj" (click)="showFjPage(initial_month_fj)">
+      <div><i class="fa fa-leaf"></i>
+        <br>Ajoute ta première Feuille Jaune de
+        <br>
+        <ion-item class="initial_months">
+          <ion-select (click)="$event.stopPropagation()" [(ngModel)]="initial_month_fj">
+            <ion-option *ngFor="let m of initial_months" [value]="m.val">{{m.label}}</ion-option>
+          </ion-select>
+        </ion-item>
+        en cliquant ici :)</div>
     </ion-item>
 
     <ion-item-group *ngFor="let year of fj_years">
@@ -37,7 +45,8 @@
         <ion-item *ngIf="!fj.phantom">
 
               <ion-avatar item-start (click)="showFJDetails(fj)">
-                <img [src]="photos_maisons[fj.month]"> <!-- 'https://api.adorable.io/avatars/32/'+fj.month+'.png' -->
+                <img *ngIf="photos_maisons[fj.month]" [src]="photos_maisons[fj.month]"> <!-- 'https://api.adorable.io/avatars/32/'+fj.month+'.png' -->
+                <img class="no_photo" *ngIf="!photos_maisons[fj.month]">
               </ion-avatar>
 
               <h2 (click)="showFJDetails(fj)">

@@ -1,22 +1,5 @@
 page-fjmgmt {
 
-  .empty_fj {
-    height: 100vh;
-    background-color: map-get($colors, light);
-  }
-
-  .empty_fj ion-label {
-    margin-top: -8rem;
-    font-family: Lora;
-    font-size: 3rem;
-    white-space: normal;
-    text-align: center;
-  }
-
-  .empty_fj fa {
-    font-size: 10rem;
-  }
-
   .year {
     font-size: 2.3rem;
     font-family: Lora;
@@ -35,20 +18,21 @@ page-fjmgmt {
   }
 
   div.currency {
-    background-color: #c1573c;
+    background-color: map-get($colors, primary);
     color: white;
-    width: 17px;
-    height: 17px;
+    width: 21px;
+    height: 19px;
     font-size: 1.3rem;
     text-align: center;
-    line-height: 17px;
+    line-height: 19px;
     border-radius: 4px;
     margin-left: 4px;
+    margin-top: -3px;
     cursor: pointer;
   }
 
   img {
-    background-color: #c1573c;
+    background-color:map-get($colors, primary);
   }
 
   .fa-exclamation-triangle {
@@ -83,5 +67,38 @@ page-fjmgmt {
     margin-top: -0.5rem;
     position: relative;
     top: -0.3rem;
+  }
+
+
+  .empty_fj {
+    height: 100vh;
+    background-color: map-get($colors, light);
+  }
+
+  .empty_fj ion-label {
+    margin-top: -8rem;
+    font-family: Lora;
+    font-size: 3rem;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .empty_fj fa {
+    font-size: 10rem;
+  }
+
+  ion-item.initial_months {
+    background: transparent;
+    display: flex;
+  }
+
+  ion-select {
+    font-family: Lora;
+    font-size: 3rem;
+    max-width: 100% !important;
+    flex-grow: 1;
+    color: map-get($colors, primary);
+    text-align: center;
+    font-style: italic;
   }
 }

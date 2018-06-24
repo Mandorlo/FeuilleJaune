@@ -2,6 +2,10 @@
 
 "Feuille Jaune" est une application pour aider les membres de la Communauté du Chemin Neuf à faire leur feuille jaune chaque mois :)
 
+## TODO
+
+* cacher les images des maisons localement (https://medium.com/ninjadevs/caching-images-ionic-ccf2f4ca8d1f)
+
 ## Setup a fresh checkout
 
 Une fois qu'on a fait un git clone du repo, il faut faire les choses suivantes :

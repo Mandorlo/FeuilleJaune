@@ -22,6 +22,9 @@ export class FjmgmtPage {
   private fj_years;
   private list_months:string[];
 
+  private initial_month_fj:string = moment().startOf('month').format('YYYY-MM-DD')
+  private initial_months;
+
   private fj_list:FeuilleJaune[];
   private fj_list_phantom = [];
   
@@ -90,10 +93,17 @@ export class FjmgmtPage {
   }
 
   async reload() {
-    
     // on récupère les FJ
     this.fj_list = await this.fjService.getAllFJ({soustotaux: true})
     if (!this.fj_list.length) this.fj_list = [];
+
+    // on récupère les month initiaux si on n'a pas de FJ
+    if (!this.fj_list || this.fj_list.length == 0) {
+      let mymonths = listMonths(moment().add(-5, 'months')).reverse()
+      this.initial_months = mymonths.map(m => {
+        return {label: moment(m, 'YYYY-MM-DD').format('MMMM YYYY'), val: m}
+      })
+    }
 
     // on récupère les années des FJs (e.g. [2017, 2018])
     this.fj_years = _.uniq(this.fj_list.map(fj => moment(fj.month, 'YYYY-MM-DD').year()).sort().reverse())
@@ -135,7 +145,8 @@ export class FjmgmtPage {
 
     // on récupère les photos des maisons
     for (let fj of this.fj_list) {
-      this.photos_maisons[fj.month] = this.paramService.getPhotoMaison(fj.maison)
+      let photo_url = this.paramService.getPhotoMaison(fj.maison)
+      this.photos_maisons[fj.month] = (photo_url) ? photo_url: '';
     }
     // TODO add this function to _.service : this.photos_maisons = _.map2Obj(this.fj_list, fj => fj.month, fj => this.paramService.getPhotoMaison(fj.maison))
 
@@ -151,6 +162,10 @@ export class FjmgmtPage {
     toast.present();
   }
 
+  stopPropa(e) {
+    e.stopPropagation()
+  }
+
   async showFjPage(month = null) { // to create a new FJ
     if (!this.paramService.personne) {
       this.presentToast("Il faut spécifier une personne dans les paramètres");
@@ -158,6 +173,10 @@ export class FjmgmtPage {
       return
     } else if (!this.paramService.maison) {
       this.presentToast("Il faut spécifier une maison dans les paramètres");
+      this.navCtrl.push(ParamPage);
+      return
+    } else if (!this.paramService.currency) {
+      this.presentToast("Il faut spécifier une devise dans les paramètres");
       this.navCtrl.push(ParamPage);
       return
     }

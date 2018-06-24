@@ -15,7 +15,7 @@ import { Observable } from 'rxjs/Observable';
   templateUrl: 'param.html',
 })
 export class ParamPage {
-  private version:string = "0.11.1";
+  private version:string = "0.11.2";
   private loading:boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
