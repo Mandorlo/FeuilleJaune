@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { ParamService } from './param.service';
-import client from 'node-rest-client-promise';
-import { currency_api_key } from '../arcana/apis_config';
+//import client from 'node-rest-client-promise';
+//import { currency_api_key } from '../arcana/apis_config';
 
 import { _ } from './_.service';
 
-export type currency = 'EUR' | 'USD' | 'GBP' | 'CHF' | 'PLN' | 'HUF' | 'CZK' |'ILS' | 'LBP' | 'BRL' | 'MUR' | 'MGA' | 'BIF' | 'CAD' | 'CDF' | 'XOF' | 'PHP';
+export type currency = 'EUR' | 'USD' | 'GBP' | 'CHF' | 'PLN' | 'HUF' | 'CZK' | 'ILS' | 'LBP' | 'BRL' | 'MUR' | 'MGA' | 'BIF' | 'CAD' | 'CDF' | 'XOF' | 'PHP';
 
 @Injectable()
 export class CurrencyService {
-  public APIKEY: string = currency_api_key
-  public url = `http://data.fixer.io/api/latest?access_key=${this.APIKEY}&base=EUR&symbols=@sym`
+  //public APIKEY: string = currency_api_key
+  //public url = `https://data.fixer.io/api/latest?access_key=${this.APIKEY}&base=EUR&symbols=@sym`
+  //public currencies_id_backuponly : ['EUR', 'USD', 'GBP', 'CHF', 'PLN', 'HUF', 'CZK', 'ILS', 'LBP', 'BRL', 'MUR', 'MGA', 'BIF', 'CAD', 'CDF', 'XOF', 'PHP']
   public conversions;
 
   constructor(private paramService: ParamService, private storage: Storage) {
-    let symbols = paramService.currencies.map(c => c.id).join(',')
-    this.url = this.url.replace('@sym', symbols)
 
     this.init().catch(e => {
       console.log('ERROR in currency.service : ', e)
@@ -24,12 +23,33 @@ export class CurrencyService {
   }
 
   public async init() {
-    if (this.conversions) return 1;
-    let http_result = null;
+    if (this.isInit()) return 1;
+    let res = await this.paramService.ready()
+    if (res) {
+      console.log("ok got res true from paramService.ready() : ", res, this.paramService.currencies)
+      this.conversions = _.mapObj(this.paramService.currencies, 'id', 'default_rate_eur')
+      this.storage.set('currency_conversion', this.conversions)
+    } else {
+      this.conversions = await this.getLocalConversions()
+    }
+    /* let http_result = null;
+    let url = this.url
+
     try {
-      http_result = await client.Client({}).getPromise(this.url)
+      let res = await this.paramService.ready()
+      let currencies_id;
+      if (res) {
+        console.log("ok got res true from paramService.ready() : ", res, this.paramService.currencies)
+        currencies_id = this.paramService.currencies.map(c => c.id)
+      } else {
+        console.log("got res false from paramService.ready(), getting backup currencies : ", this.currencies_id_backuponly)
+        currencies_id = this.currencies_id_backuponly
+      }
+      let symbols = currencies_id.join(',')
+      url = this.url.replace('@sym', symbols)
+      http_result = await client.Client({}).getPromise(url)
     } catch(err) {
-      console.log('WARNING : Failed to contact currency API, getting local currency conversion rates', this.url)
+      console.log('WARNING : Failed to contact currency API, getting local currency conversion rates', url, err)
       this.conversions = await this.getLocalConversions()
       return 2
     }
@@ -39,10 +59,14 @@ export class CurrencyService {
       this.storage.set('currency_conversion', this.conversions)
       return 1
     } else {
-      console.log('WARNING : failed to contact currency API, getting local currency conversion rates', this.url)
+      console.log('WARNING : failed to contact currency API, getting local currency conversion rates', url, http_result)
       this.conversions = await this.getLocalConversions()
       return 3
-    }
+    } */
+  }
+
+  isInit() {
+    return (this.conversions && this.conversions['EUR'] && this.conversions['ILS'])
   }
 
   // récupère des taux de change locaux si l'API est injoignable
@@ -54,6 +78,7 @@ export class CurrencyService {
         this.conversions[c.id] = c.default_rate_eur
       }
     }
+    console.log("local currency rates : ", this.conversions)
     return this.conversions
   }
 

@@ -1,21 +1,51 @@
 import moment from 'moment';
-
-
-Array.prototype['sum'] = function () {
-    return this.reduce((a,b) => a+b, 0)
-}
-
+import { markParentViewsForCheck } from '@angular/core/src/view/util';
 
 export const _ = {
     sum,
     traverse,
-    listMonths
+    listMonths,
+    mapObj
+}
+
+export function augmentPrototypes() {
+    Array.prototype['sum'] = function () {
+        return this.reduce((a,b) => a+b, 0)
+    }
 }
 
 export function sum(arr) {
     return arr.reduce((a,b) => a+b, 0)
 }
 
+// arr est un array d'objet. 
+// mapAttr renvoie un nouvel array des mêmes objets mais avec l'attribut attr mis à jour avec fn(el)
+export function mapAttr(arr, attr, fn) {
+    return arr.map(el => {
+        el[attr] = fn(el)
+        return el
+    })
+}
+
+
+// renvoie un objet à partir d'un array
+export function mapObj(arr, fn_id, fn_val) {
+    let o = {}
+    for (let i = 0; i < arr.length; i++) {
+        let key;
+        if (typeof fn_id == 'string') key = arr[i][fn_id];
+        else key = fn_id(arr[i]);
+
+        let val;
+        if (typeof fn_val == 'string') val = arr[i][fn_val];
+        else val = fn_val(arr[i])
+
+        o[key] = val
+    }
+    return o
+}
+
+// traverse un objet profondément et dès que @condition(attr, val, tree) est vérifiée, on renvoie result(attr, val, tree)
 export function traverse(obj, condition, result, tree = {}) {
     let debug = false
     let new_obj = {}

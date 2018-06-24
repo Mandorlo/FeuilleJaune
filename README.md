@@ -6,6 +6,10 @@
 
 Une fois qu'on a fait un git clone du repo, il faut faire les choses suivantes :
 
+### Ajouter le dossier arcana dans src/
+
+le dossier arcana contient les arcana des API google, fixer.io (devises), firebase
+
 ### Setup pdf generation correctly
 
 Pdfmake ne marche pas directement dans ionic 3, il faut prendre la dernière build depuis le repo. Donc exécuter :
@@ -46,6 +50,7 @@ Then add the APK to Github as a release
 * in config.xml
 * in package.json
 * in Page param.ts
+* in service-worker.js
 
 ## How does the custom font work ?
 
@@ -58,6 +63,11 @@ Pour utiliser la custom font, c'est un peu comme font awesome, on ajoute des bal
 * run `ionic serve` to run the app in the browser with live reload
 * run `ionic cordova run android` to run the app on your usb connected smartphone
 * while developping, in index.html you should comment the service worker lines (otherwise it will cache everything and livereload won't work)
+
+### How to add support for new currency :
+
+* add currency id to the currency type in currency.service
+* add currency to firebase collection through the tool.js
 
 ## Known bugs
 

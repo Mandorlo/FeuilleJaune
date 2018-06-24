@@ -1,103 +1,179 @@
-[{
-    "id": "EUR",
-    "name": "Euros",
-    "symbol": "€",
-    "countries": ["DEU", "FRA", "ITA", "ESP", "PRT", "NLD", "IRL", "AUT", "BEL", "LTU", "EST", "CYP", "MLT", "FIN", "SVK", "LVA", "LUX", "SVN", "REU", "GLP", "MTQ", "MYT", "GUF"],
-    "default_rate_eur": 1
-  }, {
-    "id": "USD",
-    "name": "Dollars",
-    "symbol": "$",
-    "countries": ["USA", "NLD"],
-    "default_rate_eur": 1.177019
-  }, {
-    "id": "GBP",
-    "name": "Livre sterling",
-    "symbol": "£",
-    "countries": ["GBR"],
-    "default_rate_eur": 0.878103
-  }, {
-    "id": "CHF",
-    "name": "Franc Suisse",
-    "symbol": "FrS",
-    "countries": ["CHE"],
-    "default_rate_eur": 1.158898
-  }, {
-    "id": "PLN",
-    "name": "Złoty",
-    "symbol": "zł",
-    "countries": ["POL"],
-    "default_rate_eur": 4.27835
-  }, {
-    "id": "HUF",
-    "name": "Forint",
-    "symbol": "Ft",
-    "countries": ["HUN"],
-    "default_rate_eur": 319.348748
-  }, {
-    "id": "CZK",
-    "name": "Couronne tchèque",
-    "symbol": "Kč",
-    "countries": ["CZE"],
-    "default_rate_eur": 25.735564
-  }, {
-    "id": "ILS",
-    "name": "Sheqels",
-    "symbol": "\u20AA",
-    "countries": ["ISR"],
-    "default_rate_eur": 4.194942
-  }, {
-    "id": "LBP",
-    "name": "Livre libanaise",
-    "symbol": "ل.ل",
-    "countries": ["LBN"],
-    "default_rate_eur": 1772.237141
-  }, {
-    "id": "BRL",
-    "name": "Réal Brésilien",
-    "symbol": "R$",
-    "countries": ["BRA"],
-    "default_rate_eur": 4.354268
-  }, {
-    "id": "MUR",
-    "name": "Roupie mauricienne",
-    "symbol": "Rs",
-    "countries": ["MUS"],
-    "default_rate_eur": 39.783234
-  }, {
-    "id": "MGA",
-    "name": "Ariary malgache",
-    "symbol": "Ariary",
-    "countries": ["MDG"],
-    "default_rate_eur": 3848.851867
-  }, {
-	"id": "BIF",
-	"symbol": "Fbu",
-	"name": "Franc burundais",
-	"countries": ["BDI"],
-	"default_rate_eur": 2058.758909
-  }, {
-	"id": "CAD",
-	"name": "Dollar canadien",
-	"symbol": "$",
-	"countries": ["CAN"],
-	"default_rate_eur": 1.53133
-  }, {
-	"id": "CDF",
-	"name": "Franc congolais",
-	"symbol": "FC",
-	"countries": ["COD"],
-	"default_rate_eur": 1843.512022
-  }, {
-	"id": "XOF",
-	"name": "Franc CFA",
-	"symbol": "FCFA",
-	"countries": ["CIV", "TCD"],
-	"default_rate_eur": 655.562159
-  }, {
-	"id": "PHP",
-	"name": "Peso philippin",
-	"symbol": "₱",
-	"countries": ["PHL"],
-	"default_rate_eur": 62.67113
-  }]
+[
+	{
+		"id": "EUR",
+		"name": "Euros",
+		"symbol": "€",
+		"countries": [
+			"DEU",
+			"FRA",
+			"ITA",
+			"ESP",
+			"PRT",
+			"NLD",
+			"IRL",
+			"AUT",
+			"BEL",
+			"LTU",
+			"EST",
+			"CYP",
+			"MLT",
+			"FIN",
+			"SVK",
+			"LVA",
+			"LUX",
+			"SVN",
+			"REU",
+			"GLP",
+			"MTQ",
+			"MYT",
+			"GUF"
+		],
+		"default_rate_eur": 1
+	},
+	{
+		"id": "USD",
+		"name": "Dollars",
+		"symbol": "$",
+		"countries": [
+			"USA",
+			"NLD"
+		],
+		"default_rate_eur": 1.165446
+	},
+	{
+		"id": "GBP",
+		"name": "Livre sterling",
+		"symbol": "£",
+		"countries": [
+			"GBR"
+		],
+		"default_rate_eur": 0.878607
+	},
+	{
+		"id": "CHF",
+		"name": "Franc Suisse",
+		"symbol": "FrS",
+		"countries": [
+			"CHE"
+		],
+		"default_rate_eur": 1.151
+	},
+	{
+		"id": "PLN",
+		"name": "Złoty",
+		"symbol": "zł",
+		"countries": [
+			"POL"
+		],
+		"default_rate_eur": 4.320897
+	},
+	{
+		"id": "HUF",
+		"name": "Forint",
+		"symbol": "Ft",
+		"countries": [
+			"HUN"
+		],
+		"default_rate_eur": 324.530219
+	},
+	{
+		"id": "CZK",
+		"name": "Couronne tchèque",
+		"symbol": "Kč",
+		"countries": [
+			"CZE"
+		],
+		"default_rate_eur": 25.760906
+	},
+	{
+		"id": "ILS",
+		"name": "Sheqels",
+		"symbol": "₪",
+		"countries": [
+			"ISR"
+		],
+		"default_rate_eur": 4.200069
+	},
+	{
+		"id": "LBP",
+		"name": "Livre libanaise",
+		"symbol": "ل.ل",
+		"countries": [
+			"LBN"
+		],
+		"default_rate_eur": 1754.812723
+	},
+	{
+		"id": "BRL",
+		"name": "Réal Brésilien",
+		"symbol": "R$",
+		"countries": [
+			"BRA"
+		],
+		"default_rate_eur": 4.41087
+	},
+	{
+		"id": "MUR",
+		"name": "Roupie mauricienne",
+		"symbol": "Rs",
+		"countries": [
+			"MUS"
+		],
+		"default_rate_eur": 40.499707
+	},
+	{
+		"id": "MGA",
+		"name": "Ariary malgache",
+		"symbol": "Ariary",
+		"countries": [
+			"MDG"
+		],
+		"default_rate_eur": 3811.010426
+	},
+	{
+		"id": "BIF",
+		"symbol": "Fbu",
+		"name": "Franc burundais",
+		"countries": [
+			"BDI"
+		],
+		"default_rate_eur": 2040.673472
+	},
+	{
+		"id": "CAD",
+		"name": "Dollar canadien",
+		"symbol": "$",
+		"countries": [
+			"CAN"
+		],
+		"default_rate_eur": 1.546319
+	},
+	{
+		"id": "CDF",
+		"name": "Franc congolais",
+		"symbol": "FC",
+		"countries": [
+			"COD"
+		],
+		"default_rate_eur": 1824.511048
+	},
+	{
+		"id": "XOF",
+		"name": "Franc CFA",
+		"symbol": "FCFA",
+		"countries": [
+			"CIV",
+			"TCD"
+		],
+		"default_rate_eur": 655.365544
+	},
+	{
+		"id": "PHP",
+		"name": "Peso philippin",
+		"symbol": "₱",
+		"countries": [
+			"PHL"
+		],
+		"default_rate_eur": 62.025063
+	}
+]
