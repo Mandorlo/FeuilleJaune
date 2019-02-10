@@ -6,7 +6,8 @@ import { TransactionService } from '../../services/transaction.service';
 import { Ajouter2Page } from '../ajouter2/ajouter2';
 import { TrDetailsPage } from '../tr-details/tr-details';
 
-import _ from 'lodash';
+//import _ from 'lodash';
+import { sortBy } from '../../services/_.service';
 
 @Component({
   selector: 'page-budget',
@@ -54,7 +55,7 @@ export class BudgetPage {
     this.tr_engine_ready = false;
     this.trService.getAll().then(data => {
       if (typeof data == 'object' && data.length) {
-        this.transactions = _.orderBy(data, ['date'], ['desc']);
+        this.transactions = sortBy(data, 'date').reverse(); //_.orderBy(data, ['date'], ['desc']);
         this.nb_tr = this.transactions.length;
       } else {
         console.log("Le format de la base de transactions n'est pas bon ou la base est vide, on utilise du coup une base vide");

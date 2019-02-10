@@ -10,7 +10,7 @@ import { DatePicker } from '@ionic-native/date-picker';
 
 import moment from 'moment';
 import * as pik from 'pikaday';
-import _ from 'lodash';
+//import _ from 'lodash';
 
 
 
@@ -105,8 +105,8 @@ export class TrDetailsPage {
   }
 
   getCatOptions(type) {
-    let curr_catlist = (type == "out") ? this.paramService.categories : this.paramService.categories_in;
-    return _.map(curr_catlist, el => {
+    let curr_catlist = (type == "out") ? this.paramService.getCategories() : this.paramService.getCategoriesIn();
+    return curr_catlist.map(el => {
       return { 'val': el.id, 'title': el.label, 'icon': el.icon }
     });
   }

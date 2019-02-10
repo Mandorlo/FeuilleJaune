@@ -4,9 +4,9 @@ import { Storage } from '@ionic/storage';
 import { ParamService } from './param.service';
 import { CurrencyService } from './currency.service';
 
-import _ from 'lodash';
+//import _ from 'lodash';
 import moment from 'moment';
-
+import { uniq, sum } from './_.service'
 
 
 
@@ -28,6 +28,7 @@ export class TransactionService {
   }
 
   async add(tr) {
+    console.log("tr.add", this.paramService.getCategories()[0])
     let tr_list = await this.getAll()
     tr.id = this.genId(tr)
     tr.icon = this.smartIcon(tr)
@@ -120,7 +121,7 @@ export class TransactionService {
   async getMonthCurrencies(month) {
     month = this.paramService.toMoment(month)
     let tr_list = await this.getTransactions(month);
-    return _.uniq(tr_list.map(tr => tr.currency))
+    return uniq(tr_list.map(tr => tr.currency))
   }
 
   // renvoie le total des dépenses du mois en convertissant dans la devise @devise
@@ -131,7 +132,7 @@ export class TransactionService {
     let myyear = month.year()
     if (!tr_list) tr_list = await this.getAll()
     let month_tr_list = tr_list.filter(tr => moment(tr.date, 'YYYY-MM-DD').month() == mymonth && moment(tr.date, 'YYYY-MM-DD').year() == myyear)
-    return _.sum(month_tr_list.map(tr => this.currencyService.convert(tr.montant, tr.currency, devise)))
+    return sum(month_tr_list.map(tr => this.currencyService.convert(tr.montant, tr.currency, devise)))
   }
 
   // renvoie la liste des transactions du mois @month
@@ -150,11 +151,11 @@ export class TransactionService {
 
   categoryLabel(curr_tr) {
     if (!this.cat_lists.in || this.cat_lists.in.length <= 0) {
-      this.cat_lists.out = this.paramService.categories;
-      this.cat_lists.in = this.paramService.categories_in;
+      this.cat_lists.out = this.paramService.getCategories();
+      this.cat_lists.in = this.paramService.getCategoriesIn();
     }
     let cat_list = (curr_tr.type == "out") ? this.cat_lists.out : this.cat_lists.in;
-    let el = _.find(cat_list, { 'id': curr_tr.category });
+    let el = cat_list.find(e => e['id'] == curr_tr.category);
     if (el) {
       if (curr_tr.type == 'depot') {
         return "Dépôt à la banque"
@@ -170,12 +171,12 @@ export class TransactionService {
 
   smartIcon(curr_tr) {
     if (!this.cat_lists.in || this.cat_lists.in.length <= 0) {
-      this.cat_lists.out = this.paramService.categories;
-      this.cat_lists.in = this.paramService.categories_in;
+      this.cat_lists.out = this.paramService.getCategories();
+      this.cat_lists.in = this.paramService.getCategoriesIn();
     }
     let cat_list = (curr_tr.type == "out") ? this.cat_lists.out : this.cat_lists.in;
     let myicon = "";
-    let el = _.find(cat_list, { 'id': curr_tr.category });
+    let el = cat_list.find(e => e['id'] = curr_tr.category);
     if (el) {
       myicon = el.icon;
       let smart_icon = this.paramService.guessIcon(curr_tr.name);

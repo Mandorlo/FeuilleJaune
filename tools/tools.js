@@ -91,9 +91,9 @@ function mapAttr(arr, attr, fn) {
 // ===============================================
 // ===== Mettre à jour les taux de devises =======
 // ===============================================
-updateCurrenciesRates().then(res => console.log(res)).catch(err => console.log(err))
+//updateCurrenciesRates().then(res => console.log(res)).catch(err => console.log(err))
 
 // ===============================================
 // ==== Mettre à jour une collection firebase ====
 // ===============================================
-//uploadCollection('smart_categories').then(res => console.log(res)).catch(err => console.log(err))
+uploadCollection('smart_categories').then(res => console.log(res)).catch(err => console.log(err))

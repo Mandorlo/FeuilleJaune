@@ -181,8 +181,9 @@
     "trig": "F55",
     "num": 66,
     "photos": [
+		"https://www.chemin-neuf.fr/dam?media-id=574defca24564078028b6ce9"
     ],
-    "regex": "(lyon.*colline|61)"
+    "regex": "(lyon.*colline|(^| )(61|59|49)( |$))"
   },
   {
     "country": "FRA",
@@ -484,7 +485,7 @@
     "trig": "MDN",
     "num": 70,
     "photos": [
-      "http://pp.mariedenazareth.com/sites/default/files/styles/actus/public/mav-cimn.jpg"
+      "https://drive.google.com/uc?export=download&id=1CTnEhQDYV6RZfBg2B1ztEXYsKS8B_xhF"
     ],
     "regex": "(centre.*internat|marie.*nazareth|cimdn)"
   },

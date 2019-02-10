@@ -15,7 +15,7 @@ import { Observable } from 'rxjs/Observable';
   templateUrl: 'param.html',
 })
 export class ParamPage {
-  private version:string = "0.11.2";
+  private version:string = "1.1.0";
   private loading:boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
@@ -84,6 +84,7 @@ export class ParamPage {
       this.exportService.importDB().then(res => {
         this.loading = false;
       }).catch(err => {
+        console.log('Error during db import', err)
         alert("Error during import, sorry :( " + JSON.stringify(err))
         this.loading = false;
       });

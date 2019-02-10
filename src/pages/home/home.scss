@@ -51,17 +51,16 @@ page-home {
   /*                PARALLAX EFFECT              */
 
   .fixed_content {
-    z-index: 1;
     position: fixed;
+    z-index: 0;
     top: 80px;
-    width: 100%;
+    width: 100vw;
     background-size: cover;
   }
 
   .scrollable_content {
-    z-index: 2;
     position: relative;
-    z-index: 2;
+    z-index: 100 !important;
     margin-top: 260px;
   }
 

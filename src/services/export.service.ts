@@ -12,8 +12,7 @@ import { ParamService } from './param.service';
 import { TransactionService } from './transaction.service';
 import { FjService } from './fj.service';
 
-import _ from 'lodash';
-import moment from 'moment';
+import { sortBy } from './_.service';
 
 @Injectable()
 export class ExportService {
@@ -79,38 +78,17 @@ export class ExportService {
 
   async importDB_android() {
     let uri = await this.fileChooser.open() // renvoie une URL du type content://...
+    console.log("raw uri to import", uri);
     uri = await this.filePath.resolveNativePath(uri) // transforme une URL content://... en file:///...
+    console.log("uri to import", uri);
     let name = uri.split('/').reverse()[0];
     let path = uri.substring(0, uri.length - name.length);
+    console.log("uri split", uri, name, path);
 
     let file_exists = await this.file.checkFile(path, name);
     if (!file_exists) throw 'Sorry but the chosen file doesn\'t exist...'
     console.log("uri fichier: ", uri, name, path);
     return this.readDB(path, name)
-
-    /* let res = {hasPermission: false}
-    try {
-      res = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE)
-    } catch(e) {
-      res = await this.androidPermissions.requestPermissions([this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE])
-      if (res.hasPermission) return this.readDB(path, name)
-      else throw "Je n'a pas la permission d'ouvrir ce fichier..."
-    }
-
-    if (res.hasPermission) {
-      alert('I have all permissions, now reading...')
-      return this.readDB(path, name)
-    } else {
-      let res = await this.androidPermissions.requestPermissions([this.androidPermissions.PERMISSION.READ_EXTERNAL_STORAGE])
-      alert("ok permissions ? " + JSON.stringify(res))
-      if (res.hasPermission) {
-        alert("ok permission " + res.hasPermission);
-        return this.readDB(path, name)
-      } else {
-        throw "Je n'ai pas la permission d'ouvrir ce fichier :("
-      }
-    } */
-
   }
 
   async readDB(path, name) {
@@ -162,7 +140,7 @@ export class ExportService {
     // on sauvegarde toutes les transactions
     let tr_list = await this.trService.getAll()
     if (typeof tr_list == 'object' && tr_list.length) {
-      db.transaction = _.orderBy(tr_list, ['date'], ['desc']);
+      db.transaction = sortBy(tr_list, 'date').reverse(); //_.orderBy(tr_list, ['date'], ['desc']);
     } else {
       console.log("Le format de la base de transactions n'est pas bon ou la base est vide, on utilise du coup une base vide");
       db.transaction = [];
@@ -172,7 +150,7 @@ export class ExportService {
     let fj_list = await this.fjService.getAllFJ()
     db.fj = fj_list;
     if (!fj_list || !fj_list.length) db.fj = [];
-    db.fj = _.sortBy(db.fj, [(o) => { return o.month }])
+    db.fj = sortBy(db.fj, 'month'); //_.sortBy(db.fj, [(o) => { return o.month }])
     return db
   }
 

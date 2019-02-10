@@ -4,13 +4,13 @@ import { Storage } from '@ionic/storage';
 import { AngularFirestore } from 'angularfire2/firestore';
 //import { Observable } from 'rxjs/Observable';
 
-import _ from 'lodash';
+//import _ from 'lodash';
 import moment from 'moment';
 
 @Injectable()
 export class ParamService {
 
-  public categories = [{ 'id': 'alimentation', 'label': 'Alimentation', 'type': 'maison', 'icon': 'fa-cutlery' },
+  private readonly categories = [{ 'id': 'alimentation', 'label': 'Alimentation', 'type': 'maison', 'icon': 'fa-cutlery' },
   { 'id': 'energie', 'label': 'Energie (électricité, gaz, ...)', 'type': 'maison', 'icon': 'fa-bolt' },
   { 'id': 'eau', 'label': 'Eau', 'type': 'maison', 'icon': 'fa-tint' },
   { 'id': 'loyer', 'label': 'Loyers et charges', 'type': 'maison', 'icon': 'fa-home' },
@@ -44,7 +44,7 @@ export class ParamService {
   { 'id': 'perte', 'label': 'Pertes, écarts de compte, agios bancaires', 'type': 'banque', 'icon': 'fa-bank' },
   { 'id': 'frais_banque', 'label': 'Frais bancaires', 'type': 'banque', 'icon': 'fa-bank' },
   { 'id': 'avance_retournee', 'label': 'Avance retournée ou solde feuille jaune', 'type': 'banque', 'icon': 'fa-money' }];
-  public categories_in = [{ 'id': 'salaire', 'label': 'Salaires, honoraires, pensions,retraites', 'icon': 'fa-money' },
+  private readonly categories_in = [{ 'id': 'salaire', 'label': 'Salaires, honoraires, pensions,retraites', 'icon': 'fa-money' },
   { 'id': 'allocation', 'label': 'Allocations familiales, bourses…', 'icon': 'fa-users' },
   { 'id': 'don', 'label': 'Dons...', 'icon': 'fa-gift' },
   { 'id': 'dime', 'label': 'Reversement des revenus, dons ou dîme', 'icon': 'myicon-tax' },
@@ -61,11 +61,11 @@ export class ParamService {
   // mais quand le champ vaut '@google:...', ça correspond à des images de google agenda
   public smart_categories = []
 
-  public liste_maison = _.map(_.filter(this.categories, ['type', 'maison']), 'id');
-  public liste_viecourante = _.map(_.filter(this.categories, ['type', 'vie courante']), 'id');
-  public liste_transport = _.map(_.filter(this.categories, ['type', 'transport']), 'id');
-  public liste_secretariat = _.map(_.filter(this.categories, ['type', 'secretariat']), 'id');
-  public liste_banque = _.map(_.filter(this.categories, ['type', 'banque']), 'id');
+  public liste_maison = this.categories.filter(el => el.type == 'maison').map(el => el.id); //_.map(_.filter(this.categories, ['type', 'maison']), 'id');
+  public liste_viecourante = this.categories.filter(el => el.type == 'vie courante').map(el => el.id); //_.map(_.filter(this.categories, ['type', 'vie courante']), 'id');
+  public liste_transport = this.categories.filter(el => el.type == 'transport').map(el => el.id); //_.map(_.filter(this.categories, ['type', 'transport']), 'id');
+  public liste_secretariat = this.categories.filter(el => el.type == 'secretariat').map(el => el.id); //_.map(_.filter(this.categories, ['type', 'secretariat']), 'id');
+  public liste_banque = this.categories.filter(el => el.type == 'banque').map(el => el.id); //_.map(_.filter(this.categories, ['type', 'banque']), 'id');
 
   public currencies = []
 
@@ -140,6 +140,14 @@ export class ParamService {
     let catCollection = this.afs.collection('smart_categories')
     let catObs = catCollection.valueChanges()
     catObs.subscribe(data => this.smart_categories = this.prepareSmartCategories(data))
+  }
+
+  getCategories() {
+    return JSON.parse(JSON.stringify(this.categories))
+  }
+
+  getCategoriesIn() {
+    return JSON.parse(JSON.stringify(this.categories_in))
   }
 
   // returns only when param attributes are all set
@@ -287,7 +295,7 @@ export class ParamService {
     return cat_id
   }
 
-  // un peu comme _.values mais avec un champ id optionnel
+  /* // un peu comme _.values mais avec un champ id optionnel
   values(obj, show_id = false) {
     let arr = []
     for (let id in obj) {
@@ -296,6 +304,6 @@ export class ParamService {
       arr.push(o)
     }
     return arr
-  }
+  } */
 
 }

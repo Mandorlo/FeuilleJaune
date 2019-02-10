@@ -68,7 +68,7 @@ export class Ajouter2Page {
 
     moment.locale('fr');
     this.today = moment().format("dddd DD MMMM YYYY");
-    this.categories_options = this.paramService.categories.map(el => {
+    this.categories_options = this.paramService.getCategories().map(el => {
       return { 'val': el.id, 'title': el.label, 'icon': el.icon }
     });
 
@@ -146,7 +146,7 @@ export class Ajouter2Page {
     setTimeout(_ => {
       // this.loadProgress += Math.round(100.0 / this.nbPhases);
       this.slides.slideTo(num, 200);
-    }, 300);
+    }, 100);
   }
 
   slideChanged() {
@@ -158,11 +158,11 @@ export class Ajouter2Page {
         // this.slides.slideTo(2, 200);
       } else {
         if (this.data.type == "in") {
-          this.categories_options = this.paramService.categories_in.map(el => {
+          this.categories_options = this.paramService.getCategoriesIn().map(el => {
             return { 'val': el.id, 'title': el.label, 'icon': el.icon }
           });
         } else if (this.data.type == 'out') {
-          this.categories_options = this.paramService.categories.map(el => {
+          this.categories_options = this.paramService.getCategories().map(el => {
             return { 'val': el.id, 'title': el.label, 'icon': el.icon }
           });
         } else {
@@ -180,8 +180,8 @@ export class Ajouter2Page {
       if (moment(this.data.date).format("DDMMYY") == moment().format("DDMMYY")) this.cool_date = "aujourd'hui";
       this.pretty_moyen = "en liquide";
       if (this.data.category) {
-        if (this.data.type == "out") this.pretty_category = this.paramService.categories.find(e => e.id == this.data.category).label;
-        else if (this.data.type == 'in') this.pretty_category = this.paramService.categories_in.find(e => e.id == this.data.category).label;
+        if (this.data.type == "out") this.pretty_category = this.paramService.getCategories().find(e => e.id == this.data.category).label;
+        else if (this.data.type == 'in') this.pretty_category = this.paramService.getCategoriesIn().find(e => e.id == this.data.category).label;
       } else {
         this.pretty_category = "";
       }
@@ -253,6 +253,7 @@ export class Ajouter2Page {
       // 4eme phase : le nom et le commentaire
       this.data.category = this.paramService.guessCategory(this.data.name) // on essaie de deviner la catégorie à partir du nom rentré
       if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
+      
 
     } else if (n == 4) {
       // 5eme phase : la date
@@ -265,9 +266,8 @@ export class Ajouter2Page {
     } else if (n == 5) {
       // 6eme phase : la catégorie
       if (this.last_slide_visited) this.goToSlide(6); else this.goToSlide(n + 1);
-
     } else {
-      console.log("Phase " + n + ' inconnue');
+      console.log("unknown phase " + n + " in ajouter2.ts > donePhase")
     }
   }
 

@@ -53,13 +53,13 @@ export class FjService {
     private trService: TransactionService,
     private currencyService: CurrencyService) {
 
-      this.category_types.maison = paramService.categories.filter(cat => cat.type == 'maison').map(cat => cat.id)
-      this.category_types.vie_courante = paramService.categories.filter(cat => cat.type == 'vie courante').map(cat => cat.id)
-      this.category_types.transport = paramService.categories.filter(cat => cat.type == 'transport').map(cat => cat.id)
-      this.category_types.secretariat = paramService.categories.filter(cat => cat.type == 'secretariat').map(cat => cat.id)
-      this.category_types.total = paramService.categories.map(cat => cat.id)
-      this.category_types.in = paramService.categories_in.map(cat => cat.id).concat(['report_mois_precedent'])
-      this.category_types.real_in = paramService.categories_in.map(cat => cat.id)
+      this.category_types.maison = paramService.getCategories().filter(cat => cat.type == 'maison').map(cat => cat.id)
+      this.category_types.vie_courante = paramService.getCategories().filter(cat => cat.type == 'vie courante').map(cat => cat.id)
+      this.category_types.transport = paramService.getCategories().filter(cat => cat.type == 'transport').map(cat => cat.id)
+      this.category_types.secretariat = paramService.getCategories().filter(cat => cat.type == 'secretariat').map(cat => cat.id)
+      this.category_types.total = paramService.getCategories().map(cat => cat.id)
+      this.category_types.in = paramService.getCategoriesIn().map(cat => cat.id).concat(['report_mois_precedent'])
+      this.category_types.real_in = paramService.getCategoriesIn().map(cat => cat.id)
   }
 
   setAllFJ(fj_list) {
@@ -261,7 +261,7 @@ export class FjService {
       let last_totaux = this.genSousTotaux(last_fj)
       for (let curr of fj_currencies) {
         // si le solde est non nul et que la devise n'existe pas dans currencies, on ajoute la devise
-        if ((last_totaux[curr].solde.banque != 0 || last_totaux[curr].solde.caisse != 0) && !currencies.includes(curr)) {
+        if ((last_totaux[curr].solde.banque != 0 || last_totaux[curr].solde.caisse != 0) && currencies.indexOf(curr) < 0) {
           currencies.push(curr)
         }
       }
@@ -333,7 +333,7 @@ export class FjService {
 
   // renvoie le soustotal de la meta-catégorie @cat_type uniquement dans la @currency (pas de conversion s'il y a d'autres devises dans la FJ)
   soustotal(fj_o, currency, cat_type = null) {
-    if (!fj_o) return {banque: 0, caisse: 0};
+    if (!fj_o || !fj_o.data[currency]) return {banque: 0, caisse: 0};
 
     fj_o.data[currency].transfert.caisse = -fj_o.data[currency].transfert.banque
 
@@ -348,14 +348,14 @@ export class FjService {
     }
 
     // tous les autres cas
-    let filtered_values = this.paramService.values(fj_o.data[currency], true)
+    let filtered_values = _.values(fj_o.data[currency], true)
     if (cat_type && this.category_types[cat_type]) {
       let type_list = this.category_types[cat_type]
       filtered_values = filtered_values.filter(el => type_list.includes(el.id))
     }
     let somme = {
-      banque: _.sum(filtered_values.map(el => el.banque*100))/100,
-      caisse: _.sum(filtered_values.map(el => el.caisse*100))/100
+      banque: _.sum(filtered_values.map(el => Math.round(el.banque*100)))/100,
+      caisse: _.sum(filtered_values.map(el => Math.round(el.caisse*100)))/100
     }
     return somme
   }
@@ -394,14 +394,14 @@ export class FjService {
       throw {fun: 'ERROR in fj.service > initFjCategories', args: old_fj_data, err: e}
     }
 
-    for (let cat of this.paramService.categories) {
+    for (let cat of this.paramService.getCategories()) {
       category_list[cat.id] = {
         banque: (old_fj_data) ? parseFloat(old_fj_data[cat.id].banque) :0,
         caisse: (old_fj_data) ? parseFloat(old_fj_data[cat.id].caisse) :0,
         observations: (old_fj_data) ? old_fj_data[cat.id].observations :''
       }
     }
-    for (let cat of this.paramService.categories_in) {
+    for (let cat of this.paramService.getCategoriesIn()) {
       category_list[cat.id] = {
         banque: (old_fj_data) ? parseFloat(old_fj_data[cat.id].banque) :0,
         caisse: (old_fj_data) ? parseFloat(old_fj_data[cat.id].caisse) :0,
@@ -426,7 +426,6 @@ export class FjService {
         fj_min = i
       }
     }
-    console.log("FIRST FJ : ", fj_list, fj_min)
     return fj_list[fj_min].month
   }
 

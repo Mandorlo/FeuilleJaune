@@ -166,17 +166,23 @@ export class FjgenPage {
     else this.reloadcore();
   }
 
-  reloadcore() {
+  async reloadcore() {
     this.tr_engine_ready = false;
-    this.fjService.genFjData(this.curr_month).then(fj => {
-      console.log('FJDATA reloaded', fj)
-      this.curr_fj = fj
-      this.fj_currencies = Object.getOwnPropertyNames(fj.data).map(c => {return {val: c, label:this.paramService.symbolCurrency(c)}})
-      this.curr_currency = this.fj_currencies[0]['val']
-      this.tr_engine_ready = true;
-    }).catch(err => {
-      console.log(err)
-    })
+    let fj = await this.fjService.genFjData(this.curr_month)
+    this.fj_currencies = Object.getOwnPropertyNames(fj.data).map(c => this.paramService.getCurrencyObj(c))
+
+    // on garde les commentaires existants
+    for (let currency in fj.data) {
+      if (this.curr_fj["data"][currency]) {
+        for (let cat in fj.data[currency]) {
+          if (this.curr_fj["data"][currency][cat]) fj.data[currency][cat].observations = this.curr_fj["data"][currency][cat].observations
+        }
+      }
+    }
+    console.log('FJDATA reloaded', fj)
+    this.curr_currency = this.fj_currencies[0]['id'];
+    this.curr_fj = fj
+    this.tr_engine_ready = true;
   }
 
   convert(montant, currency) {

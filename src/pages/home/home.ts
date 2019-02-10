@@ -14,7 +14,7 @@ import { ParamPage } from '../param/param';
 //import { LoginPage } from '../login/login';
 
 import moment from 'moment';
-import _ from 'lodash';
+//import _ from 'lodash';
 
 
 
@@ -92,7 +92,7 @@ export class HomePage {
     //let last_month = moment(curr_month).subtract(1, 'months').format("YYYY-MM") + "-01";
 
     let prec_month_fj = await this.fjService.getFjLastMonth(curr_month);
-    let this_month_fj = _.find(this.fj_list, { 'month': curr_month });
+    let this_month_fj = this.fj_list.find(fj => fj.month == curr_month);
     let solde = { 'banque': 0, 'caisse': 0 }
 
     solde["banque_max"] = this.gauges.banque_max;

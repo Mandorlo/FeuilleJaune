@@ -38,7 +38,7 @@
 			"USA",
 			"NLD"
 		],
-		"default_rate_eur": 1.165446
+		"default_rate_eur": 1.138855
 	},
 	{
 		"id": "GBP",
@@ -47,7 +47,7 @@
 		"countries": [
 			"GBR"
 		],
-		"default_rate_eur": 0.878607
+		"default_rate_eur": 0.877265
 	},
 	{
 		"id": "CHF",
@@ -56,7 +56,7 @@
 		"countries": [
 			"CHE"
 		],
-		"default_rate_eur": 1.151
+		"default_rate_eur": 1.140962
 	},
 	{
 		"id": "PLN",
@@ -65,7 +65,7 @@
 		"countries": [
 			"POL"
 		],
-		"default_rate_eur": 4.320897
+		"default_rate_eur": 4.309471
 	},
 	{
 		"id": "HUF",
@@ -74,7 +74,7 @@
 		"countries": [
 			"HUN"
 		],
-		"default_rate_eur": 324.530219
+		"default_rate_eur": 321.863608
 	},
 	{
 		"id": "CZK",
@@ -83,7 +83,7 @@
 		"countries": [
 			"CZE"
 		],
-		"default_rate_eur": 25.760906
+		"default_rate_eur": 25.814087
 	},
 	{
 		"id": "ILS",
@@ -92,7 +92,7 @@
 		"countries": [
 			"ISR"
 		],
-		"default_rate_eur": 4.200069
+		"default_rate_eur": 4.208757
 	},
 	{
 		"id": "LBP",
@@ -101,7 +101,7 @@
 		"countries": [
 			"LBN"
 		],
-		"default_rate_eur": 1754.812723
+		"default_rate_eur": 1725.308638
 	},
 	{
 		"id": "BRL",
@@ -110,7 +110,7 @@
 		"countries": [
 			"BRA"
 		],
-		"default_rate_eur": 4.41087
+		"default_rate_eur": 4.208415
 	},
 	{
 		"id": "MUR",
@@ -119,7 +119,7 @@
 		"countries": [
 			"MUS"
 		],
-		"default_rate_eur": 40.499707
+		"default_rate_eur": 39.635002
 	},
 	{
 		"id": "MGA",
@@ -128,7 +128,7 @@
 		"countries": [
 			"MDG"
 		],
-		"default_rate_eur": 3811.010426
+		"default_rate_eur": 4014.463852
 	},
 	{
 		"id": "BIF",
@@ -137,7 +137,7 @@
 		"countries": [
 			"BDI"
 		],
-		"default_rate_eur": 2040.673472
+		"default_rate_eur": 2067.02161
 	},
 	{
 		"id": "CAD",
@@ -146,7 +146,7 @@
 		"countries": [
 			"CAN"
 		],
-		"default_rate_eur": 1.546319
+		"default_rate_eur": 1.494235
 	},
 	{
 		"id": "CDF",
@@ -155,7 +155,7 @@
 		"countries": [
 			"COD"
 		],
-		"default_rate_eur": 1824.511048
+		"default_rate_eur": 1834.695626
 	},
 	{
 		"id": "XOF",
@@ -165,7 +165,7 @@
 			"CIV",
 			"TCD"
 		],
-		"default_rate_eur": 655.365544
+		"default_rate_eur": 660.53621
 	},
 	{
 		"id": "PHP",
@@ -174,6 +174,6 @@
 		"countries": [
 			"PHL"
 		],
-		"default_rate_eur": 62.025063
+		"default_rate_eur": 60.541952
 	}
 ]

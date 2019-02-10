@@ -6,11 +6,15 @@ import { CurrencyService } from './currency.service';
 import { FjService } from './fj.service';
 
 import moment from 'moment';
-import _ from 'lodash';
+import { _ } from './_.service';
 
 @Injectable()
 export class StatsService {
     private WARNINGS = {
+        /* 'listeTransactions': { // TODO BUGFIX
+            'fun': this.checkWarnings_listeTransactions,
+            'async': true
+        }, */
         'soldeNegatif': {
             'fun': this.checkWarnings_soldeNegatif
         },
@@ -58,7 +62,12 @@ export class StatsService {
             let o = {}
             let msg = []
             for (let warn in this.WARNINGS) {
-                let res = this.WARNINGS[warn].fun.bind(this)(fj, fj_list)
+                let res;
+                if (this.WARNINGS[warn].async) {
+                    res = await this.WARNINGS[warn].fun.bind(this)(fj, fj_list)
+                } else {
+                    res = this.WARNINGS[warn].fun.bind(this)(fj, fj_list)
+                }
                 if (res && res.msg) {
                     o[warn] = res
                     msg.push(res.msg)
@@ -72,6 +81,24 @@ export class StatsService {
     // =========================================================================
     //                    CHECK WARNINGS
     // =========================================================================
+
+    // vérifie que les dépenses et revenus de la fj correspondent bien à la liste des dépenses/revenus des transactions
+    async checkWarnings_listeTransactions(fj, fj_list) {
+        let warnings = []
+        let fj_theorique = await this.fjService.genFjData(fj.month)
+        for (let currency in fj.data) {
+            console.log("fj_theorique", fj_theorique)
+            let depense_tr = this.fjService.soustotal(fj_theorique, currency, 'total') // tkt 'total' c'est total des sorties
+            let depense_fj = this.fjService.soustotal(fj, currency, 'total') // tkt 'total' c'est total des sorties
+            let revenus_tr = this.fjService.soustotal(fj_theorique, currency, 'in')
+            let revenus_fj = this.fjService.soustotal(fj, currency, 'in')
+            let details = {currency, depenses: {tr: depense_tr, fj: depense_fj}, revenus: {tr: revenus_tr, fj: revenus_fj}}
+            if (depense_tr.banque != depense_fj.banque) return {msg: `Les dépenses banque en ${currency} ne correspondent pas aux dépenses réelles`, details}
+            if (depense_tr.caisse != depense_fj.caisse) return {msg: `Les dépenses caisse en ${currency} ne correspondent pas aux dépenses réelles`, details}
+            if (revenus_tr.banque != revenus_fj.banque) return {msg: `Les revenus banque en ${currency} ne correspondent pas aux revenus réels`, details}
+            if (revenus_tr.caisse != revenus_fj.caisse) return {msg: `Les revenus caisse en ${currency} ne correspondent pas aux revenus réels`, details}
+        }
+    }
 
     // vérifie que le solde de cette FJ est bien positif
     // si solde négatif, renvoie un message de warning

@@ -88,10 +88,10 @@ export class ChartsPage {
     if (mois_ref == "auto") mois_ref = moment().format("YYYY-MM-DD");
     let date_limit_inf = moment(mois_ref).startOf("month").subtract(nb_mois-1, "months");
     let date_limit_sup = moment(mois_ref).endOf("month");
-    console.log("dates limit charts", date_limit_inf.format('YYYY-MM-DD'), date_limit_sup.format('YYYY-MM-DD'))
+    //console.log("dates limit charts", date_limit_inf.format('YYYY-MM-DD'), date_limit_sup.format('YYYY-MM-DD'))
 
     this.tr_list.forEach(tr => {
-      let mycat_el = this.paramService.categories.find(e => e.id == tr.category);
+      let mycat_el = this.paramService.getCategories().find(e => e.id == tr.category);
       let mycat = '';
       if (mycat_el && mycat_el.type) {
         mycat = mycat_el.type;

@@ -18,7 +18,7 @@ import { BudgetPage } from '../pages/budget/budget';
 import { TrDetailsPage } from '../pages/tr-details/tr-details';
 import { ChartsPage } from '../pages/charts/charts';
 import { ParamPage } from '../pages/param/param';
-import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
+//import { FeuillejaunePage } from '../pages/feuillejaune/feuillejaune';
 import { FjgenPage } from '../pages/fjgen/fjgen';
 import { FjObservationsPage } from '../pages/fj-observations/fj-observations';
 import { FjDetailsPage } from '../pages/fj-details/fj-details';
@@ -55,7 +55,7 @@ import { BibleVerseComponent } from '../components/bible-verse/bible-verse';
 
 import { CurrencyPipe } from '../pipes/currency';
 import { HistoFilter } from '../pipes/histoFilter'
-import { GaugeComponent } from '../components/gauge/gauge';
+//import { GaugeComponent } from '../components/gauge/gauge';
 import { FilterOptionsComponent } from '../components/filter-options/filter-options';
 import { RevealDivComponent } from '../components/reveal-div/reveal-div';
 
@@ -68,7 +68,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     TrDetailsPage,
     ChartsPage,
     ParamPage,
-    FeuillejaunePage,
+    //FeuillejaunePage,
     FjgenPage,
     FjObservationsPage,
     FjDetailsPage,
@@ -82,7 +82,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     CurrencyPipe,
     HistoFilter,
     FjcircleComponent,
-    GaugeComponent,
+    //GaugeComponent,
     FilterOptionsComponent,
     RevealDivComponent
   ],
@@ -105,7 +105,7 @@ import { RevealDivComponent } from '../components/reveal-div/reveal-div';
     TrDetailsPage,
     ChartsPage,
     ParamPage,
-    FeuillejaunePage,
+    //FeuillejaunePage,
     FjgenPage,
     FjObservationsPage,
     FjDetailsPage,

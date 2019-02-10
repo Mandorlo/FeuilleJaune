@@ -10,9 +10,9 @@ import { FjgenPage } from '../fjgen/fjgen';
 import { FjDetailsPage } from '../fj-details/fj-details';
 import { CurrencyService } from '../../services/currency.service';
 
-import _ from 'lodash';
+//import _ from 'lodash';
 import moment from 'moment';
-import { listMonths } from '../../services/_.service';
+import { listMonths, sum, uniq, sortBy, map2Obj, xor } from '../../services/_.service';
 
 @Component({
   selector: 'page-fjmgmt',
@@ -70,7 +70,7 @@ export class FjmgmtPage {
 
   // renvoie le total des dépenses de l'année en convertissant ce qu'il faut (toutes devises confondues)
   totalYearDepenses(year) {
-    return this.currencyService.pretty(_.sum(this.yearFJList(year).map(fj => this.fjService.getTotalFJ(fj).bc)))
+    return this.currencyService.pretty(sum(this.yearFJList(year).map(fj => this.fjService.getTotalFJ(fj).bc)))
   }
 
   // returns the pretty string to represent the fj's month
@@ -82,14 +82,15 @@ export class FjmgmtPage {
 
   // renvoie le montant des dépenses du mois de l'année @year où j'ai dépensé le plus
   maxDepenses(year) {
-    return _.max(this.yearFJList(year).map(fj => (fj.total) ? fj.total.bc : 0))
+    return Math.max(...this.yearFJList(year).map(fj => (fj.total) ? fj.total.bc : 0))
   }
 
   // renvoie les devises de la fj
   getCurrencies(fj) {
-    return Object.getOwnPropertyNames(fj.data).map(c => {
-      return this.paramService.getCurrencyObj(c)
-    })
+    return sortBy(
+      Object.getOwnPropertyNames(fj.data)
+        .map(c => this.paramService.getCurrencyObj(c)),
+    "id")
   }
 
   async reload() {
@@ -106,20 +107,20 @@ export class FjmgmtPage {
     }
 
     // on récupère les années des FJs (e.g. [2017, 2018])
-    this.fj_years = _.uniq(this.fj_list.map(fj => moment(fj.month, 'YYYY-MM-DD').year()).sort().reverse())
+    this.fj_years = uniq(this.fj_list.map(fj => moment(fj.month, 'YYYY-MM-DD').year()).sort().reverse())
+    if (!this.fj_years.includes(moment().year())) this.fj_years.splice(0, 0, moment().year()); // on ajoute l'année courante si besoin
 
     // on récupère les warnings sur les FJ
     this.warnings = await this.statsService.getWarnings(this.fj_list)
 
     // on ajoute les FJ phantôme qui doivent encore être créées
     if (this.fj_list.length) {
-      this.fj_list = _.sortBy(this.fj_list, [(o) => { return o.month }])
+      this.fj_list = sortBy(this.fj_list, 'month')
       let debut = this.fjService.firstFJMonth(this.fj_list);
-      console.log('first month FJ : ', debut)
-      this.list_months = listMonths(debut)
+      this.list_months = listMonths(debut);
       let fj_months = this.fj_list.map(fj => fj.month)
       this.fj_list_phantom = []
-      let first_month_without_fj = this.list_months.find(month => fj_months.indexOf(month) < 0)
+      let first_month_without_fj = this.list_months.find(month => fj_months.indexOf(month) < 0);
       if (first_month_without_fj) this.fj_list_phantom.push({phantom:true, month: first_month_without_fj})
       /* for (let month of this.list_months) {
         if (fj_months.indexOf(month) < 0) this.fj_list_phantom.push({phantom:true, month})
@@ -144,14 +145,13 @@ export class FjmgmtPage {
     }
 
     // on récupère les photos des maisons
-    for (let fj of this.fj_list) {
+    /* for (let fj of this.fj_list) {
       let photo_url = this.paramService.getPhotoMaison(fj.maison)
       this.photos_maisons[fj.month] = (photo_url) ? photo_url: '';
-    }
-    // TODO add this function to _.service : this.photos_maisons = _.map2Obj(this.fj_list, fj => fj.month, fj => this.paramService.getPhotoMaison(fj.maison))
+    } */
+    this.photos_maisons = map2Obj(this.fj_list, 'month', fj => this.paramService.getPhotoMaison(fj.maison))
 
     this.fjs_ready = true
-    console.log('FJ LIST', this.fj_list)
   }
 
   presentToast(msg, temps = 2000) {
@@ -184,7 +184,7 @@ export class FjmgmtPage {
     this.navCtrl.push(FjgenPage, {month});
   }
 
-  selectFJ(fj) {
+  /* selectFJ(fj) {
     // sélectionne une fj (checkbox)
     if (!this.isSelected(fj)) this.selected_fj.push(fj);
   }
@@ -201,7 +201,7 @@ export class FjmgmtPage {
       return o.month == fj.month;
     })
     return res !== undefined;
-  }
+  } */
 
   supprFJ() {
     let alert = this.alertCtrl.create({
@@ -228,7 +228,7 @@ export class FjmgmtPage {
   }
 
   supprFJcore() {
-    this.fj_list = _.xorBy(this.fj_list, this.selected_fj, 'month');
+    this.fj_list = xor(this.fj_list, this.selected_fj, 'month'); //_.xorBy(this.fj_list, this.selected_fj, 'month');
     this.fjService.deleteFJ(this.selected_fj).then(res => {
       console.log("deleted successfully ! Grazie Signore !", res)
     }).catch(err => {

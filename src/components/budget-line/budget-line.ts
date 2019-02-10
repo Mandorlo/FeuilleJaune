@@ -40,12 +40,13 @@ export class BudgetLineComponent {
     this.pretty_montant = this.currencyService.pretty(curr_tr.montant, curr_tr.currency)
     // console.log(curr_tr);
     this.cool_date = this.getCoolDate(curr_tr.date);
-    let cat_list = (curr_tr.type == 'out') ? this.paramService.categories : this.paramService.categories_in ;
+    let cat_list = (curr_tr.type == 'out') ? this.paramService.getCategories() : this.paramService.getCategoriesIn() ;
     let el = cat_list.find(e => e.id == curr_tr.category) //_.find(cat_list, {'id': curr_tr.category});
     this.category_icon = ('icon' in curr_tr) ? curr_tr.icon : this.transactionService.smartIcon(curr_tr);
     // let smart_icon = this.smartIcon(curr_tr);
     // if (smart_icon.length) this.category_icon = smart_icon;
-    this.category_domain = (el['type']) ? el['type'].replace(" ", ""): "";
+    if (!el) console.log("in budget-lines.ts > ngOnChanges cannot find category for this tr : ", curr_tr, "cat_list = ", cat_list)
+    this.category_domain = (el && el['type']) ? el['type'].replace(" ", ""): "";
 
     this.category_pretty = el.label;
     if (curr_tr.type == 'depot') {

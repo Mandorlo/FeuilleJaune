@@ -60,7 +60,7 @@
       "photo": "@google:dinner"
     }, {
       "category": "loisir",
-      "regex": "(^| )(soirée jeu|giochi|jeux)",
+      "regex": "(^| )(soir[ée]e jeu|giochi|jeux)",
       "photo": "@google:gamenight"
     }, {
       "category": "alimentation",
@@ -69,8 +69,7 @@
       "photo": "@google:drinks"
     }, {
       "category": "loisir",
-      "regex": "(^| )(bbq|barbecue)",
-      "photo": "@google:bbq"
+      "regex": "(^| )(mus[ée]|muse(o|um))( |$)"
     }, {
       "category": "",
       "regex": "(^| )(foto|photo)",
@@ -172,7 +171,10 @@
       "photo": "$"
     }, {
       "category": "alimentation",
-      "regex": "(^| )(fromage|formaggi|jambon|prosciutt)"
+      "regex": "(^| )(fromage|formaggi|jambon|prosciutt|salad|insalat)"
+    }, {
+      "category": "alimentation",
+      "regex": "(^| )(naturalia|biocoop|biocbon)"
     }, {
       "category": "hygiene",
       "regex": "(^| )(dentifric|brosse [aà] dent|spazzolin|toothpaste|toothbrush)",
@@ -225,7 +227,7 @@
       "photo": "watch cartier"
     }, {
       "category": "loisir",
-      "regex": "(^| )(r[ei]st(au|o)rant)",
+      "regex": "(^| )(r[ei]st(au|o)rant|burger)",
       "icon": "",
       "photo": "restaurant"
     }, {
@@ -285,6 +287,11 @@
       "regex": "(^| )(timbre|stamp|francoboll)",
       "photo": "timbres poste"
     }, {
+      "category": "telephone",
+      "regex": "(^| )(free mobile|b[&n]you|bouygues?|orange|sfr)( |$)",
+      "icon": "fa-mobile",
+      "photo": "@google:code"
+    }, {
       "category": "energie",
       "regex": "(^| )([ée]l[ée]ctricit[eé]|gaz|electricity|gas($| )|elettricit)",
       "icon": "",
@@ -313,7 +320,7 @@
       "icon": "fa-microchip"
     }, {
       "category": "frais_banque",
-      "regex": "(^| )(carte (CB|d?e? ?cr[ée]dit|bancaire|bleu|visa)|carta (di )?credito)",
+      "regex": "(^| )(frais cb|carte (CB|d?e? ?cr[ée]dit|bancaire|bleu|visa)|carta (di )?credito)",
       "icon": "fa-credit-card",
       "photo": "credit card"
     }, {
