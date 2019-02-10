@@ -1,6 +1,7 @@
 # Feuille Jaune
 
 "Feuille Jaune" est une application pour aider les membres de la Communauté du Chemin Neuf à faire leur feuille jaune chaque mois :)
+On peut la trouver sur le PlayStore ici : https://play.google.com/store/apps/details?id=io.shaqed.feuillejaune
 
 ## TODO
 
